@@ -22,7 +22,7 @@ export type ServicioBrochure = {
  * Folletos comerciales por línea de negocio (captación).
  * Cuotas: https://puntopago.net/products/cuotas/
  * Kioscos: https://puntopago.net/business/space/
- * Agente: hero tipográfico (sin imagen promocional); referencia comercial Business Checkout.
+ * Agente: imagen local `public/brochures/agentes-corresponsal.png`; referencia comercial Business Checkout.
  * Corporativo: https://puntopago.net/business/checkout/ y …/paymentshub/
  */
 export const SERVICIO_BROCHURES: Record<ServicioPrincipalId, ServicioBrochure> = {
@@ -52,12 +52,12 @@ export const SERVICIO_BROCHURES: Record<ServicioPrincipalId, ServicioBrochure> =
     headline: "Agente y corresponsal — Punto Pago en su comunidad",
     tagline:
       "Operación flexible como corresponsal: cobros y servicios con respaldo de marca. Mientras no haya una web dedicada solo a agentes, la línea Business Checkout sirve como referencia comercial (integración, automatización y escala).",
-    heroTextBanner: {
-      lead: "No importa si estás en tu isla o en tu barriada.",
-      rest: "Con computadora o teléfono puedes cobrar a tus clientes.",
+    heroImage: {
+      src: "/brochures/agentes-corresponsal.png",
+      alt: "La Bodeguita — Punto Pago corresponsal no bancario sobre mapa de comunidad",
     },
     highlights: [
-      "Trabaje desde donde le convenga: con conexión y un dispositivo puede atender cobros, recargas y consultas para su red de clientes.",
+      "No importa si está en su isla o en su barriada: con computadora o teléfono puede cobrar a sus clientes; y desde un comercio puede operar como corresponsal no bancario con respaldo Punto Pago.",
       "Referencia comercial Business Checkout: documentación orientada a integración vía API, automatización y coordinación entre áreas cuando crezca el volumen.",
       "Ideal para quienes tienen vocación de servicio en la comunidad y quieren sumarse como agente o corresponsal Punto Pago.",
     ],
