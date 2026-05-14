@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { BrochureHeroTextBanner } from "@/components/BrochureHeroTextBanner";
 import { AfiliacionChrome } from "@/components/AfiliacionChrome";
 import { SERVICIO_PRINCIPAL_PUNTO_PAGO } from "@/lib/afiliacion-opciones";
 import { SERVICIO_BROCHURES } from "@/lib/servicio-brochures";
@@ -33,7 +34,9 @@ export function ServiciosOnboardingLanding() {
                 className="group block flex-1 transition hover:bg-slate-50/80"
               >
                 <div className="relative aspect-[16/9] bg-gradient-to-br from-[#E8E9F7] to-slate-100">
-                  {b.heroImage ? (
+                  {b.heroTextBanner ? (
+                    <BrochureHeroTextBanner compact lead={b.heroTextBanner.lead} rest={b.heroTextBanner.rest} />
+                  ) : b.heroImage ? (
                     <Image
                       src={b.heroImage.src}
                       alt={b.heroImage.alt}

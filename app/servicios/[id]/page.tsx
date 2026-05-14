@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { BrochureHeroTextBanner } from "@/components/BrochureHeroTextBanner";
 import { AfiliacionChrome } from "@/components/AfiliacionChrome";
 import { esServicioPrincipalValido, SERVICIO_PRINCIPAL_PUNTO_PAGO } from "@/lib/afiliacion-opciones";
 import { brochureForId } from "@/lib/servicio-brochures";
@@ -30,7 +31,9 @@ export default async function ServicioBrochurePage({ params }: Props) {
       </nav>
 
       <article className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white/95 shadow-lg ring-1 ring-slate-200/40">
-        {b.heroImage ? (
+        {b.heroTextBanner ? (
+          <BrochureHeroTextBanner lead={b.heroTextBanner.lead} rest={b.heroTextBanner.rest} />
+        ) : b.heroImage ? (
           <div className="relative aspect-[21/9] w-full bg-slate-100">
             <Image
               src={b.heroImage.src}
@@ -48,7 +51,7 @@ export default async function ServicioBrochurePage({ params }: Props) {
         )}
 
         <div className="p-6 sm:p-8">
-          {b.heroImage ? (
+          {(b.heroTextBanner || b.heroImage) ? (
             <h1 className="text-2xl font-bold tracking-tight text-[#0B0B13] sm:text-3xl">
               {b.headline}
             </h1>
