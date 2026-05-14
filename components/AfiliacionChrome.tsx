@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
 import { PpAmbient } from "@/components/PpAmbient";
 
@@ -31,6 +32,12 @@ export function AfiliacionChrome({ children }: { children: ReactNode }) {
             </span>
           </a>
           <nav className="flex shrink-0 flex-wrap items-center justify-end gap-1">
+            <Link
+              href="/servicios"
+              className="rounded-lg px-2.5 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-100 hover:text-[#4749B6] sm:px-3 sm:text-sm"
+            >
+              Folletos
+            </Link>
             <a
               href={BUSINESS_HUB_URL}
               target="_blank"

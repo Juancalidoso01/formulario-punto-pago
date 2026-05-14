@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
+import Link from "next/link";
 import type { AfiliacionJson } from "@/lib/afiliacion-payload";
 import {
   ACTIVIDAD_NEGOCIO_OPCIONES,
@@ -8,6 +9,7 @@ import {
   NUM_CLIENTES_OPCIONES,
   OCUPACION_OPCIONES,
   RANGO_NOMINA_OPCIONES,
+  esServicioPrincipalValido,
 } from "@/lib/afiliacion-opciones";
 import { AfiliacionAddressPaField } from "@/components/AfiliacionAddressPaField";
 import { ServicioPrincipalPicker } from "@/components/ServicioPrincipalPicker";
@@ -82,7 +84,11 @@ function RadioGroup({
   );
 }
 
-export function AfiliacionWizard() {
+export function AfiliacionWizard({
+  initialServicioPrincipal,
+}: {
+  initialServicioPrincipal?: string;
+}) {
   const [step, setStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(
@@ -102,7 +108,11 @@ export function AfiliacionWizard() {
   const [direccion, setDireccion] = useState("");
   const [provincia, setProvincia] = useState("");
   const [descripcionNegocio, setDescripcionNegocio] = useState("");
-  const [servicioPrincipal, setServicioPrincipal] = useState("");
+  const [servicioPrincipal, setServicioPrincipal] = useState(() =>
+    initialServicioPrincipal && esServicioPrincipalValido(initialServicioPrincipal)
+      ? initialServicioPrincipal
+      : "",
+  );
   const [ocupacionPrincipal, setOcupacionPrincipal] = useState("");
   const [actividadNegocio, setActividadNegocio] = useState("");
   const [fotosLocal, setFotosLocal] = useState<File[]>([]);
@@ -343,6 +353,16 @@ export function AfiliacionWizard() {
               value={servicioPrincipal}
               onChange={setServicioPrincipal}
             />
+            {servicioPrincipal && esServicioPrincipalValido(servicioPrincipal) ? (
+              <p className="mt-3 text-center text-sm">
+                <Link
+                  href={`/servicios/${servicioPrincipal}`}
+                  className="font-medium text-[#4749B6] underline-offset-2 hover:underline"
+                >
+                  Ver folleto comercial de esta línea
+                </Link>
+              </p>
+            ) : null}
             <p className="mt-4 text-xs text-slate-500">
               Puede cambiar de opción en cualquier momento antes de enviar el formulario.
             </p>
