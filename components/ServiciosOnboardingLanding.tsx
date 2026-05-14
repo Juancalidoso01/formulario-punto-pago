@@ -33,7 +33,13 @@ export function ServiciosOnboardingLanding() {
                 href={`/servicios/${s.id}`}
                 className="group block flex-1 transition hover:bg-slate-50/80"
               >
-                <div className="relative aspect-[16/9] bg-gradient-to-br from-[#E8E9F7] to-slate-100">
+                <div
+                  className={
+                    s.id === "agente-corresponsal-comunidad"
+                      ? "relative aspect-[16/9] bg-[#ece8f7]"
+                      : "relative aspect-[16/9] bg-gradient-to-br from-[#E8E9F7] to-slate-100"
+                  }
+                >
                   {b.heroTextBanner ? (
                     <BrochureHeroTextBanner compact lead={b.heroTextBanner.lead} rest={b.heroTextBanner.rest} />
                   ) : b.heroImage ? (
@@ -41,7 +47,11 @@ export function ServiciosOnboardingLanding() {
                       src={b.heroImage.src}
                       alt={b.heroImage.alt}
                       fill
-                      className="object-cover"
+                      className={
+                        s.id === "agente-corresponsal-comunidad"
+                          ? "object-contain object-center p-3 sm:p-5"
+                          : "object-cover"
+                      }
                       sizes="(max-width: 640px) 100vw, 50vw"
                     />
                   ) : (

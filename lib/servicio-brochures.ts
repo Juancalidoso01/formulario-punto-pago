@@ -54,7 +54,7 @@ export const SERVICIO_BROCHURES: Record<ServicioPrincipalId, ServicioBrochure> =
       "Operación flexible como corresponsal: cobros y servicios con respaldo de marca. Consulte el acceso y la experiencia de onboarding del checkout demo para ver el flujo comercial y de integración.",
     heroImage: {
       src: "/brochures/agentes-corresponsal.png",
-      alt: "La Bodeguita — Punto Pago corresponsal no bancario sobre mapa de comunidad",
+      alt: "Ilustración La Bodeguita — Punto Pago corresponsal no bancario, mapa y pin de ubicación",
     },
     highlights: [
       "No importa si está en su isla o en su barriada: con computadora o teléfono puede cobrar a sus clientes; y desde un comercio puede operar como corresponsal no bancario con respaldo Punto Pago.",
