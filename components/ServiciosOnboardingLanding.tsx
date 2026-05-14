@@ -9,16 +9,13 @@ export function ServiciosOnboardingLanding() {
   return (
     <AfiliacionChrome>
       <div className="mb-8 text-center">
-        <p className="text-xs font-semibold uppercase tracking-wide text-[#4749B6]">
-          Paso 1 de 2 · Afiliación
-        </p>
-        <h1 className="mt-2 text-2xl font-bold tracking-tight text-[#0B0B13] sm:text-3xl">
+        <h1 className="text-2xl font-bold tracking-tight text-[#0B0B13] sm:text-3xl">
           Conozca nuestros productos y afíliese a Punto Pago
         </h1>
         <p className="mt-3 text-sm text-slate-600 sm:text-base">
           Elija la solución que mejor encaja con su negocio. Puede ver la información de cada
-          producto o ir directo al formulario de afiliación. En el siguiente paso le pediremos los
-          datos del contacto y de la empresa.
+          producto o, si ya lo tiene claro, dejar sus datos para que un asesor comercial le contacte
+          y le acompañe en la afiliación.
         </p>
       </div>
 
@@ -70,7 +67,7 @@ export function ServiciosOnboardingLanding() {
                   href={`/formulario?servicio=${encodeURIComponent(s.id)}`}
                   className="text-sm font-semibold text-[#4749B6] underline-offset-2 hover:underline"
                 >
-                  Ir al formulario con esta línea →
+                  Dejar mis datos para contacto comercial →
                 </Link>
               </div>
             </div>
