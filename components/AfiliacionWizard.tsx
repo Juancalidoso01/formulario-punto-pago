@@ -9,6 +9,7 @@ import {
   OCUPACION_OPCIONES,
   RANGO_NOMINA_OPCIONES,
 } from "@/lib/afiliacion-opciones";
+import { AfiliacionAddressPaField } from "@/components/AfiliacionAddressPaField";
 import { ServicioPrincipalPicker } from "@/components/ServicioPrincipalPicker";
 import { SignaturePad, type SignaturePadHandle } from "@/components/SignaturePad";
 
@@ -470,23 +471,23 @@ export function AfiliacionWizard() {
             <StepHeading
               step={step}
               title="Dónde está ubicado su negocio"
-              description="Ubicación comercial."
+              description="Escriba y elija una dirección sugerida (verificación con lista local y Geoapify). Al elegir, completamos provincia o región cuando el servicio la reconoce; si no, indíquela en el segundo campo."
             />
-            <label className={labelClass}>
-              Dirección
-              <input
-                className={inputClass}
-                placeholder="Dirección"
-                value={direccion}
-                onChange={(e) => setDireccion(e.target.value)}
-                autoComplete="street-address"
-              />
-            </label>
+            <AfiliacionAddressPaField
+              label="Dirección comercial"
+              value={direccion}
+              onChange={setDireccion}
+              inputClass={inputClass}
+              variant="panama"
+              onStructuredFromApi={(meta) => {
+                if (meta.provincia) setProvincia(meta.provincia);
+              }}
+            />
             <label className={`${labelClass} mt-4`}>
-              Provincia
+              Provincia o región
               <input
                 className={inputClass}
-                placeholder="Provincia"
+                placeholder="Provincia (se puede autocompletar al elegir sugerencia)"
                 value={provincia}
                 onChange={(e) => setProvincia(e.target.value)}
               />
