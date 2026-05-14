@@ -84,7 +84,14 @@ export default async function ServicioBrochurePage({ params }: Props) {
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-center text-sm font-semibold text-slate-800 transition hover:border-[#4749B6]/40 hover:text-[#4749B6]"
               >
-                {link.label} (sitio Punto Pago)
+                {link.label}{" "}
+                <span className="text-slate-500">
+                  (
+                  {link.href.includes("puntopago.net")
+                    ? "sitio Punto Pago"
+                    : "más información"}
+                  )
+                </span>
               </a>
             ))}
             <Link
@@ -98,7 +105,7 @@ export default async function ServicioBrochurePage({ params }: Props) {
           <p className="mt-8 border-t border-slate-100 pt-6 text-xs leading-relaxed text-slate-500">
             La información de producto proviene de materiales públicos de Punto Pago. Condiciones,
             montos y plazos definitivos dependen de contrato y reglas vigentes al momento de la
-            afiliación. Use los enlaces oficiales para ver el detalle en el sitio de Punto Pago.
+            afiliación. Use los enlaces para ampliar información (sitio Punto Pago o recursos externos según corresponda).
           </p>
         </div>
       </article>

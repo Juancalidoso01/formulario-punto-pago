@@ -22,7 +22,7 @@ export type ServicioBrochure = {
  * Folletos comerciales por línea de negocio (captación).
  * Cuotas: https://puntopago.net/products/cuotas/
  * Kioscos: https://puntopago.net/business/space/
- * Agente: imagen local `public/brochures/agentes-corresponsal.png`; referencia comercial Business Checkout.
+ * Agente: imagen `public/brochures/agentes-corresponsal.png`; info checkout demo onboarding-access.
  * Corporativo: https://puntopago.net/business/checkout/ y …/paymentshub/
  */
 export const SERVICIO_BROCHURES: Record<ServicioPrincipalId, ServicioBrochure> = {
@@ -51,20 +51,20 @@ export const SERVICIO_BROCHURES: Record<ServicioPrincipalId, ServicioBrochure> =
     id: "agente-corresponsal-comunidad",
     headline: "Agente y corresponsal — Punto Pago en su comunidad",
     tagline:
-      "Operación flexible como corresponsal: cobros y servicios con respaldo de marca. Mientras no haya una web dedicada solo a agentes, la línea Business Checkout sirve como referencia comercial (integración, automatización y escala).",
+      "Operación flexible como corresponsal: cobros y servicios con respaldo de marca. Consulte el acceso y la experiencia de onboarding del checkout demo para ver el flujo comercial y de integración.",
     heroImage: {
       src: "/brochures/agentes-corresponsal.png",
       alt: "La Bodeguita — Punto Pago corresponsal no bancario sobre mapa de comunidad",
     },
     highlights: [
       "No importa si está en su isla o en su barriada: con computadora o teléfono puede cobrar a sus clientes; y desde un comercio puede operar como corresponsal no bancario con respaldo Punto Pago.",
-      "Referencia comercial Business Checkout: documentación orientada a integración vía API, automatización y coordinación entre áreas cuando crezca el volumen.",
+      "Demo de onboarding: explore el flujo de acceso e integración orientado a comercios y corresponsales en el entorno de prueba del checkout.",
       "Ideal para quienes tienen vocación de servicio en la comunidad y quieren sumarse como agente o corresponsal Punto Pago.",
     ],
     officialLinks: [
       {
-        href: "https://puntopago.net/business/checkout/",
-        label: "Business Checkout (referencia comercial)",
+        href: "https://checkout-demo-xi.vercel.app/onboarding-access",
+        label: "Checkout demo — acceso onboarding",
       },
     ],
   },
