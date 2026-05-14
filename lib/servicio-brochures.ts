@@ -14,21 +14,26 @@ export type ServicioBrochure = {
 
 /**
  * Folletos comerciales por línea de negocio (captación).
- * Cuotas: mensajes alineados a https://puntopago.net/products/cuotas/
+ * Cuotas: https://puntopago.net/products/cuotas/
+ * Kioscos en local: https://puntopago.net/business/space/
  */
 export const SERVICIO_BROCHURES: Record<ServicioPrincipalId, ServicioBrochure> = {
   "kioscos-local-comercial": {
     id: "kioscos-local-comercial",
-    headline: "Kioscos en su local comercial",
+    headline: "Aprovecha tu espacio — Kioscos en su local comercial",
     tagline:
-      "Ofrezca pagos y servicios Punto Pago en el punto de venta: más tráfico, más recargas y más conveniencia para sus clientes.",
+      "Destine un pequeño espacio en su comercio o edificio para un quiosco Punto Pago: sus clientes y colaboradores recargan y pagan servicios sin salir del lugar, y usted potencia el flujo de visitas.",
+    heroImage: {
+      src: "https://puntopago.net/assets/headcap/5@1.5x.jpg",
+      alt: "Quiosco y espacio comercial Punto Pago — Business Space",
+    },
     highlights: [
-      "Ideal para retail, farmacias, mini super y negocios con flujo de personas.",
-      "Sus clientes pagan facturas, recargan y operan servicios sin salir de su comercio.",
-      "Integre la experiencia Punto Pago como extensión de su marca en el mostrador.",
+      "Recarga y pagos de servicios en pocos metros: Punto Pago indica que con cerca de un metro cuadrado puede instalar un quiosco para que clientes y empleados operen de forma sencilla.",
+      "Más afluencia a su negocio: al ubicar un quiosco en oficinas o locales con tráfico, suma conveniencia y puede atraer visitas adicionales además del arriendo del espacio, según el modelo acordado.",
+      "Encaje natural en retail, farmacias, centros comerciales, torres de oficinas y negocios con público recurrente.",
     ],
-    officialUrl: "https://puntopago.net/products/billpayments/",
-    officialLabel: "Pagos y servicios en punto (referencia producto)",
+    officialUrl: "https://puntopago.net/business/space/",
+    officialLabel: "Página oficial Business Space",
   },
   "agente-corresponsal-comunidad": {
     id: "agente-corresponsal-comunidad",
