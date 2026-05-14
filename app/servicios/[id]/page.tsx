@@ -37,7 +37,7 @@ export default async function ServicioBrochurePage({ params }: Props) {
           <div
             className={
               id === "agente-corresponsal-comunidad"
-                ? "relative aspect-[16/11] w-full bg-[#ece8f7]"
+                ? "relative aspect-[16/9] w-full overflow-hidden bg-[#d6e4ff] sm:aspect-[2/1]"
                 : "relative aspect-[21/9] w-full bg-slate-100"
             }
           >
@@ -46,11 +46,7 @@ export default async function ServicioBrochurePage({ params }: Props) {
               alt={b.heroImage.alt}
               fill
               priority
-              className={
-                id === "agente-corresponsal-comunidad"
-                  ? "object-contain object-center p-3 sm:p-8"
-                  : "object-cover object-center"
-              }
+              className="object-cover object-center"
               sizes="(max-width: 768px) 100vw, 768px"
             />
           </div>

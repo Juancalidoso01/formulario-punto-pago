@@ -36,7 +36,7 @@ export function ServiciosOnboardingLanding() {
                 <div
                   className={
                     s.id === "agente-corresponsal-comunidad"
-                      ? "relative aspect-[16/9] bg-[#ece8f7]"
+                      ? "relative aspect-[16/9] overflow-hidden bg-[#d6e4ff]"
                       : "relative aspect-[16/9] bg-gradient-to-br from-[#E8E9F7] to-slate-100"
                   }
                 >
@@ -47,11 +47,7 @@ export function ServiciosOnboardingLanding() {
                       src={b.heroImage.src}
                       alt={b.heroImage.alt}
                       fill
-                      className={
-                        s.id === "agente-corresponsal-comunidad"
-                          ? "object-contain object-center p-3 sm:p-5"
-                          : "object-cover"
-                      }
+                      className="object-cover object-center"
                       sizes="(max-width: 640px) 100vw, 50vw"
                     />
                   ) : (
