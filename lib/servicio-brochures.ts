@@ -9,7 +9,7 @@ export type ServicioBrochure = {
   id: ServicioPrincipalId;
   headline: string;
   tagline: string;
-  /** Imagen remota (solo si existe en puntopago.net); si no, el layout usa gradiente. */
+  /** Hero: URL absoluta remota o ruta bajo `/public` (p. ej. `/brochures/...`). */
   heroImage?: { src: string; alt: string };
   highlights: string[];
   /** Enlaces oficiales en puntopago.net (uno o varios). */
@@ -20,6 +20,7 @@ export type ServicioBrochure = {
  * Folletos comerciales por línea de negocio (captación).
  * Cuotas: https://puntopago.net/products/cuotas/
  * Kioscos: https://puntopago.net/business/space/
+ * Agente: imagen local `public/brochures/agentes-corresponsal.png`; referencia comercial Business Checkout.
  * Corporativo: https://puntopago.net/business/checkout/ y …/paymentshub/
  */
 export const SERVICIO_BROCHURES: Record<ServicioPrincipalId, ServicioBrochure> = {
@@ -46,18 +47,22 @@ export const SERVICIO_BROCHURES: Record<ServicioPrincipalId, ServicioBrochure> =
   },
   "agente-corresponsal-comunidad": {
     id: "agente-corresponsal-comunidad",
-    headline: "Agente y corresponsal en su comunidad",
+    headline: "Agente y corresponsal — Punto Pago en su comunidad",
     tagline:
-      "Sea el punto de atención Punto Pago en su barrio: cobros, consultas y servicios digitales para vecinos y pymes cercanas.",
+      "Material de campaña en comercios aliados (corresponsal no bancario) y atención cercana al vecino. Mientras no exista una landing dedicada a agentes, use como referencia comercial la línea Business Checkout de Punto Pago: integración, automatización y crecimiento.",
+    heroImage: {
+      src: "/brochures/agentes-corresponsal.png",
+      alt: "Campaña Punto Pago en la comunidad — corresponsal en comercio local",
+    },
     highlights: [
-      "Perfil para emprendedores y comercios de proximidad con vocación de servicio.",
-      "Refuerce la inclusión financiera en su zona con respaldo de marca Punto Pago.",
-      "Combine atención presencial con los canales digitales que ya conocen sus clientes.",
+      "Presencia física en barrio: modelo tipo «Punto Pago llega a…» con ubicaciones en retail y corresponsal no bancario para servir recargas, cobros y consultas.",
+      "Referencia comercial Business Checkout: documentación orientada a integración vía API, automatización de operaciones y conexión entre áreas de negocio cuando escale volumen.",
+      "Ideal para emprendedores con local, buen flujo peatonal y vocación de servicio en la comunidad.",
     ],
     officialLinks: [
       {
-        href: "https://puntopago.net/products/marketplace/",
-        label: "Ecosistema de servicios (referencia)",
+        href: "https://puntopago.net/business/checkout/",
+        label: "Business Checkout (referencia comercial)",
       },
     ],
   },
