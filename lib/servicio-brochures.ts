@@ -19,7 +19,7 @@ export type ServicioBrochure = {
 };
 
 /**
- * Folletos comerciales por línea de negocio (captación).
+ * Contenidos comerciales por línea de negocio (captación).
  * Cuotas: https://puntopago.net/products/cuotas/
  * Kioscos: https://puntopago.net/business/space/
  * Agente: imagen `public/brochures/agentes-corresponsal.png`; info checkout demo onboarding-access.

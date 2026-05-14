@@ -10,14 +10,15 @@ export function ServiciosOnboardingLanding() {
     <AfiliacionChrome>
       <div className="mb-8 text-center">
         <p className="text-xs font-semibold uppercase tracking-wide text-[#4749B6]">
-          Paso 1 de 2 · Onboarding
+          Paso 1 de 2 · Afiliación
         </p>
         <h1 className="mt-2 text-2xl font-bold tracking-tight text-[#0B0B13] sm:text-3xl">
-          Elija su línea de negocio Punto Pago
+          Conozca nuestros productos y afíliese a Punto Pago
         </h1>
         <p className="mt-3 text-sm text-slate-600 sm:text-base">
-          Revise el folleto comercial o continúe directo al formulario de afiliación. En el paso
-          siguiente le pediremos los datos del contacto y la empresa.
+          Elija la solución que mejor encaja con su negocio. Puede ver la información de cada
+          producto o ir directo al formulario de afiliación. En el siguiente paso le pediremos los
+          datos del contacto y de la empresa.
         </p>
       </div>
 
@@ -60,7 +61,7 @@ export function ServiciosOnboardingLanding() {
                   <h2 className="text-base font-semibold text-[#0B0B13]">{s.titulo}</h2>
                   <p className="mt-2 line-clamp-2 text-xs text-slate-600">{b.tagline}</p>
                   <span className="mt-3 inline-block text-sm font-medium text-[#4749B6] group-hover:underline">
-                    Ver folleto →
+                    Ver producto →
                   </span>
                 </div>
               </Link>

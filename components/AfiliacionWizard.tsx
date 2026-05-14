@@ -373,7 +373,7 @@ export function AfiliacionWizard({
                   href={`/servicios/${servicioPrincipal}`}
                   className="font-medium text-[#4749B6] underline-offset-2 hover:underline"
                 >
-                  Ver folleto comercial de esta línea
+                  Ver información de este producto
                 </Link>
               </p>
             ) : null}
