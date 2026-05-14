@@ -6,7 +6,10 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "deploy:prod": "npx --yes vercel@latest deploy --prod --yes",
+    "vercel:whoami": "npx --yes vercel@latest whoami",
+    "vercel:env": "npx --yes vercel@latest env ls"
   },
   "dependencies": {
     "googleapis": "^150.0.1",
