@@ -38,7 +38,7 @@ export const SignaturePad = forwardRef<SignaturePadHandle, object>(
       ctx.scale(dpr, dpr);
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, WIDTH, HEIGHT);
-      ctx.strokeStyle = "#0f172a";
+      ctx.strokeStyle = "#4749B6";
       ctx.lineWidth = 2;
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
@@ -75,7 +75,7 @@ export const SignaturePad = forwardRef<SignaturePadHandle, object>(
     return (
       <canvas
         ref={canvasRef}
-        className="w-full max-w-[480px] touch-none rounded-lg border border-slate-200 bg-white"
+        className="w-full max-w-[480px] touch-none rounded-lg border border-slate-200/90 bg-white shadow-sm"
         onPointerDown={(e) => {
           e.currentTarget.setPointerCapture(e.pointerId);
           drawingRef.current = true;

@@ -19,8 +19,8 @@ export function ServicioPrincipalPicker({ value, onChange }: Props) {
             htmlFor={inputId}
             className={
               selected
-                ? "flex cursor-pointer gap-3 rounded-xl border-2 border-blue-600 bg-blue-50/70 px-4 py-3.5 shadow-sm transition"
-                : "flex cursor-pointer gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3.5 shadow-sm transition hover:border-slate-300"
+                ? "flex cursor-pointer gap-3 rounded-xl border-2 border-[#4749B6] bg-[#E8E9F7]/80 px-4 py-3.5 shadow-sm transition"
+                : "flex cursor-pointer gap-3 rounded-xl border border-slate-200/90 bg-white px-4 py-3.5 shadow-sm transition hover:border-[#4749B6]/35"
             }
           >
             <input
@@ -30,7 +30,7 @@ export function ServicioPrincipalPicker({ value, onChange }: Props) {
               value={s.id}
               checked={selected}
               onChange={() => onChange(s.id)}
-              className="mt-1 size-4 shrink-0 text-blue-600"
+              className="mt-1 size-4 shrink-0 text-[#4749B6]"
             />
             <span className="min-w-0 flex-1">
               <span className="block text-base font-medium leading-snug text-slate-900">

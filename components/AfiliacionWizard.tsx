@@ -15,7 +15,7 @@ import { SignaturePad, type SignaturePadHandle } from "@/components/SignaturePad
 const TOTAL_STEPS = 17;
 
 const inputClass =
-  "w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-base text-slate-900 shadow-sm outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20";
+  "w-full rounded-lg border border-slate-200/90 bg-white px-3 py-2.5 text-base text-slate-900 shadow-sm outline-none transition focus:border-[#4749B6] focus:ring-2 focus:ring-[#4749B6]/20";
 
 const labelClass = "flex flex-col gap-1.5 text-sm font-medium text-slate-800";
 
@@ -62,7 +62,7 @@ function RadioGroup({
           <label
             key={opt}
             htmlFor={id}
-            className="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-800 shadow-sm transition hover:border-blue-300 has-[:checked]:border-blue-600 has-[:checked]:ring-1 has-[:checked]:ring-blue-600/30"
+            className="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-800 shadow-sm transition hover:border-[#4749B6]/35 has-[:checked]:border-[#4749B6] has-[:checked]:ring-1 has-[:checked]:ring-[#4749B6]/30"
           >
             <input
               id={id}
@@ -71,7 +71,7 @@ function RadioGroup({
               value={opt}
               checked={value === opt}
               onChange={() => onChange(opt)}
-              className="mt-0.5 size-4 shrink-0 text-blue-600"
+              className="mt-0.5 size-4 shrink-0 text-[#4749B6]"
             />
             <span className="leading-snug">{opt}</span>
           </label>
@@ -324,7 +324,7 @@ export function AfiliacionWizard() {
         </span>
         <div className="h-2 flex-1 max-w-xs overflow-hidden rounded-full bg-slate-100">
           <div
-            className="h-full rounded-full bg-blue-600 transition-[width] duration-300"
+            className="h-full rounded-full bg-[#4749B6] shadow-sm shadow-[#4749B6]/30 transition-[width] duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -580,7 +580,7 @@ export function AfiliacionWizard() {
               type="file"
               accept="image/*"
               multiple
-              className="text-sm text-slate-700 file:mr-3 file:rounded-md file:border-0 file:bg-blue-600 file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-blue-700"
+              className="text-sm text-slate-700 file:mr-3 file:rounded-md file:border-0 file:bg-[#4749B6] file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-[#3B3DA6]"
               onChange={(e) => {
                 const list = e.target.files ? Array.from(e.target.files) : [];
                 setFotosLocal(list.slice(0, 5));
@@ -618,7 +618,7 @@ export function AfiliacionWizard() {
             <input
               type="file"
               accept=".pdf,image/*"
-              className="text-sm text-slate-700 file:mr-3 file:rounded-md file:border-0 file:bg-blue-600 file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-blue-700"
+              className="text-sm text-slate-700 file:mr-3 file:rounded-md file:border-0 file:bg-[#4749B6] file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-[#3B3DA6]"
               onChange={(e) => {
                 const f = e.target.files?.[0];
                 setAvisoOperacion(f ?? null);
@@ -674,7 +674,7 @@ export function AfiliacionWizard() {
                 type="checkbox"
                 checked={terminosAceptados}
                 onChange={(e) => setTerminosAceptados(e.target.checked)}
-                className="mt-0.5 size-4 shrink-0 rounded border-slate-300 text-blue-600"
+                className="mt-0.5 size-4 shrink-0 rounded border-slate-300 text-[#4749B6]"
               />
               <span>
                 Estoy de acuerdo con los{" "}
@@ -682,7 +682,7 @@ export function AfiliacionWizard() {
                   href="https://puntopago.net/privacy/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-medium text-blue-700 underline underline-offset-2"
+                  className="font-medium text-[#4749B6] underline underline-offset-2"
                 >
                   términos y condiciones
                 </a>
@@ -703,7 +703,7 @@ export function AfiliacionWizard() {
             <button
               type="button"
               onClick={() => signatureRef.current?.clear()}
-              className="mt-2 text-sm font-medium text-blue-700 underline-offset-2 hover:underline"
+              className="mt-2 text-sm font-medium text-[#4749B6] underline-offset-2 hover:underline"
             >
               Limpiar firma
             </button>
@@ -723,7 +723,7 @@ export function AfiliacionWizard() {
         </p>
       ) : null}
 
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200/80 pt-4">
         <button
           type="button"
           onClick={goBack}
@@ -736,7 +736,7 @@ export function AfiliacionWizard() {
           <button
             type="button"
             onClick={goNext}
-            className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700"
+            className="rounded-lg bg-[#4749B6] px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-[#4749B6]/25 transition hover:bg-[#3B3DA6]"
           >
             Siguiente
           </button>
@@ -745,7 +745,7 @@ export function AfiliacionWizard() {
             type="button"
             onClick={submit}
             disabled={status === "loading"}
-            className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:opacity-60"
+            className="rounded-lg bg-[#4749B6] px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-[#4749B6]/25 transition hover:bg-[#3B3DA6] disabled:opacity-60"
           >
             {status === "loading" ? "Enviando…" : "Enviar formulario"}
           </button>
