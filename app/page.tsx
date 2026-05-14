@@ -9,10 +9,9 @@ export default function Home() {
           <span className="pp-kyb-brand-sheen">Formulario de afiliación</span>
         </h1>
         <p className="mt-3 text-base text-slate-600">
-          Flujo de 17 pasos: primero indica qué necesita de Punto Pago (una opción clara),
-          luego los datos del contacto y la empresa. Los archivos y la firma se envían al
-          servidor; puedes enlazar después un aviso a Slack en lugar de (o además de)
-          Google Sheets.
+          Flujo de 17 pasos: primero elige entre cuatro líneas de negocio Punto Pago; luego
+          los datos del contacto y la empresa. Los archivos y la firma se envían al servidor;
+          puedes enlazar después un aviso a Slack en lugar de (o además de) Google Sheets.
         </p>
       </div>
 

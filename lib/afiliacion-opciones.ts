@@ -1,53 +1,27 @@
 /**
- * Paso 1 del formulario: una sola elección clara (qué necesita el negocio).
- * Textos en lenguaje cotidiano; el id sirve para hoja de cálculo / CRM.
+ * Paso 1: una sola línea de negocio (4 focos acordados con comercial).
  */
 
 export const SERVICIO_PRINCIPAL_PUNTO_PAGO = [
   {
-    id: "pagar-nomina",
-    titulo: "Pagar salarios o planilla a sus empleados",
-    ayuda: "Depositar la nómina de forma recurrente y llevar mejor control de pagos.",
+    id: "kioscos-local-comercial",
+    titulo: "Kioscos para local comercial",
+    ayuda: "Kioscos Punto Pago dentro de su comercio.",
   },
   {
-    id: "cobrar-internet",
-    titulo: "Cobrar a sus clientes por internet",
-    ayuda: "Desde su página web, un enlace de cobro o enlazando con su sistema actual.",
+    id: "agente-corresponsal-comunidad",
+    titulo: "Agente para comunidad",
+    ayuda: "Corresponsal Punto Pago en su comunidad: atención y cobros.",
   },
   {
-    id: "cobrar-tienda",
-    titulo: "Cobrar en su local (mostrador o tienda)",
-    ayuda: "Con terminal o punto de venta físico, tarjeta y otros medios habituales.",
+    id: "cuotas-financiamiento-local",
+    titulo: "Cuotas en su local",
+    ayuda: "Punto Pago financia a sus clientes para que le compren en el local.",
   },
   {
-    id: "cuotas-clientes",
-    titulo: "Que sus clientes paguen en cuotas sin interés",
-    ayuda: "Para que compren más cómodo y usted cobre de forma ordenada.",
-  },
-  {
-    id: "puntos-cercanos",
-    titulo: "Que sus clientes paguen en puntos o kioscos cercanos",
-    ayuda: "Presencia en la red de puntos Punto Pago para quien prefiere pagar en persona.",
-  },
-  {
-    id: "tarjeta-app-empresa",
-    titulo: "Tarjeta o app para gastos del negocio",
-    ayuda: "Para su empresa o para que su equipo pague con límites y visibilidad.",
-  },
-  {
-    id: "vender-con-entrega",
-    titulo: "Vender en línea con entrega a domicilio",
-    ayuda: "Venta y reparto de productos con pagos integrados en el flujo.",
-  },
-  {
-    id: "pagar-facturas",
-    titulo: "Pagar facturas de servicios (luz, agua, teléfono, etc.)",
-    ayuda: "Para su operación o para ofrecer ese servicio a sus clientes.",
-  },
-  {
-    id: "asesoria",
-    titulo: "No está seguro o prefiere que lo orienten",
-    ayuda: "Un asesor revisa su caso y le propone la mejor combinación.",
+    id: "servicios-corporativos",
+    titulo: "Servicios corporativos Punto Pago",
+    ayuda: "Botones de recaudo en la red, Hub de pagos, programa de tarjetas.",
   },
 ] as const;
 
@@ -59,11 +33,11 @@ export function esServicioPrincipalValido(id: string): id is ServicioPrincipalId
   return PRINCIPAL_IDS.has(id);
 }
 
-/** Texto para Google Sheets o Slack (solo título; la ayuda queda en la app). */
+/** Texto para Google Sheets o Slack. */
 export function textoServicioPrincipalParaSheet(id: string): string {
   const s = SERVICIO_PRINCIPAL_PUNTO_PAGO.find((x) => x.id === id);
   if (!s) return id;
-  return s.titulo;
+  return `${s.titulo} — ${s.ayuda}`;
 }
 
 /** Opciones de selección (resto del formulario) */

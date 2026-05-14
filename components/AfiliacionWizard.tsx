@@ -335,15 +335,15 @@ export function AfiliacionWizard() {
           <>
             <StepHeading
               step={step}
-              title="¿Qué necesita de Punto Pago?"
-              description="Elija la opción que mejor describe su caso hoy. Si combina varias cosas, elija la más importante y detalle el resto más adelante en la descripción de su negocio."
+              title="¿Qué línea de negocio le interesa?"
+              description="Elija una de las cuatro opciones. Si combina varias, marque la principal y detalle el resto más adelante en la descripción de su negocio."
             />
             <ServicioPrincipalPicker
               value={servicioPrincipal}
               onChange={setServicioPrincipal}
             />
             <p className="mt-4 text-xs text-slate-500">
-              Si ninguna encaja del todo, use la última opción y un asesor le orientará.
+              Puede cambiar de opción en cualquier momento antes de enviar el formulario.
             </p>
           </>
         ) : null}
