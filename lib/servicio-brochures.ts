@@ -1,5 +1,10 @@
 import type { ServicioPrincipalId } from "@/lib/afiliacion-opciones";
 
+export type BrochureOfficialLink = {
+  href: string;
+  label: string;
+};
+
 export type ServicioBrochure = {
   id: ServicioPrincipalId;
   headline: string;
@@ -7,15 +12,15 @@ export type ServicioBrochure = {
   /** Imagen remota (solo si existe en puntopago.net); si no, el layout usa gradiente. */
   heroImage?: { src: string; alt: string };
   highlights: string[];
-  /** Página de producto en puntopago.net para “saber más”. */
-  officialUrl: string;
-  officialLabel: string;
+  /** Enlaces oficiales en puntopago.net (uno o varios). */
+  officialLinks: BrochureOfficialLink[];
 };
 
 /**
  * Folletos comerciales por línea de negocio (captación).
  * Cuotas: https://puntopago.net/products/cuotas/
- * Kioscos en local: https://puntopago.net/business/space/
+ * Kioscos: https://puntopago.net/business/space/
+ * Corporativo: https://puntopago.net/business/checkout/ y …/paymentshub/
  */
 export const SERVICIO_BROCHURES: Record<ServicioPrincipalId, ServicioBrochure> = {
   "kioscos-local-comercial": {
@@ -32,8 +37,12 @@ export const SERVICIO_BROCHURES: Record<ServicioPrincipalId, ServicioBrochure> =
       "Más afluencia a su negocio: al ubicar un quiosco en oficinas o locales con tráfico, suma conveniencia y puede atraer visitas adicionales además del arriendo del espacio, según el modelo acordado.",
       "Encaje natural en retail, farmacias, centros comerciales, torres de oficinas y negocios con público recurrente.",
     ],
-    officialUrl: "https://puntopago.net/business/space/",
-    officialLabel: "Página oficial Business Space",
+    officialLinks: [
+      {
+        href: "https://puntopago.net/business/space/",
+        label: "Business Space",
+      },
+    ],
   },
   "agente-corresponsal-comunidad": {
     id: "agente-corresponsal-comunidad",
@@ -45,8 +54,12 @@ export const SERVICIO_BROCHURES: Record<ServicioPrincipalId, ServicioBrochure> =
       "Refuerce la inclusión financiera en su zona con respaldo de marca Punto Pago.",
       "Combine atención presencial con los canales digitales que ya conocen sus clientes.",
     ],
-    officialUrl: "https://puntopago.net/products/marketplace/",
-    officialLabel: "Ecosistema de servicios (referencia producto)",
+    officialLinks: [
+      {
+        href: "https://puntopago.net/products/marketplace/",
+        label: "Ecosistema de servicios (referencia)",
+      },
+    ],
   },
   "cuotas-financiamiento-local": {
     id: "cuotas-financiamiento-local",
@@ -63,21 +76,37 @@ export const SERVICIO_BROCHURES: Record<ServicioPrincipalId, ServicioBrochure> =
       "Proceso guiado: QR del vendedor, plan de cuotas, aprobación y firma vía SMS; identidad con cédula o flujo en app.",
       "Si el monto supera el tope de cuotas, puede combinarse el resto en efectivo o tarjeta según condiciones del producto.",
     ],
-    officialUrl: "https://puntopago.net/products/cuotas/",
-    officialLabel: "Página oficial Cuotas",
+    officialLinks: [
+      {
+        href: "https://puntopago.net/products/cuotas/",
+        label: "Página oficial Cuotas",
+      },
+    ],
   },
   "servicios-corporativos": {
     id: "servicios-corporativos",
-    headline: "Soluciones corporativas Punto Pago",
+    headline: "Soluciones corporativas — recaudo masivo y procesamiento de pagos",
     tagline:
-      "Programas para empresas: recaudación en red, hub de pagos y tarjetas físicas, virtuales y líneas asociadas.",
+      "Pensado para bancos, financieras, fintech y grandes operadores: combine checkout integrado por API con un hub de pagos que conecta comercios, canales digitales y tesorería para recaudación y liquidez a escala.",
+    heroImage: {
+      src: "https://puntopago.net/assets/headcap/2@1.5x.jpg",
+      alt: "Solución checkout y pagos corporativos Punto Pago",
+    },
     highlights: [
-      "Botones y flujos de recaudo distribuidos en su red comercial o franquicias.",
-      "Centralice operación y reporting con visión enterprise.",
-      "Explore tarjetas y líneas de crédito asociadas según su segmento y volumen.",
+      "Business Checkout: integración vía API para modelar procesos, automatizar operaciones y enlazar áreas de negocio con menos fricción y costo operativo (según su arquitectura y acuerdo comercial).",
+      "Payments Hub: interconexión de comercios para banca en línea y fintech, con foco en centralización de pagos, gestión de liquidez, automatización a proveedores y cartera amplia de transacciones.",
+      "Alineado a entidades financieras y pymes de alto volumen que requieren estandarizar, centralizar y administrar el flujo de pagos electrónicos.",
     ],
-    officialUrl: "https://puntopago.net/products/bankcards/",
-    officialLabel: "Tarjetas y programa corporativo",
+    officialLinks: [
+      {
+        href: "https://puntopago.net/business/checkout/",
+        label: "Business Checkout",
+      },
+      {
+        href: "https://puntopago.net/business/paymentshub/",
+        label: "Payments Hub",
+      },
+    ],
   },
 };
 

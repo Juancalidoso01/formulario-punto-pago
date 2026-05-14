@@ -73,14 +73,17 @@ export default async function ServicioBrochurePage({ params }: Props) {
             >
               Solicitar afiliación con esta línea
             </Link>
-            <a
-              href={b.officialUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-center text-sm font-semibold text-slate-800 transition hover:border-[#4749B6]/40 hover:text-[#4749B6]"
-            >
-              {b.officialLabel} (sitio Punto Pago)
-            </a>
+            {b.officialLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-center text-sm font-semibold text-slate-800 transition hover:border-[#4749B6]/40 hover:text-[#4749B6]"
+              >
+                {link.label} (sitio Punto Pago)
+              </a>
+            ))}
             <Link
               href="/"
               className="inline-flex items-center justify-center rounded-xl px-5 py-3 text-center text-sm font-medium text-slate-600 hover:text-[#4749B6]"
@@ -92,8 +95,7 @@ export default async function ServicioBrochurePage({ params }: Props) {
           <p className="mt-8 border-t border-slate-100 pt-6 text-xs leading-relaxed text-slate-500">
             La información de producto proviene de materiales públicos de Punto Pago. Condiciones,
             montos y plazos definitivos dependen de contrato y reglas vigentes al momento de la
-            afiliación. Si necesita la página completa del producto, ábrala en una nueva pestaña
-            con el segundo botón.
+            afiliación. Use los enlaces oficiales para ver el detalle en el sitio de Punto Pago.
           </p>
         </div>
       </article>
