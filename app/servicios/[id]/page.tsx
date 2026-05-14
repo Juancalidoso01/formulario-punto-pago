@@ -17,12 +17,12 @@ export default async function ServicioBrochurePage({ params }: Props) {
   const b = brochureForId(id);
   if (!b) notFound();
 
-  const formHref = `/?servicio=${encodeURIComponent(id)}`;
+  const formHref = `/formulario?servicio=${encodeURIComponent(id)}`;
 
   return (
     <AfiliacionChrome>
       <nav className="mb-6 text-sm text-slate-500">
-        <Link href="/servicios" className="font-medium text-[#4749B6] hover:underline">
+        <Link href="/" className="font-medium text-[#4749B6] hover:underline">
           Líneas de negocio
         </Link>
         <span aria-hidden> / </span>
@@ -82,7 +82,7 @@ export default async function ServicioBrochurePage({ params }: Props) {
               {b.officialLabel} (sitio Punto Pago)
             </a>
             <Link
-              href="/servicios"
+              href="/"
               className="inline-flex items-center justify-center rounded-xl px-5 py-3 text-center text-sm font-medium text-slate-600 hover:text-[#4749B6]"
             >
               ← Otras líneas

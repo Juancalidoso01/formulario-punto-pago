@@ -33,10 +33,10 @@ export function AfiliacionChrome({ children }: { children: ReactNode }) {
           </a>
           <nav className="flex shrink-0 flex-wrap items-center justify-end gap-1">
             <Link
-              href="/servicios"
+              href="/"
               className="rounded-lg px-2.5 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-100 hover:text-[#4749B6] sm:px-3 sm:text-sm"
             >
-              Folletos
+              Inicio
             </Link>
             <a
               href={BUSINESS_HUB_URL}

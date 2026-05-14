@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useCallback, useRef, useState } from "react";
 import type { AfiliacionJson } from "@/lib/afiliacion-payload";
 import {
   ACTIVIDAD_NEGOCIO_OPCIONES,
@@ -86,10 +87,24 @@ function RadioGroup({
 
 export function AfiliacionWizard({
   initialServicioPrincipal,
+  startAfterServiceStep = false,
 }: {
   initialServicioPrincipal?: string;
+  startAfterServiceStep?: boolean;
 }) {
-  const [step, setStep] = useState(0);
+  const router = useRouter();
+  const [servicioPrincipal, setServicioPrincipal] = useState(() =>
+    initialServicioPrincipal && esServicioPrincipalValido(initialServicioPrincipal)
+      ? initialServicioPrincipal
+      : "",
+  );
+  const [step, setStep] = useState(() =>
+    startAfterServiceStep &&
+    initialServicioPrincipal &&
+    esServicioPrincipalValido(initialServicioPrincipal)
+      ? 1
+      : 0,
+  );
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(
     "idle",
@@ -108,11 +123,6 @@ export function AfiliacionWizard({
   const [direccion, setDireccion] = useState("");
   const [provincia, setProvincia] = useState("");
   const [descripcionNegocio, setDescripcionNegocio] = useState("");
-  const [servicioPrincipal, setServicioPrincipal] = useState(() =>
-    initialServicioPrincipal && esServicioPrincipalValido(initialServicioPrincipal)
-      ? initialServicioPrincipal
-      : "",
-  );
   const [ocupacionPrincipal, setOcupacionPrincipal] = useState("");
   const [actividadNegocio, setActividadNegocio] = useState("");
   const [fotosLocal, setFotosLocal] = useState<File[]>([]);
@@ -270,6 +280,10 @@ export function AfiliacionWizard({
 
   const goBack = () => {
     setError(null);
+    if (startAfterServiceStep && step === 1) {
+      router.push("/");
+      return;
+    }
     if (step > 0) setStep((s) => s - 1);
   };
 
@@ -342,7 +356,7 @@ export function AfiliacionWizard({
       </div>
 
       <div className="min-h-[280px]">
-        {step === 0 ? (
+        {step === 0 && !startAfterServiceStep ? (
           <>
             <StepHeading
               step={step}
@@ -748,7 +762,7 @@ export function AfiliacionWizard({
         <button
           type="button"
           onClick={goBack}
-          disabled={step === 0 || status === "loading"}
+          disabled={(step === 0 && !startAfterServiceStep) || status === "loading"}
           className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-800 shadow-sm transition hover:bg-slate-50 disabled:opacity-40"
         >
           Anterior
