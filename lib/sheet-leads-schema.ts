@@ -29,7 +29,7 @@ export const LEAD_SHEET_HEADERS = [
   "Nº clientes",
   "Integración / plan Cuotas",
   "Términos",
-  "Fotos (nombres)",
+  "Fotos (Drive)",
   "Aviso archivo",
   "Firma archivo",
 ] as const;
@@ -120,7 +120,13 @@ export function corporativoRowForSheet(
   return row;
 }
 
-export function fotoNamesForSheet(
+/** Lista de nombres de archivo (sin URL). */
+export function listaNombresFotos(nombres: string[]): string {
+  return nombres.join("; ");
+}
+
+/** Celda de la columna «Fotos (Drive)»: enlace a carpeta + nombres de archivos. */
+export function fotosColumnaForSheet(
   servicioPrincipal: string,
   nombres: string[],
   driveFolderUrl?: string | null,
@@ -128,9 +134,14 @@ export function fotoNamesForSheet(
   if (esServicioCuotas(servicioPrincipal)) {
     return "Sin fotos — Cuotas (detalle del plan en columna Integración)";
   }
-  const names = nombres.join("; ");
+  const names = listaNombresFotos(nombres);
   if (driveFolderUrl) {
-    return names ? `${driveFolderUrl} | ${names}` : driveFolderUrl;
+    return names
+      ? `${driveFolderUrl}\n${names}`
+      : driveFolderUrl;
   }
-  return names;
+  return names || "—";
 }
+
+/** @deprecated Use fotosColumnaForSheet */
+export const fotoNamesForSheet = fotosColumnaForSheet;

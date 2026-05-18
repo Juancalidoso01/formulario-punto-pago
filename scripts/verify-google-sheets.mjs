@@ -33,7 +33,7 @@ const HEADERS = [
   "Nº clientes",
   "Integración / plan Cuotas",
   "Términos",
-  "Fotos (nombres)",
+  "Fotos (Drive)",
   "Aviso archivo",
   "Firma archivo",
 ];

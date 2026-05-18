@@ -96,7 +96,7 @@ export async function notifyAfiliacionLeadToSlack(
   data: AfiliacionJson,
   opts: {
     submittedAtIso: string;
-    fotoNames: string;
+    fotoLista: string;
     avisoFileName: string;
     firmaFileName: string;
     driveFolderUrl?: string | null;
@@ -175,22 +175,24 @@ export async function notifyAfiliacionLeadToSlack(
         field("Integración", data.metodoIntegracion),
       ],
     });
-    blocks.push(
-      { type: "divider" },
-      {
+    blocks.push({ type: "divider" });
+    if (opts.driveFolderUrl) {
+      blocks.push({
         type: "section",
-        fields: [
-          field(
-            "Fotos / Drive",
-            opts.driveFolderUrl
-              ? `${opts.driveFolderUrl}\n${opts.fotoNames}`
-              : opts.fotoNames,
-          ),
-          field("Aviso", opts.avisoFileName),
-          field("Firma", opts.firmaFileName),
-        ],
-      },
-    );
+        text: {
+          type: "mrkdwn",
+          text: `*Archivos en Google Drive*\n<${opts.driveFolderUrl}|Abrir carpeta (fotos, aviso y firma)>`,
+        },
+      });
+    }
+    blocks.push({
+      type: "section",
+      fields: [
+        field("Fotos del local", opts.fotoLista.trim() || "—"),
+        field("Aviso", opts.avisoFileName),
+        field("Firma", opts.firmaFileName),
+      ],
+    });
   } else {
     if (plan) {
       blocks.push({

@@ -15,7 +15,8 @@ import {
 import {
   afiliacionRowForSheet,
   corporativoRowForSheet,
-  fotoNamesForSheet,
+  fotosColumnaForSheet,
+  listaNombresFotos,
 } from "@/lib/sheet-leads-schema";
 
 export const runtime = "nodejs";
@@ -184,7 +185,8 @@ export async function POST(request: Request) {
     }
   }
 
-  const fotoNames = fotoNamesForSheet(
+  const fotoLista = listaNombresFotos(fotos.map((f) => f.name));
+  const fotosCelda = fotosColumnaForSheet(
     data.servicioPrincipal,
     fotos.map((f) => f.name),
     driveFolderUrl,
@@ -192,7 +194,7 @@ export async function POST(request: Request) {
 
   const row = afiliacionRowForSheet(data, {
     fechaIso: now,
-    fotoNames,
+    fotoNames: fotosCelda,
     avisoFileName: aviso.name,
     firmaFileName: firma.name,
   });
@@ -206,7 +208,7 @@ export async function POST(request: Request) {
   await notifyLeadToSlackSafe(() =>
     notifyAfiliacionLeadToSlack(data, {
       submittedAtIso: now,
-      fotoNames,
+      fotoLista,
       avisoFileName: aviso.name,
       firmaFileName: firma.name,
       driveFolderUrl,
