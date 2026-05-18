@@ -20,6 +20,7 @@
 
 # misc
 .DS_Store
+scripts/tmp-*.csv
 *.pem
 
 # debug

@@ -98,10 +98,10 @@ export function validateAfiliacionJson(
     return { ok: false, error: "Descripción del negocio obligatoria" };
   }
   if (!inList(data.ocupacionPrincipal, OCUPACION_OPCIONES)) {
-    return { ok: false, error: "Ocupación no válida" };
+    return { ok: false, error: "Profesión u ocupación no válida" };
   }
   if (!inList(data.actividadNegocio, ACTIVIDAD_NEGOCIO_OPCIONES)) {
-    return { ok: false, error: "Actividad del negocio no válida" };
+    return { ok: false, error: "Actividad económica no válida" };
   }
   const omiteNomina = pasoOmiteParaServicio(servicioPrincipal, 11);
   const omiteIntegracion = pasoOmiteParaServicio(servicioPrincipal, 14);

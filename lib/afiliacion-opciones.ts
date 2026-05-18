@@ -42,29 +42,8 @@ export function textoServicioPrincipalParaSheet(id: string): string {
 
 /** Opciones de selección (resto del formulario) */
 
-export const OCUPACION_OPCIONES = [
-  "Dueño o fundador",
-  "Gerente general",
-  "Gerente administrativo o financiero",
-  "Contador",
-  "Recursos humanos",
-  "Operaciones",
-  "Otro",
-] as const;
-
-export const ACTIVIDAD_NEGOCIO_OPCIONES = [
-  "Comercio al por menor",
-  "Restaurantes y entretenimiento",
-  "Servicios profesionales",
-  "Industria y manufactura",
-  "Salud",
-  "Educación",
-  "Tecnología",
-  "Construcción",
-  "Logística y transporte",
-  "Servicios financieros o afines",
-  "Otro",
-] as const;
+export { PROFESIONES_KYB_OPCIONES as OCUPACION_OPCIONES } from "@/lib/kyb-profesiones";
+export { ACTIVIDADES_KYB_OPCIONES as ACTIVIDAD_NEGOCIO_OPCIONES } from "@/lib/kyb-actividades";
 
 export const RANGO_NOMINA_OPCIONES = [
   "Menos de USD 5,000",

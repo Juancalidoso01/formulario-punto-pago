@@ -240,10 +240,10 @@ export function AfiliacionWizard({
         }
         return null;
       case 8:
-        if (!ocupacionPrincipal) return "Seleccione su ocupación principal.";
+        if (!ocupacionPrincipal) return "Seleccione su profesión u ocupación del listado.";
         return null;
       case 9:
-        if (!actividadNegocio) return "Seleccione la actividad de su negocio.";
+        if (!actividadNegocio) return "Seleccione la actividad económica de su negocio.";
         return null;
       case 10:
         if (fotosLocal.length < 1 || fotosLocal.length > 5) {
@@ -589,11 +589,11 @@ export function AfiliacionWizard({
           <>
             <StepHeading
               displayStep={pasoLabel(step)}
-              title="Cuál es su ocupación principal"
-              description="Describa la opción más acertada a su ocupación."
+              title="¿Cuál es su profesión u ocupación principal?"
+              description="Seleccione del catálogo la profesión u ocupación que mejor describe su rol actual."
             />
             <label className={labelClass}>
-              Selección
+              Profesión u ocupación
               <select
                 className={inputClass}
                 value={ocupacionPrincipal}
@@ -601,7 +601,7 @@ export function AfiliacionWizard({
                 required
               >
                 <option value="" disabled>
-                  Seleccione una opción
+                  Elija una profesión u ocupación…
                 </option>
                 {OCUPACION_OPCIONES.map((o) => (
                   <option key={o} value={o}>
@@ -617,11 +617,11 @@ export function AfiliacionWizard({
           <>
             <StepHeading
               displayStep={pasoLabel(step)}
-              title="Cuál es la actividad que más describe su negocio"
-              description="Seleccione la opción que más se identifica."
+              title="¿Qué actividad económica describe mejor su negocio?"
+              description="Seleccione del catálogo la actividad principal de su empresa o local comercial."
             />
             <label className={labelClass}>
-              Selección
+              Actividad económica
               <select
                 className={inputClass}
                 value={actividadNegocio}
@@ -629,7 +629,7 @@ export function AfiliacionWizard({
                 required
               >
                 <option value="" disabled>
-                  Seleccione una opción
+                  Elija una actividad económica…
                 </option>
                 {ACTIVIDAD_NEGOCIO_OPCIONES.map((o) => (
                   <option key={o} value={o}>
