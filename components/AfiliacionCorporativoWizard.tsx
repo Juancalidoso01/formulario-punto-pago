@@ -17,16 +17,18 @@ function StepHeading({
   displayStep,
   title,
   description,
+  showRequired = true,
 }: {
   displayStep: number;
   title: string;
   description?: string;
+  showRequired?: boolean;
 }) {
   return (
     <header className="mb-6">
       <p className="text-sm text-slate-500">
         {displayStep}. {title}
-        <span className="text-red-600"> *</span>
+        {showRequired ? <span className="text-red-600"> *</span> : null}
       </p>
       {description ? (
         <p className="mt-2 text-sm leading-relaxed text-slate-600">{description}</p>
@@ -131,12 +133,6 @@ export function AfiliacionCorporativoWizard() {
         if (!cargo.trim()) return "Indique el cargo.";
         return null;
       case 2:
-        if (!telefonoFijoCodigo.trim() || !telefonoFijoNumero.trim()) {
-          return "Indique el teléfono fijo.";
-        }
-        if (!telefonoCelCodigo.trim() || !telefonoCelNumero.trim()) {
-          return "Indique el teléfono celular.";
-        }
         if (!terminosAceptados) return "Debe aceptar los términos y condiciones.";
         return null;
       default:
@@ -303,12 +299,13 @@ export function AfiliacionCorporativoWizard() {
           <>
             <StepHeading
               displayStep={3}
-              title="Teléfonos de contacto"
-              description="Indique número fijo y celular donde podamos ubicarle."
+              title="Teléfonos de contacto (opcional)"
+              description="Puede indicar fijo, celular o ambos. No es obligatorio completar los dos."
+              showRequired={false}
             />
             <div className="grid gap-4">
               <PhoneRow
-                label="Teléfono fijo"
+                label="Teléfono fijo (opcional)"
                 codigo={telefonoFijoCodigo}
                 numero={telefonoFijoNumero}
                 onCodigo={setTelefonoFijoCodigo}
@@ -316,7 +313,7 @@ export function AfiliacionCorporativoWizard() {
                 numeroPlaceholder="Ej: 263-4567"
               />
               <PhoneRow
-                label="Teléfono celular"
+                label="Teléfono celular (opcional)"
                 codigo={telefonoCelCodigo}
                 numero={telefonoCelNumero}
                 onCodigo={setTelefonoCelCodigo}

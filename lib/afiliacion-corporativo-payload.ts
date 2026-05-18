@@ -61,12 +61,6 @@ export function validateAfiliacionCorporativoJson(
   if (!data.cargo) {
     return { ok: false, error: "Indique el cargo de la persona de contacto." };
   }
-  if (!data.telefonoFijoCodigo || !data.telefonoFijoNumero) {
-    return { ok: false, error: "Indique el teléfono fijo." };
-  }
-  if (!data.telefonoCelCodigo || !data.telefonoCelNumero) {
-    return { ok: false, error: "Indique el teléfono celular." };
-  }
   if (!data.terminosAceptados) {
     return { ok: false, error: "Debe aceptar términos y condiciones" };
   }
@@ -80,17 +74,21 @@ export function corporativoRowForSheet(
   servicioTexto: string,
   fechaIso: string,
 ): string[] {
-  const fijo = `${data.telefonoFijoCodigo} ${data.telefonoFijoNumero}`.trim();
-  const cel = `${data.telefonoCelCodigo} ${data.telefonoCelNumero}`.trim();
+  const fijoNum = data.telefonoFijoNumero.trim();
+  const fijo =
+    fijoNum.length > 0
+      ? `Fijo: ${`${data.telefonoFijoCodigo} ${fijoNum}`.trim()}`
+      : "—";
+  const celNum = data.telefonoCelNumero.trim();
 
   return [
     fechaIso,
     data.contactoNombre,
     data.contactoApellido,
     data.email,
-    data.telefonoCelCodigo,
-    data.telefonoCelNumero,
-    `Fijo: ${fijo}`,
+    celNum.length > 0 ? data.telefonoCelCodigo : "—",
+    celNum.length > 0 ? celNum : "—",
+    fijo,
     data.cargo,
     "—",
     "—",
