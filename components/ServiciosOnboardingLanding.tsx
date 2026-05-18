@@ -1,27 +1,31 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { BrochureHeroTextBanner } from "@/components/BrochureHeroTextBanner";
 import { AfiliacionChrome } from "@/components/AfiliacionChrome";
-import { SERVICIO_PRINCIPAL_PUNTO_PAGO } from "@/lib/afiliacion-opciones";
-import { SERVICIO_BROCHURES } from "@/lib/servicio-brochures";
+import { useI18n } from "@/components/I18nProvider";
+import { allBrochuresFromMessages } from "@/lib/i18n/brochures";
+import { servicesFromMessages } from "@/lib/i18n/services";
+import type { ServicioPrincipalId } from "@/lib/afiliacion-opciones";
 
 export function ServiciosOnboardingLanding() {
+  const { messages: m } = useI18n();
+  const services = servicesFromMessages(m);
+  const brochures = allBrochuresFromMessages(m);
+
   return (
     <AfiliacionChrome>
       <div className="mb-8 text-center">
         <h1 className="text-2xl font-bold tracking-tight text-[#0B0B13] sm:text-3xl">
-          Conozca nuestros productos y afíliese a Punto Pago
+          {m.landing.title}
         </h1>
-        <p className="mt-3 text-sm text-slate-600 sm:text-base">
-          Elija la solución que mejor encaja con su negocio. Puede ver la información de cada
-          producto o, si ya lo tiene claro, dejar sus datos para que un asesor comercial le contacte
-          y le acompañe en la afiliación.
-        </p>
+        <p className="mt-3 text-sm text-slate-600 sm:text-base">{m.landing.subtitle}</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        {SERVICIO_PRINCIPAL_PUNTO_PAGO.map((s) => {
-          const b = SERVICIO_BROCHURES[s.id];
+        {services.map((s) => {
+          const b = brochures[s.id as ServicioPrincipalId];
           return (
             <div
               key={s.id}
@@ -39,7 +43,11 @@ export function ServiciosOnboardingLanding() {
                   }
                 >
                   {b.heroTextBanner ? (
-                    <BrochureHeroTextBanner compact lead={b.heroTextBanner.lead} rest={b.heroTextBanner.rest} />
+                    <BrochureHeroTextBanner
+                      compact
+                      lead={b.heroTextBanner.lead}
+                      rest={b.heroTextBanner.rest}
+                    />
                   ) : b.heroImage ? (
                     <Image
                       src={b.heroImage.src}
@@ -58,7 +66,7 @@ export function ServiciosOnboardingLanding() {
                   <h2 className="text-base font-semibold text-[#0B0B13]">{s.titulo}</h2>
                   <p className="mt-2 line-clamp-2 text-xs text-slate-600">{b.tagline}</p>
                   <span className="mt-3 inline-block text-sm font-medium text-[#4749B6] group-hover:underline">
-                    Ver producto →
+                    {m.landing.viewProduct}
                   </span>
                 </div>
               </Link>
@@ -67,7 +75,7 @@ export function ServiciosOnboardingLanding() {
                   href={`/formulario?servicio=${encodeURIComponent(s.id)}`}
                   className="text-sm font-semibold text-[#4749B6] underline-offset-2 hover:underline"
                 >
-                  Dejar mis datos para contacto comercial →
+                  {m.landing.contactCta}
                 </Link>
               </div>
             </div>

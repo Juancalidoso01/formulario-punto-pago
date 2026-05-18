@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
+import { useI18n } from "@/components/I18nProvider";
 import type { AfiliacionJson } from "@/lib/afiliacion-payload";
 import {
   ACTIVIDAD_NEGOCIO_OPCIONES,
@@ -115,6 +116,8 @@ export function AfiliacionWizard({
   startAfterServiceStep?: boolean;
 }) {
   const router = useRouter();
+  const { messages: m, t } = useI18n();
+  const w = m.wizard;
   const [servicioPrincipal, setServicioPrincipal] = useState(() =>
     initialServicioPrincipal && esServicioPrincipalValido(initialServicioPrincipal)
       ? initialServicioPrincipal
@@ -220,60 +223,60 @@ export function AfiliacionWizard({
     switch (step) {
       case 0:
         if (!servicioPrincipal) {
-          return "Elija la opción que mejor describe lo que más necesita ahora.";
+          return w.errors.service;
         }
         return null;
       case 1:
         if (!contactoNombre.trim() || !contactoApellido.trim()) {
-          return "Indique nombre y apellido del contacto principal.";
+          return w.errors.name;
         }
         return null;
       case 2:
-        if (!email.trim()) return "Indique el correo electrónico.";
+        if (!email.trim()) return w.errors.emailRequired;
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-          return "El correo electrónico no tiene un formato válido.";
+          return w.errors.emailInvalid;
         }
         return null;
       case 3:
         if (!telefonoCodigo.trim() || !telefonoNumero.trim()) {
-          return "Indique el código de país y el número de contacto.";
+          return w.errors.phone;
         }
         return null;
       case 4:
-        if (!nombreEmpresa.trim()) return "Indique el nombre de la empresa.";
+        if (!nombreEmpresa.trim()) return w.errors.company;
         return null;
       case 5:
-        if (!ruc.trim()) return "Indique el número de RUC.";
+        if (!ruc.trim()) return w.errors.ruc;
         return null;
       case 6:
         if (!direccion.trim()) {
           return direccionEntryMode === "manual"
-            ? "Complete la dirección con calle, corregimiento y una referencia visible."
-            : "Busque su dirección en el mapa y elija una sugerencia, o descríbala con detalle.";
+            ? w.errors.addressManual
+            : w.errors.address;
         }
         if (!provincia.trim()) {
-          return "Indique la provincia o región.";
+          return w.errors.province;
         }
         if (
           direccionEntryMode === "manual" &&
           !isPanamaManualComposedAddress(direccion)
         ) {
-          return "Complete todos los campos de la dirección detallada.";
+          return w.errors.addressIncomplete;
         }
         return null;
       case 7:
         if (!descripcionNegocio.trim()) {
-          return "Describa brevemente su negocio.";
+          return w.errors.business;
         }
         return null;
       case 8:
         if (!ocupacionPrincipal) {
-          return "Busque y seleccione su profesión u ocupación del listado.";
+          return w.errors.occupation;
         }
         return null;
       case 9:
         if (!actividadNegocio) {
-          return "Busque y seleccione la actividad económica de su negocio del listado.";
+          return w.errors.activity;
         }
         return null;
       case 10:
@@ -284,36 +287,36 @@ export function AfiliacionWizard({
             cfg.maxAmount,
           );
           if (monto < CUOTAS_MIN_AMOUNT) {
-            return "Indique un monto de referencia de al menos $10.";
+            return w.errors.cuotasAmount;
           }
           return null;
         }
         if (servicioRequiereFotosLocal(servicioPrincipal)) {
           if (fotosLocal.length < 1 || fotosLocal.length > 5) {
-            return "Adjunte entre 1 y 5 fotos de su local comercial.";
+            return w.errors.photos;
           }
         }
         return null;
       case 11:
         if (pasoOmiteParaServicio(servicioPrincipal, 11)) return null;
-        if (!rangoNominaMensual) return "Seleccione un rango aproximado.";
+        if (!rangoNominaMensual) return w.errors.payroll;
         return null;
       case 12:
-        if (!avisoOperacion) return "Adjunte copia del aviso de operación.";
+        if (!avisoOperacion) return w.errors.aviso;
         return null;
       case 13:
-        if (!numClientes) return "Seleccione la cantidad de clientes.";
+        if (!numClientes) return w.errors.clients;
         return null;
       case 14:
         if (pasoOmiteParaServicio(servicioPrincipal, 14)) return null;
-        if (!metodoIntegracion) return "Seleccione el método de integración.";
+        if (!metodoIntegracion) return w.errors.integration;
         return null;
       case 15:
-        if (!terminosAceptados) return "Debe aceptar los términos y condiciones.";
+        if (!terminosAceptados) return w.errors.terms;
         return null;
       case 16:
         if (signatureRef.current?.isEmpty()) {
-          return "Favor firmar en el recuadro antes de enviar.";
+          return w.errors.signature;
         }
         return null;
       default:
@@ -343,6 +346,7 @@ export function AfiliacionWizard({
     telefonoNumero,
     terminosAceptados,
     servicioPrincipal,
+    w.errors,
   ]);
 
   const goNext = () => {
@@ -399,15 +403,15 @@ export function AfiliacionWizard({
 
       if (!res.ok) {
         setStatus("error");
-        setStatusMsg(data.error ?? "No se pudo enviar. Intenta de nuevo.");
+        setStatusMsg(data.error ?? w.genericError);
         return;
       }
 
       setStatus("success");
-      setStatusMsg("Hemos recibido tu solicitud. Gracias por completar el formulario.");
+      setStatusMsg(w.successBody);
     } catch {
       setStatus("error");
-      setStatusMsg("Error de red. Comprueba tu conexión e intenta de nuevo.");
+      setStatusMsg(w.networkError);
     }
   };
 
@@ -419,7 +423,7 @@ export function AfiliacionWizard({
   if (status === "success") {
     return (
       <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-6 text-center text-emerald-900">
-        <p className="text-base font-medium">Envío correcto</p>
+        <p className="text-base font-medium">{w.successTitle}</p>
         <p className="mt-2 text-sm">{statusMsg}</p>
       </div>
     );
@@ -429,7 +433,10 @@ export function AfiliacionWizard({
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4 text-sm text-slate-600">
         <span>
-          {pasoActualVisible} / {pasosVisibles.length}
+          {t("wizard.progress", {
+            current: pasoActualVisible,
+            total: pasosVisibles.length,
+          })}
         </span>
         <div className="h-2 flex-1 max-w-xs overflow-hidden rounded-full bg-slate-100">
           <div
@@ -444,8 +451,8 @@ export function AfiliacionWizard({
           <>
             <StepHeading
               displayStep={pasoLabel(step)}
-              title="¿Qué línea de negocio le interesa?"
-              description="Elija una de las cuatro opciones. Si combina varias, marque la principal y detalle el resto más adelante en la descripción de su negocio."
+              title={w.steps.service.title}
+              description={w.steps.service.desc}
             />
             <ServicioPrincipalPicker
               value={servicioPrincipal}
@@ -457,38 +464,33 @@ export function AfiliacionWizard({
                   href={`/servicios/${servicioPrincipal}`}
                   className="font-medium text-[#4749B6] underline-offset-2 hover:underline"
                 >
-                  Ver información de este producto
+                  {w.viewProduct}
                 </Link>
               </p>
             ) : null}
-            <p className="mt-4 text-xs text-slate-500">
-              Puede cambiar de opción en cualquier momento antes de enviar el formulario.
-            </p>
+            <p className="mt-4 text-xs text-slate-500">{w.changeService}</p>
           </>
         ) : null}
 
         {step === 1 ? (
           <>
-            <StepHeading
-              displayStep={pasoLabel(step)}
-              title="Nombre completo del contacto principal"
-            />
+            <StepHeading displayStep={pasoLabel(step)} title={w.steps.name.title} />
             <div className="grid gap-4 sm:grid-cols-2">
               <label className={labelClass}>
-                Nombre
+                {w.fields.firstName}
                 <input
                   className={inputClass}
-                  placeholder="Nombre"
+                  placeholder={w.fields.firstName}
                   value={contactoNombre}
                   onChange={(e) => setContactoNombre(e.target.value)}
                   autoComplete="given-name"
                 />
               </label>
               <label className={labelClass}>
-                Apellido
+                {w.fields.lastName}
                 <input
                   className={inputClass}
-                  placeholder="Apellido"
+                  placeholder={w.fields.lastName}
                   value={contactoApellido}
                   onChange={(e) => setContactoApellido(e.target.value)}
                   autoComplete="family-name"
@@ -500,16 +502,13 @@ export function AfiliacionWizard({
 
         {step === 2 ? (
           <>
-            <StepHeading
-              displayStep={pasoLabel(step)}
-              title="Correo electrónico del contacto principal"
-            />
+            <StepHeading displayStep={pasoLabel(step)} title={w.steps.email.title} />
             <label className={labelClass}>
-              Correo electrónico
+              {w.fields.email}
               <input
                 className={inputClass}
                 type="email"
-                placeholder="Correo electrónico"
+                placeholder={w.fields.email}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
@@ -523,12 +522,12 @@ export function AfiliacionWizard({
           <>
             <StepHeading
               displayStep={pasoLabel(step)}
-              title="Número de teléfono del contacto principal"
-              description="Incluya el código de país seguido de su número de contacto."
+              title={w.steps.phone.title}
+              description={w.steps.phone.desc}
             />
             <div className="grid gap-4 sm:grid-cols-[120px_1fr]">
               <label className={labelClass}>
-                Código
+                {w.fields.phoneCode}
                 <input
                   className={inputClass}
                   placeholder="+507"
@@ -538,10 +537,10 @@ export function AfiliacionWizard({
                 />
               </label>
               <label className={labelClass}>
-                Número de contacto
+                {w.fields.phoneNumber}
                 <input
                   className={inputClass}
-                  placeholder="Número de contacto"
+                  placeholder={w.fields.phoneNumber}
                   value={telefonoNumero}
                   onChange={(e) => setTelefonoNumero(e.target.value)}
                   autoComplete="tel-national"
@@ -555,11 +554,11 @@ export function AfiliacionWizard({
           <>
             <StepHeading
               displayStep={pasoLabel(step)}
-              title="Nombre de la empresa (según registro)"
-              description="Nombre legal registrado o en tu aviso de operaciones, o bien tu nombre legal."
+              title={w.steps.company.title}
+              description={w.steps.company.desc}
             />
             <label className={labelClass}>
-              Razón social / nombre legal
+              {w.fields.company}
               <input
                 className={inputClass}
                 value={nombreEmpresa}
@@ -574,11 +573,11 @@ export function AfiliacionWizard({
           <>
             <StepHeading
               displayStep={pasoLabel(step)}
-              title="Número de RUC (registro único de contribuyente)"
-              description="Número otorgado por la DGI para identificar personas o empresas con actividad económica en Panamá."
+              title={w.steps.ruc.title}
+              description={w.steps.ruc.desc}
             />
             <label className={labelClass}>
-              RUC
+              {w.fields.ruc}
               <input className={inputClass} value={ruc} onChange={(e) => setRuc(e.target.value)} />
             </label>
           </>
@@ -588,11 +587,11 @@ export function AfiliacionWizard({
           <>
             <StepHeading
               displayStep={pasoLabel(step)}
-              title="Dónde está ubicado su negocio"
-              description="Primero busque su local en el mapa. Si no aparece, podrá describir la dirección con calle, corregimiento y referencias. Complete la provincia abajo."
+              title={w.steps.address.title}
+              description={w.steps.address.desc}
             />
             <AfiliacionAddressPaField
-              label="Dirección comercial"
+              label={w.fields.address}
               value={direccion}
               onChange={setDireccion}
               inputClass={inputClass}
@@ -603,10 +602,10 @@ export function AfiliacionWizard({
               }}
             />
             <label className={`${labelClass} mt-4`}>
-              Provincia o región
+              {w.fields.province}
               <input
                 className={inputClass}
-                placeholder="Ej: Panamá, Chiriquí…"
+                placeholder={w.fields.provincePh}
                 value={provincia}
                 onChange={(e) => setProvincia(e.target.value)}
               />
@@ -618,11 +617,11 @@ export function AfiliacionWizard({
           <>
             <StepHeading
               displayStep={pasoLabel(step)}
-              title="Breve descripción del negocio (productos/servicios ofrecidos)"
-              description="Favor describe con mayor detalle lo que hace tu negocio o empresa."
+              title={w.steps.business.title}
+              description={w.steps.business.desc}
             />
             <label className={labelClass}>
-              Descripción
+              {w.fields.description}
               <textarea
                 className={`${inputClass} min-h-[140px] resize-y`}
                 rows={5}
@@ -637,17 +636,17 @@ export function AfiliacionWizard({
           <>
             <StepHeading
               displayStep={pasoLabel(step)}
-              title="¿Cuál es su profesión u ocupación principal?"
-              description="Escriba para buscar en el catálogo o abra el listado y elija la opción que mejor describe su rol."
+              title={w.steps.occupation.title}
+              description={w.steps.occupation.desc}
             />
             <label className={labelClass}>
-              Profesión u ocupación
+              {w.fields.occupation}
               <SearchableSelect
                 options={OCUPACION_OPCIONES}
                 value={ocupacionPrincipal}
                 onChange={setOcupacionPrincipal}
                 inputClass={inputClass}
-                placeholder="Ej: comerciante, abogado, administrador…"
+                placeholder={w.fields.occupationPh}
                 id="afiliacion-ocupacion"
               />
             </label>
@@ -658,17 +657,17 @@ export function AfiliacionWizard({
           <>
             <StepHeading
               displayStep={pasoLabel(step)}
-              title="¿Qué actividad económica describe mejor su negocio?"
-              description="Escriba para buscar en el catálogo o abra el listado y elija la actividad principal de su empresa."
+              title={w.steps.activity.title}
+              description={w.steps.activity.desc}
             />
             <label className={labelClass}>
-              Actividad económica
+              {w.fields.activity}
               <SearchableSelect
                 options={ACTIVIDAD_NEGOCIO_OPCIONES}
                 value={actividadNegocio}
                 onChange={setActividadNegocio}
                 inputClass={inputClass}
-                placeholder="Ej: comercio al por menor, restaurante, servicios…"
+                placeholder={w.fields.activityPh}
                 id="afiliacion-actividad"
               />
             </label>
@@ -679,8 +678,8 @@ export function AfiliacionWizard({
           <>
             <StepHeading
               displayStep={pasoLabel(step)}
-              title="¿Qué tipo de financiamiento le gustaría ofrecer a sus clientes?"
-              description="Con Cuotas Punto Pago, sus clientes pueden pagar en cuotas mensuales. Utilice la calculadora para probar distintos plazos (2, 4 u 8 meses) y montos aproximados. Esta información nos ayudará a configurar la mejor opción para su comercio."
+              title={w.steps.cuotasPlan.title}
+              description={w.steps.cuotasPlan.desc}
             />
             <CuotasPlanPicker
               termMonths={planCuotasMeses}
@@ -695,8 +694,8 @@ export function AfiliacionWizard({
           <>
             <StepHeading
               displayStep={pasoLabel(step)}
-              title="Cargue 5 fotos de su local comercial"
-              description="Incluya fotos de distintos ángulos de su local comercial. Puedes adjuntar entre 1 y 5 archivos."
+              title={w.steps.photos.title}
+              description={w.steps.photos.desc}
             />
             <input
               type="file"
@@ -722,8 +721,8 @@ export function AfiliacionWizard({
           <>
             <StepHeading
               displayStep={pasoLabel(step)}
-              title="¿Cuánto planea pagar mensualmente a través del programa de nómina?"
-              description="Seleccione un rango aproximado del monto total que desea depositar mensualmente a sus colaboradores."
+              title={w.steps.payroll.title}
+              description={w.steps.payroll.desc}
             />
             <RadioGroup
               name="nomina"
@@ -736,7 +735,7 @@ export function AfiliacionWizard({
 
         {step === 12 ? (
           <>
-            <StepHeading displayStep={pasoLabel(step)} title="Copia del aviso de operación" />
+            <StepHeading displayStep={pasoLabel(step)} title={w.steps.aviso.title} />
             <input
               type="file"
               accept=".pdf,image/*"
@@ -747,7 +746,9 @@ export function AfiliacionWizard({
               }}
             />
             {avisoOperacion ? (
-              <p className="mt-2 text-sm text-slate-600">Seleccionado: {avisoOperacion.name}</p>
+              <p className="mt-2 text-sm text-slate-600">
+                {m.common.selectedLabel} {avisoOperacion.name}
+              </p>
             ) : null}
           </>
         ) : null}
@@ -756,8 +757,8 @@ export function AfiliacionWizard({
           <>
             <StepHeading
               displayStep={pasoLabel(step)}
-              title="¿Cuántos clientes tiene su empresa?"
-              description="Seleccione la cantidad de clientes acorde a su empresa."
+              title={w.steps.clients.title}
+              description={w.steps.clients.desc}
             />
             <RadioGroup
               name="clientes"
@@ -772,8 +773,8 @@ export function AfiliacionWizard({
           <>
             <StepHeading
               displayStep={pasoLabel(step)}
-              title="¿Cuál es el método de integración que mejor se ajusta a su negocio?"
-              description="Seleccione la opción que describe cómo le gustaría conectarse con nuestros servicios."
+              title={w.steps.integration.title}
+              description={w.steps.integration.desc}
             />
             <RadioGroup
               name="integracion"
@@ -788,7 +789,7 @@ export function AfiliacionWizard({
           <>
             <StepHeading
               displayStep={pasoLabel(step)}
-              title="Términos y condiciones"
+              title={w.steps.terms.title}
               showRequired={false}
             />
             <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-800">
@@ -799,14 +800,14 @@ export function AfiliacionWizard({
                 className="mt-0.5 size-4 shrink-0 rounded border-slate-300 text-[#4749B6]"
               />
               <span>
-                Estoy de acuerdo con los{" "}
+                {w.termsAgree}{" "}
                 <a
                   href="https://puntopago.net/privacy/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-medium text-[#4749B6] underline underline-offset-2"
                 >
-                  términos y condiciones
+                  {w.termsLink}
                 </a>
                 .
               </span>
@@ -818,8 +819,8 @@ export function AfiliacionWizard({
           <>
             <StepHeading
               displayStep={pasoLabel(step)}
-              title="Firma"
-              description="Favor firmar el formulario."
+              title={w.steps.signature.title}
+              description={w.steps.signature.desc}
             />
             <SignaturePad ref={signatureRef} />
             <button
@@ -827,7 +828,7 @@ export function AfiliacionWizard({
               onClick={() => signatureRef.current?.clear()}
               className="mt-2 text-sm font-medium text-[#4749B6] underline-offset-2 hover:underline"
             >
-              Limpiar firma
+              {w.clearSignature}
             </button>
           </>
         ) : null}
@@ -852,7 +853,7 @@ export function AfiliacionWizard({
           disabled={(step === 0 && !startAfterServiceStep) || status === "loading"}
           className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-800 shadow-sm transition hover:bg-slate-50 disabled:opacity-40"
         >
-          Anterior
+          {w.back}
         </button>
         {siguientePasoVisible(step, servicioPrincipal, TOTAL_STEPS) !== null ? (
           <button
@@ -860,7 +861,7 @@ export function AfiliacionWizard({
             onClick={goNext}
             className="rounded-lg bg-[#4749B6] px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-[#4749B6]/25 transition hover:bg-[#3B3DA6]"
           >
-            Siguiente
+            {w.next}
           </button>
         ) : (
           <button
@@ -869,7 +870,7 @@ export function AfiliacionWizard({
             disabled={status === "loading"}
             className="rounded-lg bg-[#4749B6] px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-[#4749B6]/25 transition hover:bg-[#3B3DA6] disabled:opacity-60"
           >
-            {status === "loading" ? "Enviando…" : "Enviar formulario"}
+            {status === "loading" ? w.sending : w.submit}
           </button>
         )}
       </div>

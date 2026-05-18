@@ -1,6 +1,7 @@
 "use client";
 
-import { SERVICIO_PRINCIPAL_PUNTO_PAGO } from "@/lib/afiliacion-opciones";
+import { useI18n } from "@/components/I18nProvider";
+import { servicesFromMessages } from "@/lib/i18n/services";
 
 type Props = {
   value: string;
@@ -8,13 +9,16 @@ type Props = {
 };
 
 export function ServicioPrincipalPicker({ value, onChange }: Props) {
+  const { messages: m } = useI18n();
+  const services = servicesFromMessages(m);
+
   return (
     <div
       className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-3.5"
       role="radiogroup"
-      aria-label="Línea de negocio Punto Pago"
+      aria-label="Punto Pago"
     >
-      {SERVICIO_PRINCIPAL_PUNTO_PAGO.map((s, index) => {
+      {services.map((s, index) => {
         const selected = value === s.id;
         const inputId = `servicio-${s.id}`;
         const n = index + 1;
@@ -53,11 +57,11 @@ export function ServicioPrincipalPicker({ value, onChange }: Props) {
                 </span>
                 {selected ? (
                   <span className="rounded-full bg-[#4749B6]/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#4749B6]">
-                    Seleccionado
+                    {m.common.selected}
                   </span>
                 ) : (
                   <span className="text-[10px] font-medium uppercase tracking-wide text-slate-400 opacity-0 transition group-hover:opacity-100">
-                    Elegir
+                    {m.common.choose}
                   </span>
                 )}
               </span>

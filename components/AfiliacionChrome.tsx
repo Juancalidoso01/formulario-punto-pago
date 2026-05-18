@@ -1,10 +1,16 @@
+"use client";
+
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { PpAmbient } from "@/components/PpAmbient";
+import { useI18n } from "@/components/I18nProvider";
 
 const BUSINESS_HUB_URL = "https://puntopago.net/business/paymentshub/";
 
 export function AfiliacionChrome({ children }: { children: ReactNode }) {
+  const { messages: m } = useI18n();
+
   return (
     <div className="pp-page-bg relative min-h-screen">
       <PpAmbient />
@@ -27,16 +33,17 @@ export function AfiliacionChrome({ children }: { children: ReactNode }) {
                 Punto Pago
               </span>
               <span className="mt-0.5 block text-[11px] font-medium text-slate-500">
-                Aliados · Formulario de afiliación
+                {m.chrome.subtitle}
               </span>
             </span>
           </a>
           <nav className="flex shrink-0 flex-wrap items-center justify-end gap-1">
+            <LocaleSwitcher className="mr-1 hidden sm:flex" />
             <Link
               href="/"
               className="rounded-lg px-2.5 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-100 hover:text-[#4749B6] sm:px-3 sm:text-sm"
             >
-              Inicio
+              {m.chrome.home}
             </Link>
             <a
               href={BUSINESS_HUB_URL}
@@ -44,7 +51,7 @@ export function AfiliacionChrome({ children }: { children: ReactNode }) {
               rel="noopener noreferrer"
               className="rounded-lg px-2.5 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-100 hover:text-[#4749B6] sm:px-3 sm:text-sm"
             >
-              Business
+              {m.chrome.business}
             </a>
             <a
               href="https://puntopago.net/"
@@ -52,8 +59,9 @@ export function AfiliacionChrome({ children }: { children: ReactNode }) {
               rel="noopener noreferrer"
               className="rounded-lg px-2.5 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-100 hover:text-[#4749B6] sm:px-3 sm:text-sm"
             >
-              Sitio principal
+              {m.chrome.mainSite}
             </a>
+            <LocaleSwitcher className="sm:hidden" />
           </nav>
         </div>
         <div
@@ -70,7 +78,7 @@ export function AfiliacionChrome({ children }: { children: ReactNode }) {
         <p>
           <span className="font-medium text-slate-600">Grupo Punto Pago</span>
           {" · "}
-          Captación de aliados.{" "}
+          {m.chrome.footer}{" "}
           <a
             href="https://puntopago.net/"
             target="_blank"

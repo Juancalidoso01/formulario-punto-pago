@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
+import { useI18n } from "@/components/I18nProvider";
 import type { AfiliacionCorporativoJson } from "@/lib/afiliacion-corporativo-payload";
 import { SERVICIO_CORPORATIVO_ID } from "@/lib/afiliacion-corporativo-payload";
 
@@ -78,6 +79,9 @@ function PhoneRow({
 
 export function AfiliacionCorporativoWizard() {
   const router = useRouter();
+  const { messages: m, t } = useI18n();
+  const w = m.wizard;
+  const corp = w.corp;
   const [step, setStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -122,18 +126,18 @@ export function AfiliacionCorporativoWizard() {
     switch (step) {
       case 0:
         if (!contactoNombre.trim() || !contactoApellido.trim()) {
-          return "Indique nombre y apellido de la persona de contacto.";
+          return corp.errors.name;
         }
         return null;
       case 1:
-        if (!email.trim()) return "Indique el correo electrónico.";
+        if (!email.trim()) return w.errors.emailRequired;
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-          return "El correo electrónico no tiene un formato válido.";
+          return w.errors.emailInvalid;
         }
-        if (!cargo.trim()) return "Indique el cargo.";
+        if (!cargo.trim()) return corp.errors.cargo;
         return null;
       case 2:
-        if (!terminosAceptados) return "Debe aceptar los términos y condiciones.";
+        if (!terminosAceptados) return w.errors.terms;
         return null;
       default:
         return null;
@@ -142,13 +146,14 @@ export function AfiliacionCorporativoWizard() {
     cargo,
     contactoApellido,
     contactoNombre,
+    corp.errors.cargo,
+    corp.errors.name,
     email,
     step,
-    telefonoCelCodigo,
-    telefonoCelNumero,
-    telefonoFijoCodigo,
-    telefonoFijoNumero,
     terminosAceptados,
+    w.errors.emailInvalid,
+    w.errors.emailRequired,
+    w.errors.terms,
   ]);
 
   const submit = async () => {
@@ -171,15 +176,15 @@ export function AfiliacionCorporativoWizard() {
 
       if (!res.ok) {
         setStatus("error");
-        setStatusMsg(data.error ?? "No se pudo enviar. Intenta de nuevo.");
+        setStatusMsg(data.error ?? w.genericError);
         return;
       }
 
       setStatus("success");
-      setStatusMsg("Hemos recibido sus datos. Nuestro equipo comercial le contactará pronto.");
+      setStatusMsg(corp.successBody);
     } catch {
       setStatus("error");
-      setStatusMsg("Error de red. Comprueba tu conexión e intenta de nuevo.");
+      setStatusMsg(w.networkError);
     }
   };
 
@@ -207,7 +212,7 @@ export function AfiliacionCorporativoWizard() {
   if (status === "success") {
     return (
       <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-6 text-center text-emerald-900">
-        <p className="text-base font-medium">Envío correcto</p>
+        <p className="text-base font-medium">{w.successTitle}</p>
         <p className="mt-2 text-sm">{statusMsg}</p>
       </div>
     );
@@ -215,15 +220,10 @@ export function AfiliacionCorporativoWizard() {
 
   return (
     <div className="flex flex-col gap-6">
-      <p className="text-sm text-slate-600">
-        Formulario breve de contacto para empresas interesadas en servicios corporativos Punto
-        Pago.
-      </p>
+      <p className="text-sm text-slate-600">{corp.intro}</p>
 
       <div className="flex items-center justify-between gap-4 text-sm text-slate-600">
-        <span>
-          {step + 1} / {TOTAL_STEPS}
-        </span>
+        <span>{t("wizard.progress", { current: step + 1, total: TOTAL_STEPS })}</span>
         <div className="h-2 flex-1 max-w-xs overflow-hidden rounded-full bg-slate-100">
           <div
             className="h-full rounded-full bg-[#4749B6] shadow-sm shadow-[#4749B6]/30 transition-[width] duration-300"
@@ -237,12 +237,12 @@ export function AfiliacionCorporativoWizard() {
           <>
             <StepHeading
               displayStep={1}
-              title="Datos de la persona de contacto"
-              description="Indique quién deja los datos en nombre de la empresa."
+              title={corp.steps.contact.title}
+              description={corp.steps.contact.desc}
             />
             <div className="grid gap-4 sm:grid-cols-2">
               <label className={labelClass}>
-                Nombre
+                {w.fields.firstName}
                 <input
                   className={inputClass}
                   value={contactoNombre}
@@ -251,7 +251,7 @@ export function AfiliacionCorporativoWizard() {
                 />
               </label>
               <label className={labelClass}>
-                Apellido
+                {w.fields.lastName}
                 <input
                   className={inputClass}
                   value={contactoApellido}
@@ -267,12 +267,12 @@ export function AfiliacionCorporativoWizard() {
           <>
             <StepHeading
               displayStep={2}
-              title="Correo y cargo"
-              description="Usaremos estos datos para que un asesor comercial le contacte."
+              title={corp.steps.emailCargo.title}
+              description={corp.steps.emailCargo.desc}
             />
             <div className="grid gap-4">
               <label className={labelClass}>
-                Correo electrónico
+                {w.fields.email}
                 <input
                   className={inputClass}
                   type="email"
@@ -282,12 +282,12 @@ export function AfiliacionCorporativoWizard() {
                 />
               </label>
               <label className={labelClass}>
-                Cargo en la empresa
+                {corp.fields.cargo}
                 <input
                   className={inputClass}
                   value={cargo}
                   onChange={(e) => setCargo(e.target.value)}
-                  placeholder="Ej: Gerente comercial, Director de finanzas"
+                  placeholder={corp.fields.cargoPh}
                   autoComplete="organization-title"
                 />
               </label>
@@ -299,26 +299,26 @@ export function AfiliacionCorporativoWizard() {
           <>
             <StepHeading
               displayStep={3}
-              title="Teléfonos de contacto (opcional)"
-              description="Puede indicar fijo, celular o ambos. No es obligatorio completar los dos."
+              title={corp.steps.phones.title}
+              description={corp.steps.phones.desc}
               showRequired={false}
             />
             <div className="grid gap-4">
               <PhoneRow
-                label="Teléfono fijo (opcional)"
+                label={corp.fields.landline}
                 codigo={telefonoFijoCodigo}
                 numero={telefonoFijoNumero}
                 onCodigo={setTelefonoFijoCodigo}
                 onNumero={setTelefonoFijoNumero}
-                numeroPlaceholder="Ej: 263-4567"
+                numeroPlaceholder={corp.fields.landlinePh}
               />
               <PhoneRow
-                label="Teléfono celular (opcional)"
+                label={corp.fields.mobile}
                 codigo={telefonoCelCodigo}
                 numero={telefonoCelNumero}
                 onCodigo={setTelefonoCelCodigo}
                 onNumero={setTelefonoCelNumero}
-                numeroPlaceholder="Ej: 6000-0000"
+                numeroPlaceholder={corp.fields.mobilePh}
               />
             </div>
             <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-800">
@@ -329,16 +329,16 @@ export function AfiliacionCorporativoWizard() {
                 className="mt-0.5 size-4 shrink-0 rounded border-slate-300 text-[#4749B6]"
               />
               <span>
-                Estoy de acuerdo con los{" "}
+                {w.termsAgree}{" "}
                 <Link
                   href="https://puntopago.net/privacy/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-medium text-[#4749B6] underline underline-offset-2"
                 >
-                  términos y condiciones
+                  {w.termsLink}
                 </Link>{" "}
-                y la política de privacidad.
+                {corp.termsPrivacy}
               </span>
             </label>
           </>
@@ -364,7 +364,7 @@ export function AfiliacionCorporativoWizard() {
           disabled={status === "loading"}
           className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-800 shadow-sm transition hover:bg-slate-50 disabled:opacity-40"
         >
-          Anterior
+          {w.back}
         </button>
         {step < TOTAL_STEPS - 1 ? (
           <button
@@ -372,7 +372,7 @@ export function AfiliacionCorporativoWizard() {
             onClick={goNext}
             className="rounded-lg bg-[#4749B6] px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-[#4749B6]/25 transition hover:bg-[#3B3DA6]"
           >
-            Siguiente
+            {w.next}
           </button>
         ) : (
           <button
@@ -381,11 +381,10 @@ export function AfiliacionCorporativoWizard() {
             disabled={status === "loading"}
             className="rounded-lg bg-[#4749B6] px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-[#4749B6]/25 transition hover:bg-[#3B3DA6] disabled:opacity-60"
           >
-            {status === "loading" ? "Enviando…" : "Enviar datos de contacto"}
+            {status === "loading" ? w.sending : corp.submitContact}
           </button>
         )}
       </div>
     </div>
   );
 }
-

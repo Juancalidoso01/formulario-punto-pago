@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { useI18n } from "@/components/I18nProvider";
 import {
   CUOTAS_MIN_AMOUNT,
   CUOTAS_TERM_CONFIG,
@@ -8,12 +9,23 @@ import {
   calcularPagoRegularCuotas,
   formatCuotasMoney,
   normalizeCuotasAmount,
-  textoInteresCuotas,
   type CuotasTermMonths,
 } from "@/lib/cuotas-calculator";
 
 const inputClass =
   "w-full rounded-lg border border-slate-200/90 bg-white px-3 py-2.5 text-base text-slate-900 shadow-sm outline-none transition focus:border-[#4749B6] focus:ring-2 focus:ring-[#4749B6]/20";
+
+const TERM_LABEL_KEYS: Record<CuotasTermMonths, "term2" | "term4" | "term8"> = {
+  2: "term2",
+  4: "term4",
+  8: "term8",
+};
+
+const CAP_LABEL_KEYS: Record<CuotasTermMonths, "cap100" | "cap175" | "cap250"> = {
+  2: "cap100",
+  4: "cap175",
+  8: "cap250",
+};
 
 export function CuotasPlanPicker({
   termMonths,
@@ -26,6 +38,8 @@ export function CuotasPlanPicker({
   montoReferencia: number;
   onMontoReferenciaChange: (n: number) => void;
 }) {
+  const { messages: m } = useI18n();
+  const c = m.cuotas;
   const cfg = CUOTAS_TERM_CONFIG[termMonths];
   const monto = normalizeCuotasAmount(montoReferencia, cfg.maxAmount);
   const pagoRegular = useMemo(
@@ -39,7 +53,9 @@ export function CuotasPlanPicker({
     return ((monto - CUOTAS_MIN_AMOUNT) / span) * 100;
   }, [cfg.maxAmount, monto]);
 
-  const amountLabel = `Monto de la compra (de $${CUOTAS_MIN_AMOUNT} a $${cfg.maxAmount})`;
+  const amountLabel = c.amountLabel
+    .replace("${min}", String(CUOTAS_MIN_AMOUNT))
+    .replace("${max}", String(cfg.maxAmount));
 
   const selectTerm = (t: CuotasTermMonths) => {
     onTermMonthsChange(t);
@@ -84,10 +100,9 @@ export function CuotasPlanPicker({
         />
 
         <div>
-          <p className="text-sm font-medium text-slate-800">Período de pago</p>
+          <p className="text-sm font-medium text-slate-800">{c.paymentPeriod}</p>
           <div className="mt-2 grid grid-cols-3 gap-2">
             {CUOTAS_TERM_ORDER.map((t) => {
-              const c = CUOTAS_TERM_CONFIG[t];
               const active = termMonths === t;
               return (
                 <button
@@ -105,9 +120,9 @@ export function CuotasPlanPicker({
                       active ? "text-white/80" : "text-slate-500"
                     }`}
                   >
-                    {c.capLabel}
+                    {c[CAP_LABEL_KEYS[t]]}
                   </span>
-                  <span className="mt-1 text-sm font-semibold">{c.label}</span>
+                  <span className="mt-1 text-sm font-semibold">{c[TERM_LABEL_KEYS[t]]}</span>
                 </button>
               );
             })}
@@ -116,20 +131,20 @@ export function CuotasPlanPicker({
       </div>
 
       <div className="rounded-2xl border border-slate-200/80 bg-slate-50/90 p-5 shadow-sm">
-        <p className="text-sm font-medium text-slate-600">Pago regular</p>
+        <p className="text-sm font-medium text-slate-600">{c.regularPayment}</p>
         <p className="mt-1 text-4xl font-bold tracking-tight text-slate-900">
           {formatCuotasMoney(pagoRegular)}
         </p>
         <div className="mt-1 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
-          <span>Dos veces al mes</span>
-          <span>*inc. tarifa de servicio</span>
+          <span>{c.twiceMonth}</span>
+          <span>{c.serviceFee}</span>
         </div>
 
         <hr className="my-5 border-slate-200" />
 
         <dl className="space-y-3 text-sm">
           <div className="flex items-center justify-between gap-3">
-            <dt className="text-slate-600">Tasa de interés</dt>
+            <dt className="text-slate-600">{c.interestRate}</dt>
             <dd>
               <span
                 className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ${
@@ -138,26 +153,23 @@ export function CuotasPlanPicker({
                     : "bg-[#4749B6]/12 text-[#4749B6]"
                 }`}
               >
-                {textoInteresCuotas(termMonths)}
+                {cfg.interest ? c.interestYes : c.interestNo}
               </span>
             </dd>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <dt className="text-slate-600">Cantidad de pagos</dt>
+            <dt className="text-slate-600">{c.paymentCount}</dt>
             <dd className="font-semibold text-slate-900">
-              {cfg.payments} pagos
+              {cfg.payments} {c.paymentsUnit}
             </dd>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <dt className="text-slate-600">Paga hoy</dt>
+            <dt className="text-slate-600">{c.payToday}</dt>
             <dd className="font-semibold text-slate-900">$0</dd>
           </div>
         </dl>
 
-        <p className="mt-5 text-[11px] leading-relaxed text-slate-500">
-          Los montos y pagos mostrados son tarifas referenciales para orientar su elección.
-          El equipo comercial confirmará las condiciones finales de su afiliación a Cuotas.
-        </p>
+        <p className="mt-5 text-[11px] leading-relaxed text-slate-500">{c.footer}</p>
       </div>
     </div>
   );

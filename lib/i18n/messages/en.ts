@@ -1,0 +1,279 @@
+import type { Messages } from "@/lib/i18n/messages/es";
+
+export const enMessages: Messages = {
+  meta: {
+    title: "Affiliation form",
+    description: "Partner form — lead capture.",
+  },
+  chrome: {
+    subtitle: "Partners · Affiliation form",
+    home: "Home",
+    business: "Business",
+    mainSite: "Main site",
+    footer: "Partner acquisition.",
+    language: "Language",
+  },
+  landing: {
+    title: "Discover our products and join Punto Pago",
+    subtitle:
+      "Choose the solution that best fits your business. You can view each product or, if you are ready, leave your details so a sales advisor can contact you and guide you through affiliation.",
+    viewProduct: "View product →",
+    contactCta: "Leave my details for sales contact →",
+  },
+  formulario: {
+    step2of2: "Step 2 of 2",
+    affiliation: "Affiliation form",
+    corporate: "Corporate contact",
+    back: "← Back to business lines",
+  },
+  serviciosPage: {
+    businessLines: "Business lines",
+    whyAffiliate: "Why join",
+    fillForm: "Fill out form",
+    otherLines: "← Other lines",
+    disclaimer:
+      "Product information comes from Punto Pago public materials. Final conditions, amounts and terms depend on the contract and rules in force at the time of affiliation. Use the links for more information (Punto Pago site or external resources as applicable).",
+    officialSite: "Punto Pago site",
+    moreInfo: "more information",
+  },
+  services: {
+    kioscos: {
+      title: "Kiosks for commercial premises",
+      help: "Punto Pago kiosks inside your business.",
+    },
+    agente: {
+      title: "Community agent",
+      help: "Punto Pago correspondent in your community: service and collections.",
+    },
+    cuotas: {
+      title: "Installments at your store",
+      help: "Punto Pago finances your customers so they buy at your location.",
+    },
+    corporativo: {
+      title: "Punto Pago corporate services",
+      help: "Network collection, payments hub, card program.",
+    },
+  },
+  brochures: {
+    kioscos: {
+      headline: "Use your space — Kiosks at your commercial location",
+      tagline:
+        "Set aside a small area in your store or building for a Punto Pago kiosk: your customers and staff top up and pay for services without leaving, and you boost foot traffic.",
+      alt: "Punto Pago kiosk and commercial space — Business Space",
+      h1: "Top-ups and bill pay in just a few square meters: Punto Pago indicates that about one square meter is enough for a kiosk so customers and employees can operate easily.",
+      h2: "More traffic to your business: placing a kiosk in offices or high-traffic locations adds convenience and can bring extra visits besides space rental, depending on the agreed model.",
+      h3: "A natural fit for retail, pharmacies, malls, office towers and businesses with recurring visitors.",
+      linkBusinessSpace: "Business Space",
+    },
+    agente: {
+      headline: "Agent and correspondent — Punto Pago in your community",
+      tagline:
+        "Flexible correspondent operation in your community: collections and services with Punto Pago brand support, from your store or with the tools you have.",
+      alt: "La Bodeguita illustration — Punto Pago non-bank correspondent, map and location pin",
+      h1: "Whether on your island or in your neighborhood: with a computer or phone you can collect from customers; from a store you can operate as a non-bank correspondent with Punto Pago backing.",
+      h2: "Designed for those who serve their community and want to offer top-ups, payments and services with a recognized brand.",
+      h3: "Ideal for neighborhood stores, corner shops and entrepreneurs focused on local service.",
+    },
+    cuotas: {
+      headline: "Installments at your store — buy today, pay later",
+      tagline:
+        "Finance your customers so they buy at your business: 0% installments with no down payment, digital approval and a clear payment schedule in the Punto Pago app.",
+      alt: "Punto Pago Installments product illustration",
+      h1: "Indicative purchase amounts from USD 10 to USD 250; 2 to 8 month plans (per current app rules).",
+      h2: "No down payment to the merchant at purchase; the customer pays on fixed dates (e.g. 2nd and 17th of each month).",
+      h3: "Guided flow: seller QR, installment plan, approval and SMS signature; ID card or in-app flow.",
+      h4: "If the amount exceeds the installment cap, the remainder can be paid in cash or card per product terms.",
+      linkOfficial: "Official Installments page",
+    },
+    corporativo: {
+      headline: "Corporate solutions — mass collection and payment processing",
+      tagline:
+        "For banks, lenders, fintech and large operators: combine API checkout with a payments hub connecting merchants, digital channels and treasury for collection and liquidity at scale.",
+      alt: "Punto Pago corporate checkout and payments solution",
+      h1: "Business Checkout: API integration to model processes, automate operations and connect business areas with less friction and operating cost (per your architecture and commercial agreement).",
+      h2: "Payments Hub: merchant interconnection for online banking and fintech, focused on payment centralization, liquidity management, supplier automation and a broad transaction portfolio.",
+      h3: "Aligned with financial institutions and high-volume SMEs that need to standardize, centralize and manage electronic payment flows.",
+      linkCheckout: "Business Checkout",
+      linkHub: "Payments Hub",
+    },
+  },
+  wizard: {
+    progress: "{current} / {total}",
+    back: "Back",
+    next: "Next",
+    submit: "Submit form",
+    sending: "Sending…",
+    changeService: "You can change your selection anytime before submitting.",
+    viewProduct: "View information about this product",
+    successTitle: "Submitted successfully",
+    successBody: "We have received your request. Thank you for completing the form.",
+    networkError: "Network error. Check your connection and try again.",
+    genericError: "Could not submit. Please try again.",
+    clearSignature: "Clear signature",
+    termsAgree: "I agree to the",
+    termsLink: "terms and conditions",
+    steps: {
+      service: {
+        title: "Which business line interests you?",
+        desc: "Choose one of the four options. If you combine several, pick the main one and describe the rest later in your business description.",
+      },
+      name: { title: "Primary contact full name" },
+      email: { title: "Primary contact email" },
+      phone: {
+        title: "Primary contact phone number",
+        desc: "Include country code followed by your contact number.",
+      },
+      company: {
+        title: "Company name (as registered)",
+        desc: "Legal name on your business notice or your legal personal name.",
+      },
+      ruc: {
+        title: "RUC number (tax ID)",
+        desc: "Number issued by Panama tax authority (DGI) for individuals or companies with economic activity.",
+      },
+      address: {
+        title: "Where your business is located",
+        desc: "First search for your location on the map. If it does not appear, describe the address with street, district and references. Complete province below.",
+      },
+      business: {
+        title: "Brief business description (products/services offered)",
+        desc: "Please describe in detail what your business or company does.",
+      },
+      occupation: {
+        title: "What is your main profession or occupation?",
+        desc: "Type to search the catalog or open the list and pick the option that best describes your role.",
+      },
+      activity: {
+        title: "What economic activity best describes your business?",
+        desc: "Type to search the catalog or open the list and pick your company's main activity.",
+      },
+      cuotasPlan: {
+        title: "What type of financing would you like to offer your customers?",
+        desc: "With Punto Pago Installments, your customers can pay in monthly installments. Use the calculator to try different terms (2, 4 or 8 months) and approximate amounts. This helps us configure the best option for your business.",
+      },
+      photos: {
+        title: "Upload up to 5 photos of your premises",
+        desc: "Include photos from different angles of your commercial location. You can attach between 1 and 5 files.",
+      },
+      payroll: {
+        title: "How much do you plan to pay monthly through the payroll program?",
+        desc: "Select an approximate range of the total monthly amount you wish to deposit for employees.",
+      },
+      aviso: { title: "Copy of business operation notice" },
+      clients: {
+        title: "How many customers does your company have?",
+        desc: "Select the customer count that matches your company.",
+      },
+      integration: {
+        title: "Which integration method best fits your business?",
+        desc: "Select how you would like to connect with our services.",
+      },
+      terms: { title: "Terms and conditions" },
+      signature: { title: "Signature", desc: "Please sign the form." },
+    },
+    fields: {
+      firstName: "First name",
+      lastName: "Last name",
+      email: "Email",
+      phoneCode: "Code",
+      phoneNumber: "Contact number",
+      company: "Legal name / company name",
+      ruc: "RUC",
+      address: "Business address",
+      province: "Province or region",
+      provincePh: "E.g. Panama, Chiriquí…",
+      description: "Description",
+      occupation: "Profession or occupation",
+      occupationPh: "E.g. merchant, lawyer, manager…",
+      activity: "Economic activity",
+      activityPh: "E.g. retail, restaurant, services…",
+    },
+    errors: {
+      service: "Choose the option that best describes what you need now.",
+      name: "Enter the primary contact first and last name.",
+      emailRequired: "Enter your email address.",
+      emailInvalid: "The email address format is not valid.",
+      phone: "Enter country code and contact number.",
+      company: "Enter the company name.",
+      ruc: "Enter the RUC number.",
+      address: "Search your address on the map and pick a suggestion, or describe it in detail.",
+      addressManual: "Complete the address with street, district and a visible reference.",
+      province: "Enter province or region.",
+      addressIncomplete: "Complete all detailed address fields.",
+      business: "Briefly describe your business.",
+      occupation: "Search and select your profession or occupation from the list.",
+      activity: "Search and select your business economic activity from the list.",
+      cuotasAmount: "Enter a reference amount of at least $10.",
+      photos: "Attach between 1 and 5 photos of your premises.",
+      payroll: "Select an approximate range.",
+      aviso: "Attach a copy of the operation notice.",
+      clients: "Select the number of customers.",
+      integration: "Select the integration method.",
+      terms: "You must accept the terms and conditions.",
+      signature: "Please sign in the box before submitting.",
+    },
+    corp: {
+      intro:
+        "Short contact form for companies interested in Punto Pago corporate services.",
+      submitContact: "Submit contact details",
+      successBody:
+        "We have received your details. Our sales team will contact you soon.",
+      termsPrivacy: "and the privacy policy.",
+      steps: {
+        contact: {
+          title: "Contact person details",
+          desc: "Indicate who is leaving the details on behalf of the company.",
+        },
+        emailCargo: {
+          title: "Email and role",
+          desc: "We will use these details so a sales advisor can contact you.",
+        },
+        phones: {
+          title: "Contact phones (optional)",
+          desc: "You may provide landline, mobile or both. You do not need to complete both.",
+        },
+      },
+      fields: {
+        cargo: "Role at the company",
+        cargoPh: "E.g. Sales manager, Finance director",
+        landline: "Landline (optional)",
+        mobile: "Mobile phone (optional)",
+        landlinePh: "E.g. 263-4567",
+        mobilePh: "E.g. 6000-0000",
+      },
+      errors: {
+        name: "Enter the contact person's first and last name.",
+        cargo: "Enter the role.",
+      },
+    },
+  },
+  cuotas: {
+    paymentPeriod: "Payment period",
+    regularPayment: "Regular payment",
+    twiceMonth: "Twice a month",
+    serviceFee: "*incl. service fee",
+    interestRate: "Interest rate",
+    paymentCount: "Number of payments",
+    payToday: "Pay today",
+    paymentsUnit: "payments",
+    footer:
+      "Amounts and payments shown are reference rates to guide your choice. The sales team will confirm final Installments affiliation terms.",
+    interestYes: "with interest",
+    interestNo: "no interest",
+    term2: "2 months",
+    term4: "4 months",
+    term8: "8 months",
+    cap100: "up to $100",
+    cap175: "up to $175",
+    cap250: "up to $250",
+    amountLabel: "Purchase amount (from ${min} to ${max})",
+  },
+  common: {
+    required: "*",
+    selected: "Selected",
+    choose: "Choose",
+    selectedLabel: "Selected:",
+    kybCatalogNote:
+      "Profession and activity catalogs are shown in Spanish (official KYB source).",
+  },
+};
