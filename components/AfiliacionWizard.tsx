@@ -33,6 +33,10 @@ import { SearchableSelect } from "@/components/SearchableSelect";
 import { ServicioPrincipalPicker } from "@/components/ServicioPrincipalPicker";
 import { CuotasPlanPicker } from "@/components/CuotasPlanPicker";
 import { DocumentFilePicker } from "@/components/DocumentFilePicker";
+import {
+  FormSubmitLoadingOverlay,
+  WizardSubmitButton,
+} from "@/components/FormSubmitLoading";
 import { LocalPhotosPicker } from "@/components/LocalPhotosPicker";
 import { isAvisoDocument } from "@/lib/upload-files";
 import { SignaturePad, type SignaturePadHandle } from "@/components/SignaturePad";
@@ -443,7 +447,8 @@ export function AfiliacionWizard({
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="relative flex flex-col gap-6">
+      <FormSubmitLoadingOverlay active={status === "loading"} message={w.sending} />
       <div className="flex items-center justify-between gap-4 text-sm text-slate-600">
         <span>
           {t("wizard.progress", {
@@ -891,14 +896,12 @@ export function AfiliacionWizard({
             {w.next}
           </button>
         ) : (
-          <button
-            type="button"
+          <WizardSubmitButton
+            loading={status === "loading"}
+            label={w.submit}
+            loadingLabel={w.sending}
             onClick={submit}
-            disabled={status === "loading"}
-            className="rounded-lg bg-[#4749B6] px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-[#4749B6]/25 transition hover:bg-[#3B3DA6] disabled:opacity-60"
-          >
-            {status === "loading" ? w.sending : w.submit}
-          </button>
+          />
         )}
       </div>
     </div>

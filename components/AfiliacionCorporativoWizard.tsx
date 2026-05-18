@@ -5,6 +5,10 @@ import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { useI18n } from "@/components/I18nProvider";
 import type { AfiliacionCorporativoJson } from "@/lib/afiliacion-corporativo-payload";
+import {
+  FormSubmitLoadingOverlay,
+  WizardSubmitButton,
+} from "@/components/FormSubmitLoading";
 import { SERVICIO_CORPORATIVO_ID } from "@/lib/afiliacion-corporativo-payload";
 
 const TOTAL_STEPS = 3;
@@ -182,7 +186,8 @@ export function AfiliacionCorporativoWizard() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="relative flex flex-col gap-6">
+      <FormSubmitLoadingOverlay active={status === "loading"} message={w.sending} />
       <p className="text-sm text-slate-600">{corp.intro}</p>
 
       <div className="flex items-center justify-between gap-4 text-sm text-slate-600">
@@ -342,14 +347,12 @@ export function AfiliacionCorporativoWizard() {
             {w.next}
           </button>
         ) : (
-          <button
-            type="button"
+          <WizardSubmitButton
+            loading={status === "loading"}
+            label={corp.submitContact}
+            loadingLabel={w.sending}
             onClick={submit}
-            disabled={status === "loading"}
-            className="rounded-lg bg-[#4749B6] px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-[#4749B6]/25 transition hover:bg-[#3B3DA6] disabled:opacity-60"
-          >
-            {status === "loading" ? w.sending : corp.submitContact}
-          </button>
+          />
         )}
       </div>
     </div>
