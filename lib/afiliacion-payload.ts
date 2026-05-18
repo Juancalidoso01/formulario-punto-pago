@@ -33,7 +33,7 @@ export type AfiliacionJson = {
   direccion: string;
   provincia: string;
   descripcionNegocio: string;
-  /** Rubro MCC de referencia del local comercial. */
+  /** Tipo de negocio del local (etiqueta visible, sin código MCC). */
   rubroMcc: string;
   /** Id de `SERVICIO_PRINCIPAL_PUNTO_PAGO`. */
   servicioPrincipal: string;
