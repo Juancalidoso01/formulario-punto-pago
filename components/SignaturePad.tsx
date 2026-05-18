@@ -8,7 +8,11 @@ import {
   useRef,
   useState,
 } from "react";
-import type { PointerEvent } from "react";
+import type { CSSProperties, PointerEvent } from "react";
+import {
+  SIGNATURE_PEN_CURSOR,
+  SIGNATURE_PEN_CURSOR_DRAWING,
+} from "@/lib/signature-pen-cursor";
 
 export type SignaturePadHandle = {
   isEmpty: () => boolean;
@@ -34,6 +38,7 @@ export const SignaturePad = forwardRef<SignaturePadHandle, object>(
     const drawingRef = useRef(false);
     const hasInkRef = useRef(false);
     const [isDrawing, setIsDrawing] = useState(false);
+    const [finePointer, setFinePointer] = useState(false);
 
     const resizeCanvas = useCallback(() => {
       const canvas = canvasRef.current;
@@ -62,12 +67,29 @@ export const SignaturePad = forwardRef<SignaturePadHandle, object>(
 
     useEffect(() => () => setSignaturePadHover(false), []);
 
+    useEffect(() => {
+      const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
+      const apply = () => setFinePointer(mq.matches);
+      apply();
+      mq.addEventListener("change", apply);
+      return () => mq.removeEventListener("change", apply);
+    }, []);
+
     const pos = (e: PointerEvent<HTMLCanvasElement>) => {
       const canvas = canvasRef.current;
       if (!canvas) return { x: 0, y: 0 };
       const r = canvas.getBoundingClientRect();
-      return { x: e.clientX - r.left, y: e.clientY - r.top };
+      const scaleX = r.width > 0 ? WIDTH / r.width : 1;
+      const scaleY = r.height > 0 ? HEIGHT / r.height : 1;
+      return {
+        x: (e.clientX - r.left) * scaleX,
+        y: (e.clientY - r.top) * scaleY,
+      };
     };
+
+    const penCursorStyle: CSSProperties | undefined = finePointer
+      ? { cursor: isDrawing ? SIGNATURE_PEN_CURSOR_DRAWING : SIGNATURE_PEN_CURSOR }
+      : undefined;
 
     useImperativeHandle(ref, () => ({
       isEmpty: () => !hasInkRef.current,
@@ -93,6 +115,7 @@ export const SignaturePad = forwardRef<SignaturePadHandle, object>(
         className={`signature-pad-canvas w-full max-w-[480px] touch-none rounded-lg border border-slate-200/90 bg-white shadow-sm${
           isDrawing ? " signature-pad-canvas--drawing" : ""
         }`}
+        style={penCursorStyle}
         onPointerEnter={() => setSignaturePadHover(true)}
         onPointerLeave={() => {
           if (drawingRef.current) return;
