@@ -16,7 +16,8 @@ import {
 } from "@/lib/geoapify-address";
 
 const MIN_BOOT_MS = 450;
-const DEBOUNCE_REMOTE_MS = 280;
+const MIN_LOADING_MS = 500;
+const DEBOUNCE_REMOTE_MS = 320;
 const MIN_SEARCH_CHARS = 2;
 
 const MANUAL_OPTION = "No encuentro mi dirección — describirla con detalle";
@@ -48,6 +49,40 @@ const EMPTY_MANUAL: PanamaManualAddressParts = {
   referencia: "",
 };
 
+function useMinLoadingDuration(minMs: number) {
+  const [loading, setLoading] = useState(false);
+  const startedAtRef = useRef(0);
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const show = useCallback(() => {
+    if (hideTimerRef.current) {
+      clearTimeout(hideTimerRef.current);
+      hideTimerRef.current = null;
+    }
+    startedAtRef.current = Date.now();
+    setLoading(true);
+  }, []);
+
+  const hide = useCallback(() => {
+    const elapsed = Date.now() - startedAtRef.current;
+    const remaining = Math.max(0, minMs - elapsed);
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    hideTimerRef.current = setTimeout(() => {
+      setLoading(false);
+      hideTimerRef.current = null;
+    }, remaining);
+  }, [minMs]);
+
+  useEffect(
+    () => () => {
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    },
+    [],
+  );
+
+  return { loading, show, hide };
+}
+
 export function AfiliacionAddressPaField({
   label,
   hint,
@@ -62,8 +97,7 @@ export function AfiliacionAddressPaField({
   const worldwide = variant === "worldwide";
   const [booting, setBooting] = useState(true);
   const [entryMode, setEntryMode] = useState<AfiliacionAddressEntryMode>("geo");
-  const [open, setOpen] = useState(false);
-  const [fetching, setFetching] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(false);
   const [searchEmpty, setSearchEmpty] = useState(false);
   const [rows, setRows] = useState<SuggestionRow[]>([]);
   const [parsedHint, setParsedHint] = useState("");
@@ -73,6 +107,7 @@ export function AfiliacionAddressPaField({
   const selectedRef = useRef("");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const requestSeq = useRef(0);
+  const searchLoading = useMinLoadingDuration(MIN_LOADING_MS);
 
   const setMode = useCallback(
     (mode: AfiliacionAddressEntryMode) => {
@@ -114,12 +149,16 @@ export function AfiliacionAddressPaField({
   const enterManualMode = useCallback(
     (keepSearchText = false) => {
       setMode("manual");
-      setOpen(false);
+      setPanelOpen(false);
       setRows([]);
-      setFetching(false);
+      searchLoading.hide();
       setSearchEmpty(false);
       setParsedHint("");
       selectedRef.current = "";
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+        debounceRef.current = null;
+      }
       if (!keepSearchText) {
         setSearchQuery("");
         setManualParts(EMPTY_MANUAL);
@@ -130,7 +169,7 @@ export function AfiliacionAddressPaField({
         syncManualToParent(next);
       }
     },
-    [onChange, searchQuery, setMode, syncManualToParent, worldwide],
+    [onChange, searchQuery, searchLoading, setMode, syncManualToParent, worldwide],
   );
 
   const returnToGeoSearch = useCallback(() => {
@@ -142,7 +181,9 @@ export function AfiliacionAddressPaField({
     selectedRef.current = "";
     onChange("");
     setSearchQuery("");
-  }, [onChange, setMode]);
+    setPanelOpen(false);
+    searchLoading.hide();
+  }, [onChange, searchLoading, setMode]);
 
   const finalizeGeoPick = useCallback(
     (text: string, parsed: string) => {
@@ -151,17 +192,17 @@ export function AfiliacionAddressPaField({
       setSearchQuery(t);
       onChange(t);
       setParsedHint(parsed);
-      setOpen(false);
-      setFetching(false);
+      setPanelOpen(false);
       setRows([]);
       setSearchEmpty(false);
+      searchLoading.hide();
       requestSeq.current += 1;
       if (debounceRef.current) {
         clearTimeout(debounceRef.current);
         debounceRef.current = null;
       }
     },
-    [onChange],
+    [onChange, searchLoading],
   );
 
   const runSearch = useCallback(
@@ -170,28 +211,24 @@ export function AfiliacionAddressPaField({
       setSearchQuery(raw);
       if (entryMode === "manual") return;
 
-      if (!val) {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+        debounceRef.current = null;
+      }
+
+      if (!val || val.length < MIN_SEARCH_CHARS) {
         setRows([]);
-        setOpen(false);
-        setFetching(false);
+        setPanelOpen(false);
         setSearchEmpty(false);
+        searchLoading.hide();
         return;
       }
 
-      if (val.length < MIN_SEARCH_CHARS) {
-        setRows([]);
-        setOpen(false);
-        setFetching(false);
-        setSearchEmpty(false);
-        return;
-      }
-
-      setFetching(true);
-      setOpen(true);
       setRows([]);
       setSearchEmpty(false);
+      setPanelOpen(true);
+      searchLoading.show();
 
-      if (debounceRef.current) clearTimeout(debounceRef.current);
       debounceRef.current = setTimeout(() => {
         const fetchFn = worldwide
           ? geoapifyAutocompleteWorldwideClientSide
@@ -199,7 +236,6 @@ export function AfiliacionAddressPaField({
         void fetchFn(val)
           .then((items) => {
             if (seq !== requestSeq.current) return;
-            setFetching(false);
             if (items.length > 0) {
               setRows(
                 items.map((it) => ({
@@ -213,18 +249,19 @@ export function AfiliacionAddressPaField({
               setRows([]);
               setSearchEmpty(true);
             }
-            setOpen(true);
+            setPanelOpen(true);
+            searchLoading.hide();
           })
           .catch(() => {
             if (seq !== requestSeq.current) return;
-            setFetching(false);
             setRows([]);
             setSearchEmpty(true);
-            setOpen(true);
+            setPanelOpen(true);
+            searchLoading.hide();
           });
       }, DEBOUNCE_REMOTE_MS);
     },
-    [entryMode, worldwide],
+    [entryMode, searchLoading, worldwide],
   );
 
   const onSearchInputChange = (raw: string) => {
@@ -233,7 +270,6 @@ export function AfiliacionAddressPaField({
       setParsedHint("");
       onChange("");
     }
-    if (debounceRef.current) clearTimeout(debounceRef.current);
     const seq = ++requestSeq.current;
     runSearch(raw, seq);
   };
@@ -253,6 +289,20 @@ export function AfiliacionAddressPaField({
     setManualParts(next);
     syncManualToParent(next);
   };
+
+  const showDropdownPanel =
+    entryMode === "geo" &&
+    !booting &&
+    panelOpen &&
+    searchQuery.trim().length >= MIN_SEARCH_CHARS;
+
+  const showManualFallbackLink =
+    entryMode === "geo" &&
+    !booting &&
+    !searchLoading.loading &&
+    searchQuery.trim().length >= MIN_SEARCH_CHARS &&
+    rows.length > 0 &&
+    !searchEmpty;
 
   return (
     <div className="relative block">
@@ -279,10 +329,10 @@ export function AfiliacionAddressPaField({
         )}
       </p>
 
-      <div className="relative min-h-[96px]">
+      <div className="relative">
         {booting ? (
           <div
-            className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 rounded-xl border border-slate-200/90 bg-white/92 px-4 py-6 backdrop-blur-sm"
+            className="flex min-h-[96px] flex-col items-center justify-center gap-3 rounded-xl border border-slate-200/90 bg-white px-4 py-6"
             role="status"
             aria-live="polite"
             aria-label="Cargando búsqueda de dirección"
@@ -291,106 +341,114 @@ export function AfiliacionAddressPaField({
               className="h-9 w-9 shrink-0 rounded-full border-2 border-[#4749B6]/20 border-t-[#4749B6] animate-spin"
               aria-hidden
             />
-            <p className="text-center text-sm font-medium text-slate-700">
-              Preparando búsqueda de direcciones…
-            </p>
-            <p className="text-center text-xs text-slate-500">Un momento por favor.</p>
+            <p className="text-center text-sm font-medium text-slate-700">Cargando…</p>
           </div>
         ) : null}
 
-        <div className={booting ? "pointer-events-none opacity-40" : ""}>
+        <div className={booting ? "sr-only" : undefined}>
           {entryMode === "geo" ? (
-            <div className="relative">
-              <textarea
-                id="afiliacion-direccion-verificada"
-                rows={3}
-                className={`${inputClass} min-h-[96px] resize-y ${fetching && !booting ? "pr-11" : ""}`}
-                autoComplete="off"
-                placeholder={
-                  worldwide
-                    ? "Ej: Calle Mayor 1, Madrid · 221B Baker Street, London"
-                    : "Ej: PH Trinity, Av. Balboa, Calle 50, Bella Vista…"
-                }
-                value={searchQuery}
-                aria-busy={fetching && !booting}
-                onChange={(e) => onSearchInputChange(e.target.value)}
-                onKeyDown={(e: KeyboardEvent<HTMLTextAreaElement>) => {
-                  if (e.key === "Escape") setOpen(false);
-                }}
-                onFocus={() => {
-                  if (searchQuery.trim().length >= MIN_SEARCH_CHARS) {
-                    const seq = ++requestSeq.current;
-                    runSearch(searchQuery, seq);
+            <div className="space-y-2">
+              <div className="relative isolate">
+                <textarea
+                  id="afiliacion-direccion-verificada"
+                  rows={3}
+                  className={`${inputClass} min-h-[96px] resize-y ${searchLoading.loading ? "pr-11" : ""}`}
+                  autoComplete="off"
+                  placeholder={
+                    worldwide
+                      ? "Ej: Calle Mayor 1, Madrid · 221B Baker Street, London"
+                      : "Ej: PH Trinity, Av. Balboa, Calle 50, Bella Vista…"
                   }
-                }}
-                onBlur={() => {
-                  window.setTimeout(() => setOpen(false), 160);
-                }}
-              />
-              {fetching && !booting ? (
-                <div
-                  className="pointer-events-none absolute right-3 top-3"
-                  aria-hidden
-                >
-                  <span className="h-5 w-5 shrink-0 rounded-full border-2 border-[#4749B6]/20 border-t-[#4749B6] animate-spin" />
-                </div>
-              ) : null}
-              {fetching && !booting ? (
-                <p className="mt-1 text-xs text-slate-500" aria-live="polite">
-                  Buscando en el mapa…
-                </p>
-              ) : null}
-
-              {open && !fetching && rows.length > 0 ? (
-                <ul
-                  id={listboxId}
-                  role="listbox"
-                  className="absolute left-0 right-0 top-full z-40 mt-1 max-h-56 overflow-y-auto rounded-xl border border-slate-200 bg-white py-1 shadow-xl"
-                >
-                  {rows.map((row, i) => (
-                    <li
-                      key={`api-${i}-${row.text.slice(0, 24)}`}
-                      role="option"
-                      className="cursor-pointer border-t border-slate-100 px-4 py-2.5 text-sm text-slate-800 first:border-t-0 hover:bg-[#4749B6]/[0.06]"
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        onPick(row);
-                      }}
-                    >
-                      {row.text}
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-
-              {searchEmpty &&
-              !fetching &&
-              searchQuery.trim().length >= MIN_SEARCH_CHARS ? (
-                <div
-                  className="mt-3 rounded-xl border border-amber-200/90 bg-amber-50/80 px-4 py-3"
-                  role="status"
-                >
-                  <p className="text-sm text-slate-800">
-                    No encontramos esa dirección en el mapa. Puede describirla con detalle para que
-                    el equipo comercial la ubique.
-                  </p>
-                  <button
-                    type="button"
-                    className="mt-2 text-sm font-semibold text-[#4749B6] underline-offset-2 hover:underline"
-                    onClick={() => enterManualMode(true)}
+                  value={searchQuery}
+                  aria-busy={searchLoading.loading}
+                  aria-expanded={showDropdownPanel}
+                  aria-controls={showDropdownPanel ? listboxId : undefined}
+                  aria-autocomplete="list"
+                  onChange={(e) => onSearchInputChange(e.target.value)}
+                  onKeyDown={(e: KeyboardEvent<HTMLTextAreaElement>) => {
+                    if (e.key === "Escape") setPanelOpen(false);
+                  }}
+                  onFocus={() => {
+                    if (searchQuery.trim().length >= MIN_SEARCH_CHARS) {
+                      const seq = ++requestSeq.current;
+                      runSearch(searchQuery, seq);
+                    }
+                  }}
+                  onBlur={() => {
+                    window.setTimeout(() => setPanelOpen(false), 180);
+                  }}
+                />
+                {searchLoading.loading ? (
+                  <div
+                    className="pointer-events-none absolute right-3 top-3 flex items-center gap-2"
+                    aria-hidden
                   >
-                    {MANUAL_OPTION} →
-                  </button>
-                </div>
-              ) : null}
+                    <span className="h-5 w-5 shrink-0 rounded-full border-2 border-[#4749B6]/20 border-t-[#4749B6] animate-spin" />
+                  </div>
+                ) : null}
 
-              {!searchEmpty &&
-              !fetching &&
-              searchQuery.trim().length >= MIN_SEARCH_CHARS &&
-              rows.length > 0 ? (
+                {showDropdownPanel ? (
+                  <div
+                    id={listboxId}
+                    role="listbox"
+                    className="absolute left-0 right-0 top-[calc(100%+4px)] z-50 max-h-56 overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-xl"
+                  >
+                    {searchLoading.loading ? (
+                      <div
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-slate-700"
+                        role="status"
+                        aria-live="polite"
+                      >
+                        <span
+                          className="h-5 w-5 shrink-0 rounded-full border-2 border-[#4749B6]/20 border-t-[#4749B6] animate-spin"
+                          aria-hidden
+                        />
+                        Cargando…
+                      </div>
+                    ) : null}
+
+                    {!searchLoading.loading && rows.length > 0
+                      ? rows.map((row, i) => (
+                          <button
+                            key={`api-${i}-${row.text.slice(0, 24)}`}
+                            type="button"
+                            role="option"
+                            className="block w-full cursor-pointer border-t border-slate-100 px-4 py-2.5 text-left text-sm text-slate-800 first:border-t-0 hover:bg-[#4749B6]/[0.06]"
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              onPick(row);
+                            }}
+                          >
+                            {row.text}
+                          </button>
+                        ))
+                      : null}
+
+                    {!searchLoading.loading && searchEmpty ? (
+                      <div className="border-t border-amber-100 bg-amber-50/80 px-4 py-3">
+                        <p className="text-sm text-slate-800">
+                          No encontramos esa dirección en el mapa. Puede describirla con detalle.
+                        </p>
+                        <button
+                          type="button"
+                          className="mt-2 text-sm font-semibold text-[#4749B6] underline-offset-2 hover:underline"
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            enterManualMode(true);
+                          }}
+                        >
+                          {MANUAL_OPTION} →
+                        </button>
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
+              </div>
+
+              {showManualFallbackLink ? (
                 <button
                   type="button"
-                  className="mt-2 text-xs font-medium text-slate-500 underline-offset-2 hover:text-[#4749B6] hover:underline"
+                  className="text-xs font-medium text-slate-500 underline-offset-2 hover:text-[#4749B6] hover:underline"
                   onClick={() => enterManualMode(true)}
                 >
                   ¿No es ninguna de estas? {MANUAL_OPTION.toLowerCase()}
