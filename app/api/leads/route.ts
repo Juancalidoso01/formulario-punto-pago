@@ -7,6 +7,11 @@ import {
 } from "@/lib/afiliacion-opciones";
 import { SheetsWriteError, appendLeadToSheet } from "@/lib/sheets";
 import {
+  notifyAfiliacionLeadToSlack,
+  notifyCorporativoLeadToSlack,
+  notifyLeadToSlackSafe,
+} from "@/lib/slack";
+import {
   afiliacionRowForSheet,
   corporativoRowForSheet,
   fotoNamesForSheet,
@@ -88,6 +93,9 @@ export async function POST(request: Request) {
     } catch (e) {
       return sheetsErrorResponse(e);
     }
+    await notifyLeadToSlackSafe(() =>
+      notifyCorporativoLeadToSlack(corp, now),
+    );
     return NextResponse.json({ ok: true });
   }
 
@@ -165,6 +173,18 @@ export async function POST(request: Request) {
   } catch (e) {
     return sheetsErrorResponse(e);
   }
+
+  await notifyLeadToSlackSafe(() =>
+    notifyAfiliacionLeadToSlack(data, {
+      submittedAtIso: now,
+      fotoNames: fotoNamesForSheet(
+        data.servicioPrincipal,
+        fotos.map((f) => f.name),
+      ),
+      avisoFileName: aviso.name,
+      firmaFileName: firma.name,
+    }),
+  );
 
   return NextResponse.json({ ok: true });
 }
