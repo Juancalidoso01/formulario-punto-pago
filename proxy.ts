@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { detectLocaleFromAcceptLanguage } from "@/lib/i18n/detect";
 import { LOCALE_COOKIE } from "@/lib/i18n/locales";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const response = NextResponse.next();
 
   if (!request.cookies.get(LOCALE_COOKIE)?.value) {
