@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { PpAmbient } from "@/components/PpAmbient";
 import { useI18n } from "@/components/I18nProvider";
 
@@ -38,7 +37,6 @@ export function AfiliacionChrome({ children }: { children: ReactNode }) {
             </span>
           </a>
           <nav className="flex shrink-0 flex-wrap items-center justify-end gap-1">
-            <LocaleSwitcher className="mr-1 hidden sm:flex" />
             <Link
               href="/"
               className="rounded-lg px-2.5 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-100 hover:text-[#4749B6] sm:px-3 sm:text-sm"
@@ -61,7 +59,6 @@ export function AfiliacionChrome({ children }: { children: ReactNode }) {
             >
               {m.chrome.mainSite}
             </a>
-            <LocaleSwitcher className="sm:hidden" />
           </nav>
         </div>
         <div

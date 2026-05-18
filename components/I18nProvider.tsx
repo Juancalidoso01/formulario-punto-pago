@@ -2,13 +2,13 @@
 
 import {
   createContext,
-  useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
+import { detectLocaleFromNavigator } from "@/lib/i18n/detect";
 import { getMessages } from "@/lib/i18n/get-messages";
 import {
   LOCALE_COOKIE,
@@ -23,7 +23,6 @@ type I18nContextValue = {
   locale: Locale;
   messages: Messages;
   t: TranslateFn;
-  setLocale: (locale: Locale) => void;
 };
 
 const I18nContext = createContext<I18nContextValue | null>(null);
@@ -40,15 +39,17 @@ export function I18nProvider({
   children: ReactNode;
   initialLocale: Locale;
 }) {
-  const [locale, setLocaleState] = useState<Locale>(() => parseLocale(initialLocale));
+  const [locale, setLocale] = useState<Locale>(() => parseLocale(initialLocale));
 
   useEffect(() => {
-    persistLocale(locale);
-  }, [locale]);
-
-  const setLocale = useCallback((next: Locale) => {
-    setLocaleState(next);
+    const detected = detectLocaleFromNavigator(navigator.languages);
+    setLocale(detected);
+    persistLocale(detected);
   }, []);
+
+  useEffect(() => {
+    document.documentElement.lang = LOCALE_META[locale].htmlLang;
+  }, [locale]);
 
   const messages = useMemo(() => getMessages(locale), [locale]);
   const t = useMemo(
@@ -56,10 +57,7 @@ export function I18nProvider({
     [messages],
   );
 
-  const value = useMemo(
-    () => ({ locale, messages, t, setLocale }),
-    [locale, messages, t, setLocale],
-  );
+  const value = useMemo(() => ({ locale, messages, t }), [locale, messages, t]);
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }
