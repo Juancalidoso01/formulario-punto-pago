@@ -22,7 +22,7 @@ export type ServicioBrochure = {
  * Contenidos comerciales por línea de negocio (captación).
  * Cuotas: https://puntopago.net/products/cuotas/
  * Kioscos: https://puntopago.net/business/space/
- * Agente: imagen `public/brochures/agentes-corresponsal.png`; info checkout demo onboarding-access.
+ * Agente: imagen `public/brochures/agentes-corresponsal.png` (sin página pública aún).
  * Corporativo: https://puntopago.net/business/checkout/ y …/paymentshub/
  */
 export const SERVICIO_BROCHURES: Record<ServicioPrincipalId, ServicioBrochure> = {
@@ -51,22 +51,17 @@ export const SERVICIO_BROCHURES: Record<ServicioPrincipalId, ServicioBrochure> =
     id: "agente-corresponsal-comunidad",
     headline: "Agente y corresponsal — Punto Pago en su comunidad",
     tagline:
-      "Operación flexible como corresponsal: cobros y servicios con respaldo de marca. Consulte el acceso y la experiencia de onboarding del checkout demo para ver el flujo comercial y de integración.",
+      "Operación flexible como corresponsal en su comunidad: cobros y servicios con respaldo de marca Punto Pago, desde su comercio o con los medios que tenga a mano.",
     heroImage: {
       src: "/brochures/agentes-corresponsal.png",
       alt: "Ilustración La Bodeguita — Punto Pago corresponsal no bancario, mapa y pin de ubicación",
     },
     highlights: [
       "No importa si está en su isla o en su barriada: con computadora o teléfono puede cobrar a sus clientes; y desde un comercio puede operar como corresponsal no bancario con respaldo Punto Pago.",
-      "Demo de onboarding: explore el flujo de acceso e integración orientado a comercios y corresponsales en el entorno de prueba del checkout.",
-      "Ideal para quienes tienen vocación de servicio en la comunidad y quieren sumarse como agente o corresponsal Punto Pago.",
+      "Modelo pensado para quienes atienden en su comunidad y quieren ofrecer recargas, pagos y servicios con una marca reconocida.",
+      "Ideal para comercios de barrio, colmados y emprendedores con vocación de servicio local.",
     ],
-    officialLinks: [
-      {
-        href: "https://checkout-demo-xi.vercel.app/onboarding-access",
-        label: "Checkout demo — acceso onboarding",
-      },
-    ],
+    officialLinks: [],
   },
   "cuotas-financiamiento-local": {
     id: "cuotas-financiamiento-local",

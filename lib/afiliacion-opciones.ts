@@ -73,15 +73,36 @@ export const METODO_INTEGRACION_OPCIONES = [
 ] as const;
 
 /** Índices de paso del wizard (`AfiliacionWizard`) omitidos por línea de negocio. */
+/** Pasos omitidos: nómina (11) e integración (14) — mismo criterio kioscos / agente. */
+const PASOS_OMITIDOS_NOMINA_INTEGRACION = [11, 14] as const;
+
 const PASOS_OMITIDOS_POR_SERVICIO: Partial<
   Record<ServicioPrincipalId, readonly number[]>
 > = {
-  "kioscos-local-comercial": [11, 14],
+  "kioscos-local-comercial": PASOS_OMITIDOS_NOMINA_INTEGRACION,
+  "agente-corresponsal-comunidad": PASOS_OMITIDOS_NOMINA_INTEGRACION,
 };
 
 export const NOMINA_NO_APLICA_KIOSCOS = "No aplica — kioscos en local comercial";
 export const INTEGRACION_NO_APLICA_KIOSCOS =
   "No aplica — kioscos en local comercial";
+
+export const NOMINA_NO_APLICA_AGENTE =
+  "No aplica — agente corresponsal en comunidad";
+export const INTEGRACION_NO_APLICA_AGENTE =
+  "No aplica — agente corresponsal en comunidad";
+
+export function textoNominaNoAplica(servicio: string): string {
+  if (servicio === "agente-corresponsal-comunidad") return NOMINA_NO_APLICA_AGENTE;
+  if (servicio === "kioscos-local-comercial") return NOMINA_NO_APLICA_KIOSCOS;
+  return "";
+}
+
+export function textoIntegracionNoAplica(servicio: string): string {
+  if (servicio === "agente-corresponsal-comunidad") return INTEGRACION_NO_APLICA_AGENTE;
+  if (servicio === "kioscos-local-comercial") return INTEGRACION_NO_APLICA_KIOSCOS;
+  return "";
+}
 
 export function pasoOmiteParaServicio(servicio: string, stepIndex: number): boolean {
   if (!esServicioPrincipalValido(servicio)) return false;

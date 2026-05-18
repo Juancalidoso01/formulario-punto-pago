@@ -1,8 +1,8 @@
 import {
   ACTIVIDAD_NEGOCIO_OPCIONES,
-  INTEGRACION_NO_APLICA_KIOSCOS,
   METODO_INTEGRACION_OPCIONES,
-  NOMINA_NO_APLICA_KIOSCOS,
+  textoIntegracionNoAplica,
+  textoNominaNoAplica,
   NUM_CLIENTES_OPCIONES,
   OCUPACION_OPCIONES,
   RANGO_NOMINA_OPCIONES,
@@ -106,7 +106,7 @@ export function validateAfiliacionJson(
   const omiteNomina = pasoOmiteParaServicio(servicioPrincipal, 11);
   const omiteIntegracion = pasoOmiteParaServicio(servicioPrincipal, 14);
   if (omiteNomina) {
-    data.rangoNominaMensual = NOMINA_NO_APLICA_KIOSCOS;
+    data.rangoNominaMensual = textoNominaNoAplica(servicioPrincipal);
   } else if (!inList(data.rangoNominaMensual, RANGO_NOMINA_OPCIONES)) {
     return { ok: false, error: "Rango de nómina no válido" };
   }
@@ -114,7 +114,7 @@ export function validateAfiliacionJson(
     return { ok: false, error: "Cantidad de clientes no válida" };
   }
   if (omiteIntegracion) {
-    data.metodoIntegracion = INTEGRACION_NO_APLICA_KIOSCOS;
+    data.metodoIntegracion = textoIntegracionNoAplica(servicioPrincipal);
   } else if (!inList(data.metodoIntegracion, METODO_INTEGRACION_OPCIONES)) {
     return { ok: false, error: "Método de integración no válido" };
   }

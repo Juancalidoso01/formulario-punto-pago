@@ -6,10 +6,10 @@ import { useCallback, useRef, useState } from "react";
 import type { AfiliacionJson } from "@/lib/afiliacion-payload";
 import {
   ACTIVIDAD_NEGOCIO_OPCIONES,
-  INTEGRACION_NO_APLICA_KIOSCOS,
   METODO_INTEGRACION_OPCIONES,
-  NOMINA_NO_APLICA_KIOSCOS,
   NUM_CLIENTES_OPCIONES,
+  textoIntegracionNoAplica,
+  textoNominaNoAplica,
   OCUPACION_OPCIONES,
   RANGO_NOMINA_OPCIONES,
   esServicioPrincipalValido,
@@ -162,11 +162,11 @@ export function AfiliacionWizard({
       ocupacionPrincipal,
       actividadNegocio,
       rangoNominaMensual: pasoOmiteParaServicio(servicioPrincipal, 11)
-        ? NOMINA_NO_APLICA_KIOSCOS
+        ? textoNominaNoAplica(servicioPrincipal)
         : rangoNominaMensual,
       numClientes,
       metodoIntegracion: pasoOmiteParaServicio(servicioPrincipal, 14)
-        ? INTEGRACION_NO_APLICA_KIOSCOS
+        ? textoIntegracionNoAplica(servicioPrincipal)
         : metodoIntegracion,
       terminosAceptados,
     };
