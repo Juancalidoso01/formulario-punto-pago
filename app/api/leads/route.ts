@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { appendLeadToSheet } from "@/lib/sheets";
+import {
+  corporativoRowForSheet,
+  validateAfiliacionCorporativoJson,
+} from "@/lib/afiliacion-corporativo-payload";
 import { validateAfiliacionJson } from "@/lib/afiliacion-payload";
 import { textoServicioPrincipalParaSheet } from "@/lib/afiliacion-opciones";
 
@@ -23,6 +27,8 @@ function isAvisoOk(file: File) {
  * Fecha | Nombre | Apellido | Email | Tel código | Tel número | Empresa | RUC |
  * Dirección | Provincia | Descripción negocio | Servicio principal | Ocupación | Actividad |
  * Rango nómina | Nº clientes | Integración | Términos | Fotos (nombres) | Aviso archivo | Firma archivo
+ *
+ * Corporativo: celular en Tel código/número; fijo en Empresa («Fijo: …»); cargo en RUC.
  */
 export async function POST(request: Request) {
   const ct = request.headers.get("content-type") ?? "";
@@ -50,6 +56,37 @@ export async function POST(request: Request) {
     parsed = JSON.parse(raw) as unknown;
   } catch {
     return NextResponse.json({ error: "El campo data no es JSON válido" }, { status: 400 });
+  }
+
+  const servicio =
+    typeof parsed === "object" &&
+    parsed !== null &&
+    typeof (parsed as Record<string, unknown>).servicioPrincipal === "string"
+      ? ((parsed as Record<string, unknown>).servicioPrincipal as string)
+      : "";
+
+  if (servicio === "servicios-corporativos") {
+    const corpValidated = validateAfiliacionCorporativoJson(parsed);
+    if (!corpValidated.ok) {
+      return NextResponse.json({ error: corpValidated.error }, { status: 400 });
+    }
+    const corp = corpValidated.data;
+    const now = new Date().toISOString();
+    const row = corporativoRowForSheet(
+      corp,
+      textoServicioPrincipalParaSheet(corp.servicioPrincipal),
+      now,
+    );
+    try {
+      await appendLeadToSheet(row);
+    } catch (e) {
+      console.error("[leads] sheets error (corporativo)", e);
+      return NextResponse.json(
+        { error: "No se pudo guardar. Revisa la configuración del servidor (Sheets)." },
+        { status: 502 },
+      );
+    }
+    return NextResponse.json({ ok: true });
   }
 
   const validated = validateAfiliacionJson(parsed);

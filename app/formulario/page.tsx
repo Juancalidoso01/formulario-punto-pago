@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AfiliacionChrome } from "@/components/AfiliacionChrome";
+import { AfiliacionCorporativoWizard } from "@/components/AfiliacionCorporativoWizard";
 import { AfiliacionWizard } from "@/components/AfiliacionWizard";
+import { esFormularioCorporativo } from "@/lib/afiliacion-corporativo-payload";
 import { esServicioPrincipalValido } from "@/lib/afiliacion-opciones";
 
 type Props = {
@@ -16,6 +18,7 @@ export default async function FormularioPage({ searchParams }: Props) {
     redirect("/");
   }
 
+  const corporativo = esFormularioCorporativo(servicio);
   const wizardKey = `svc-${servicio}`;
 
   return (
@@ -24,7 +27,7 @@ export default async function FormularioPage({ searchParams }: Props) {
         <p>
           <span className="font-semibold text-[#0B0B13]">Paso 2 de 2</span>
           {" · "}
-          Formulario de afiliación
+          {corporativo ? "Contacto corporativo" : "Formulario de afiliación"}
         </p>
         <Link
           href="/"
@@ -35,11 +38,15 @@ export default async function FormularioPage({ searchParams }: Props) {
       </div>
 
       <div className="rounded-2xl border border-white/70 bg-white/90 p-6 shadow-xl shadow-slate-900/[0.06] ring-1 ring-white/40 backdrop-blur-xl sm:p-8">
-        <AfiliacionWizard
-          key={wizardKey}
-          initialServicioPrincipal={servicio}
-          startAfterServiceStep
-        />
+        {corporativo ? (
+          <AfiliacionCorporativoWizard key={wizardKey} />
+        ) : (
+          <AfiliacionWizard
+            key={wizardKey}
+            initialServicioPrincipal={servicio}
+            startAfterServiceStep
+          />
+        )}
       </div>
     </AfiliacionChrome>
   );
