@@ -1,7 +1,8 @@
 /**
  * Prueba subida a Google Drive (carpeta de prueba dentro de GOOGLE_DRIVE_FOLDER_ID).
+ * La carpeta debe estar en una unidad compartida (Shared Drive), no en «Mi unidad».
  *
- * Uso: node scripts/verify-google-drive.mjs
+ * Uso: npm run drive:verify
  * Requiere GOOGLE_SERVICE_ACCOUNT_JSON y GOOGLE_DRIVE_FOLDER_ID en .env.local
  */
 import { readFileSync, existsSync } from "node:fs";
@@ -32,6 +33,24 @@ function loadEnvLocal() {
   }
 }
 
+function mensajeUnidadCompartida(clientEmail) {
+  return [
+    "Las cuentas de servicio no tienen espacio en «Mi unidad» de Google Drive.",
+    "Debe usar una unidad compartida (Shared Drive) de Google Workspace:",
+    "",
+    "1. En drive.google.com → Unidades compartidas → Nueva unidad compartida",
+    "   (ej. «Leads formulario Punto Pago»).",
+    `2. Miembros → Agregar ${clientEmail} como «Colaborador de contenido» o superior.`,
+    "3. Dentro de esa unidad, cree una carpeta (ej. «Afiliaciones») y abra su URL.",
+    "4. Copie solo el ID de la carpeta (…/folders/ESTE_ID) en GOOGLE_DRIVE_FOLDER_ID.",
+    "5. Vuelva a ejecutar: npm run drive:verify",
+  ].join("\n");
+}
+
+function isQuotaError(msg) {
+  return /service accounts do not have storage quota|storage quota/i.test(msg);
+}
+
 loadEnvLocal();
 
 const parentId = process.env.GOOGLE_DRIVE_FOLDER_ID?.trim();
@@ -47,21 +66,61 @@ if (!parentId) {
 }
 
 const credentials = JSON.parse(json);
+const clientEmail = credentials.client_email ?? "(client_email del JSON)";
 const auth = new google.auth.GoogleAuth({
   credentials,
   scopes: ["https://www.googleapis.com/auth/drive.file"],
 });
 const drive = google.drive({ version: "v3", auth });
 
-const folderRes = await drive.files.create({
-  requestBody: {
-    name: `test-drive-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}`,
-    mimeType: "application/vnd.google-apps.folder",
-    parents: [parentId],
-  },
-  fields: "id, webViewLink",
-  supportsAllDrives: true,
-});
+let parentMeta;
+try {
+  const parentRes = await drive.files.get({
+    fileId: parentId,
+    fields: "id, name, driveId",
+    supportsAllDrives: true,
+  });
+  parentMeta = parentRes.data;
+} catch (err) {
+  const msg = err?.message ?? String(err);
+  console.error("No se pudo leer la carpeta raíz:", msg);
+  console.error("\n" + mensajeUnidadCompartida(clientEmail));
+  process.exit(1);
+}
 
-console.log("OK — carpeta de prueba creada:");
-console.log(folderRes.data.webViewLink ?? folderRes.data.id);
+if (!parentMeta.driveId) {
+  console.error(
+    `La carpeta «${parentMeta.name ?? parentId}» está en un Drive personal, no en una unidad compartida.\n`,
+  );
+  console.error(mensajeUnidadCompartida(clientEmail));
+  process.exit(1);
+}
+
+console.log(
+  `Carpeta raíz OK en unidad compartida: «${parentMeta.name}» (driveId ${parentMeta.driveId})`,
+);
+
+try {
+  const folderRes = await drive.files.create({
+    requestBody: {
+      name: `test-drive-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}`,
+      mimeType: "application/vnd.google-apps.folder",
+      parents: [parentId],
+    },
+    fields: "id, webViewLink",
+    supportsAllDrives: true,
+  });
+
+  console.log("OK — carpeta de prueba creada:");
+  console.log(folderRes.data.webViewLink ?? folderRes.data.id);
+} catch (err) {
+  const msg = err?.message ?? String(err);
+  if (isQuotaError(msg)) {
+    console.error("Error de cuota (cuenta de servicio):\n");
+    console.error(mensajeUnidadCompartida(clientEmail));
+  } else {
+    console.error("Error al crear carpeta de prueba:", msg);
+    console.error("\nRevise que", clientEmail, "tenga acceso a la unidad compartida.");
+  }
+  process.exit(1);
+}

@@ -1,7 +1,79 @@
 import { Readable } from "node:stream";
+import type { drive_v3 } from "googleapis";
 import { google } from "googleapis";
 import { getGoogleSheetsConfig } from "@/lib/google-sheets-config";
 import { createGoogleAuth, GOOGLE_DRIVE_SCOPE } from "@/lib/google-auth";
+
+/** Guía cuando la carpeta está en «Mi unidad» o la API devuelve error de cuota. */
+export function mensajeConfiguracionUnidadCompartida(clientEmail: string): string {
+  return [
+    "Las cuentas de servicio no tienen espacio en «Mi unidad» de Google Drive.",
+    "Debe usar una unidad compartida (Shared Drive) de Google Workspace:",
+    "",
+    "1. En drive.google.com → Unidades compartidas → Nueva unidad compartida",
+    "   (ej. «Leads formulario Punto Pago»).",
+    `2. Miembros → Agregar ${clientEmail} como «Colaborador de contenido» o superior.`,
+    "3. Dentro de esa unidad, cree una carpeta (ej. «Afiliaciones») y abra su URL.",
+    "4. Copie solo el ID de la carpeta (…/folders/ESTE_ID) en GOOGLE_DRIVE_FOLDER_ID (Vercel).",
+    "5. Pruebe de nuevo: npm run drive:verify",
+  ].join("\n");
+}
+
+function isServiceAccountStorageQuotaError(message: string): boolean {
+  return /service accounts do not have storage quota|storage quota/i.test(message);
+}
+
+/** La carpeta raíz debe vivir en una unidad compartida (`driveId` presente). */
+export async function assertDriveParentIsSharedDrive(
+  drive: drive_v3.Drive,
+  parentId: string,
+  clientEmail: string,
+): Promise<void> {
+  let meta: drive_v3.Schema$File;
+  try {
+    const res = await drive.files.get({
+      fileId: parentId,
+      fields: "id, name, driveId",
+      supportsAllDrives: true,
+    });
+    meta = res.data;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    if (/not found|404/i.test(msg)) {
+      throw new Error(
+        `No se encontró la carpeta GOOGLE_DRIVE_FOLDER_ID (${parentId}). Revise el ID en Vercel.`,
+      );
+    }
+    if (/permission|403|forbidden/i.test(msg)) {
+      throw new Error(
+        `Sin acceso a la carpeta de Drive. ${mensajeConfiguracionUnidadCompartida(clientEmail)}`,
+      );
+    }
+    throw err;
+  }
+
+  if (!meta.driveId) {
+    const nombre = meta.name ?? parentId;
+    throw new Error(
+      `La carpeta «${nombre}» está en un Drive personal, no en una unidad compartida.\n\n${mensajeConfiguracionUnidadCompartida(clientEmail)}`,
+    );
+  }
+}
+
+function rethrowDriveError(err: unknown, clientEmail: string): never {
+  const msg = err instanceof Error ? err.message : String(err);
+  if (isServiceAccountStorageQuotaError(msg)) {
+    throw new Error(
+      `Google Drive rechazó la subida (cuenta de servicio sin espacio).\n\n${mensajeConfiguracionUnidadCompartida(clientEmail)}`,
+    );
+  }
+  if (/permission|403|not found/i.test(msg)) {
+    throw new Error(
+      `No se pudo escribir en Drive. Comparta la unidad compartida con ${clientEmail} (Colaborador de contenido o superior) y habilite Google Drive API. Detalle: ${msg}`,
+    );
+  }
+  throw err instanceof Error ? err : new Error(msg);
+}
 
 export type LeadDriveUploadResult = {
   folderId: string;
@@ -60,6 +132,8 @@ export async function uploadLeadFilesToDrive(opts: {
   const auth = createGoogleAuth([GOOGLE_DRIVE_SCOPE]);
   const drive = google.drive({ version: "v3", auth });
 
+  await assertDriveParentIsSharedDrive(drive, parentId, cfg.clientEmail);
+
   const folderName = leadFolderName(opts);
   let folderId: string;
   let folderUrl: string;
@@ -79,36 +153,34 @@ export async function uploadLeadFilesToDrive(opts: {
       folderRes.data.webViewLink ??
       `https://drive.google.com/drive/folders/${folderId}`;
   } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    if (/permission|403|not found/i.test(msg)) {
-      throw new Error(
-        `No se pudo crear la carpeta en Drive. Comparta la carpeta raíz con ${cfg.clientEmail} (Editor) y habilite Google Drive API. Detalle: ${msg}`,
-      );
-    }
-    throw err;
+    rethrowDriveError(err, cfg.clientEmail);
   }
 
   const uploaded: LeadDriveUploadResult["uploaded"] = [];
 
   const uploadOne = async (file: File, field: string) => {
-    const body = Readable.from(await fileToBuffer(file));
-    const res = await drive.files.create({
-      requestBody: {
-        name: file.name,
-        parents: [folderId],
-      },
-      media: {
-        mimeType: file.type || "application/octet-stream",
-        body,
-      },
-      fields: "id, name",
-      supportsAllDrives: true,
-    });
-    uploaded.push({
-      field,
-      name: res.data.name ?? file.name,
-      fileId: res.data.id!,
-    });
+    try {
+      const body = Readable.from(await fileToBuffer(file));
+      const res = await drive.files.create({
+        requestBody: {
+          name: file.name,
+          parents: [folderId],
+        },
+        media: {
+          mimeType: file.type || "application/octet-stream",
+          body,
+        },
+        fields: "id, name",
+        supportsAllDrives: true,
+      });
+      uploaded.push({
+        field,
+        name: res.data.name ?? file.name,
+        fileId: res.data.id!,
+      });
+    } catch (err) {
+      rethrowDriveError(err, cfg.clientEmail);
+    }
   };
 
   for (const foto of opts.fotos) {
