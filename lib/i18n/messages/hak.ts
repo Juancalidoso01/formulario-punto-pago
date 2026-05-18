@@ -34,6 +34,7 @@ export const hakMessages: Messages = {
     disclaimer:
       "產品資料來自 Punto Pago 公開材料。最終條款、金額同期限以簽約時及加盟時生效个合約同規則為準。請透過連結了解更多（Punto Pago 網站或適用个外部資源）。",
     officialLinkSub: "會在新分頁開啟 puntopago.net",
+    officialLinkSubComercios: "會在新分頁開啟 comercios.puntopago.net",
   },
   services: {
     kioscos: {
@@ -82,7 +83,7 @@ export const hakMessages: Messages = {
       h2: "購買時商戶毋使收首付；客戶喺固定日子還款（例如每月 2 號同 17 號）。",
       h3: "引導式流程：商戶二維碼、分期計劃、批核同短訊簽名；身份證或應用程式內流程。",
       h4: "若金額超過分期上限，餘額可以按產品條款用現金或銀行卡支付。",
-      linkOfficial: "官方頁面：分期付款",
+      linkOfficial: "Comercios 商戶門戶：分期",
     },
     corporativo: {
       headline: "企業方案 — 大規模收款同支付處理",

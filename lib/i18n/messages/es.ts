@@ -35,6 +35,7 @@ export const esMessages = {
     disclaimer:
       "La información de producto proviene de materiales públicos de Punto Pago. Condiciones, montos y plazos definitivos dependen de contrato y reglas vigentes al momento de la afiliación. Use los enlaces para ampliar información (sitio Punto Pago o recursos externos según corresponda).",
     officialLinkSub: "Abre puntopago.net en una nueva pestaña",
+    officialLinkSubComercios: "Abre comercios.puntopago.net en una nueva pestaña",
   },
   services: {
     kioscos: {
@@ -83,7 +84,7 @@ export const esMessages = {
       h2: "Sin pago inicial al comercio en el momento de la compra; el cliente paga en fechas fijas (p. ej. 2 y 17 de cada mes).",
       h3: "Proceso guiado: QR del vendedor, plan de cuotas, aprobación y firma vía SMS; identidad con cédula o flujo en app.",
       h4: "Si el monto supera el tope de cuotas, puede combinarse el resto en efectivo o tarjeta según condiciones del producto.",
-      linkOfficial: "Ver página oficial: Cuotas",
+      linkOfficial: "Ver portal Comercios: Cuotas",
     },
     corporativo: {
       headline: "Soluciones corporativas — recaudo masivo y procesamiento de pagos",

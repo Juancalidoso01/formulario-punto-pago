@@ -34,6 +34,7 @@ export const zhCNMessages: Messages = {
     disclaimer:
       "产品信息来自 Punto Pago 公开资料。最终条件、金额与期限以签约时及加盟时生效的合同与规则为准。请通过链接获取更多信息（Punto Pago 网站或适用的外部资源）。",
     officialLinkSub: "在新标签页打开 puntopago.net",
+    officialLinkSubComercios: "在新标签页打开 comercios.puntopago.net",
   },
   services: {
     kioscos: {
@@ -82,7 +83,7 @@ export const zhCNMessages: Messages = {
       h2: "购买时商户无需收取首付；客户于固定日期付款（例如每月 2 日与 17 日）。",
       h3: "引导式流程：商户二维码、分期计划、审批及短信签名；身份证或应用内流程。",
       h4: "若金额超过分期上限，余额可按产品条款以现金或银行卡支付。",
-      linkOfficial: "官方页面：分期付款",
+      linkOfficial: "Comercios 商户门户：分期",
     },
     corporativo: {
       headline: "企业解决方案 — 大规模收款与支付处理",

@@ -1,5 +1,5 @@
 /**
- * Lógica de la calculadora de Cuotas (puntopago.net/products/cuotas/).
+ * Lógica de la calculadora de Cuotas (referencia: comercios.puntopago.net).
  * Tarifas y plazos tomados del bundle público del sitio.
  */
 

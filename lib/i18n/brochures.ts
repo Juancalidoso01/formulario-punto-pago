@@ -32,7 +32,7 @@ const HERO_IMAGES: Record<
 
 const OFFICIAL_LINKS: Record<
   ServicioPrincipalId,
-  { href: string; labelKey: string }[]
+  { href: string; labelKey: string; subKey?: "officialLinkSubComercios" }[]
 > = {
   "kioscos-local-comercial": [
     {
@@ -43,8 +43,9 @@ const OFFICIAL_LINKS: Record<
   "agente-corresponsal-comunidad": [],
   "cuotas-financiamiento-local": [
     {
-      href: "https://puntopago.net/products/cuotas/",
+      href: "https://comercios.puntopago.net/",
       labelKey: "linkOfficial",
+      subKey: "officialLinkSubComercios",
     },
   ],
   "servicios-corporativos": [
@@ -73,6 +74,7 @@ export function brochureFromMessages(
   const links = OFFICIAL_LINKS[id].map((l) => ({
     href: l.href,
     label: (b as Record<string, string>)[l.labelKey],
+    linkSub: l.subKey ? messages.serviciosPage[l.subKey] : undefined,
   }));
 
   return {

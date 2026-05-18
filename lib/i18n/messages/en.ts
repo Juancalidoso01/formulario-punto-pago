@@ -34,6 +34,7 @@ export const enMessages: Messages = {
     disclaimer:
       "Product information comes from Punto Pago public materials. Final conditions, amounts and terms depend on the contract and rules in force at the time of affiliation. Use the links for more information (Punto Pago site or external resources as applicable).",
     officialLinkSub: "Opens puntopago.net in a new tab",
+    officialLinkSubComercios: "Opens comercios.puntopago.net in a new tab",
   },
   services: {
     kioscos: {
@@ -82,7 +83,7 @@ export const enMessages: Messages = {
       h2: "No down payment to the merchant at purchase; the customer pays on fixed dates (e.g. 2nd and 17th of each month).",
       h3: "Guided flow: seller QR, installment plan, approval and SMS signature; ID card or in-app flow.",
       h4: "If the amount exceeds the installment cap, the remainder can be paid in cash or card per product terms.",
-      linkOfficial: "Official page: Installments",
+      linkOfficial: "Comercios portal: Installments",
     },
     corporativo: {
       headline: "Corporate solutions — mass collection and payment processing",

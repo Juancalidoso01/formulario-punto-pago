@@ -20,9 +20,25 @@ type SlackPayload = {
   blocks: SlackBlock[];
 };
 
-function webhookUrl(): string | null {
-  const url = process.env.SLACK_WEBHOOK_URL?.trim();
-  return url || null;
+/** Canal general (kioscos, agente, corporativo). */
+function webhookUrlGeneral(): string | null {
+  return process.env.SLACK_WEBHOOK_URL?.trim() || null;
+}
+
+/** Grupo/canal dedicado solo a leads de Cuotas. */
+function webhookUrlCuotas(): string | null {
+  return process.env.SLACK_WEBHOOK_URL_CUOTAS?.trim() || null;
+}
+
+/**
+ * Cuotas → `SLACK_WEBHOOK_URL_CUOTAS` (si existe); si no, cae al webhook general.
+ * Otras líneas → solo `SLACK_WEBHOOK_URL`.
+ */
+export function webhookUrlForServicio(servicioPrincipal: string): string | null {
+  if (esServicioCuotas(servicioPrincipal)) {
+    return webhookUrlCuotas() ?? webhookUrlGeneral();
+  }
+  return webhookUrlGeneral();
 }
 
 function field(label: string, value: string): { type: "mrkdwn"; text: string } {
@@ -48,9 +64,9 @@ function phone(codigo: string, numero: string): string {
   return `${codigo.trim()} ${n}`.trim();
 }
 
-async function postToSlack(payload: SlackPayload): Promise<void> {
-  const url = webhookUrl();
-  if (!url) return;
+async function postToSlack(payload: SlackPayload, webhook: string | null): Promise<void> {
+  if (!webhook) return;
+  const url = webhook;
 
   const res = await fetch(url, {
     method: "POST",
@@ -86,11 +102,19 @@ export async function notifyAfiliacionLeadToSlack(
 ): Promise<void> {
   const servicio = textoServicioPrincipalParaSheet(data.servicioPrincipal);
   const plan = planCuotasLine(data);
+  const esCuotas = esServicioCuotas(data.servicioPrincipal);
+  const webhook = webhookUrlForServicio(data.servicioPrincipal);
 
   const blocks: SlackBlock[] = [
     {
       type: "header",
-      text: { type: "plain_text", text: "Nuevo lead — Formulario de afiliación", emoji: true },
+      text: {
+        type: "plain_text",
+        text: esCuotas
+          ? "Nuevo lead — Cuotas en su local"
+          : "Nuevo lead — Formulario de afiliación",
+        emoji: true,
+      },
     },
     {
       type: "section",
@@ -141,7 +165,7 @@ export async function notifyAfiliacionLeadToSlack(
     },
   ];
 
-  if (!esServicioCuotas(data.servicioPrincipal)) {
+  if (!esCuotas) {
     blocks.push({
       type: "section",
       fields: [
@@ -149,34 +173,51 @@ export async function notifyAfiliacionLeadToSlack(
         field("Integración", data.metodoIntegracion),
       ],
     });
-  } else if (plan) {
-    blocks.push({
-      type: "section",
-      text: { type: "mrkdwn", text: `*Plan Cuotas (referencia)*\n${plan}` },
-    });
+    blocks.push(
+      { type: "divider" },
+      {
+        type: "section",
+        fields: [
+          field("Fotos", opts.fotoNames),
+          field("Aviso", opts.avisoFileName),
+          field("Firma", opts.firmaFileName),
+        ],
+      },
+    );
   } else {
-    blocks.push({
-      type: "section",
-      text: { type: "mrkdwn", text: `*Plan Cuotas*\n${data.metodoIntegracion}` },
-    });
+    if (plan) {
+      blocks.push({
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `*Plan de financiamiento (referencia)*\n${plan}`,
+        },
+      });
+    } else {
+      blocks.push({
+        type: "section",
+        text: { type: "mrkdwn", text: `*Plan Cuotas*\n${data.metodoIntegracion}` },
+      });
+    }
+    blocks.push(
+      { type: "divider" },
+      {
+        type: "section",
+        fields: [
+          field("Aviso de operación", opts.avisoFileName),
+          field("Firma", opts.firmaFileName),
+        ],
+      },
+    );
   }
 
-  blocks.push(
-    { type: "divider" },
+  await postToSlack(
     {
-      type: "section",
-      fields: [
-        field("Fotos", opts.fotoNames),
-        field("Aviso", opts.avisoFileName),
-        field("Firma", opts.firmaFileName),
-      ],
+      text: `Nuevo lead: ${data.contactoNombre} ${data.contactoApellido} — ${servicio}`,
+      blocks,
     },
+    webhook,
   );
-
-  await postToSlack({
-    text: `Nuevo lead: ${data.contactoNombre} ${data.contactoApellido} — ${servicio}`,
-    blocks,
-  });
 }
 
 export async function notifyCorporativoLeadToSlack(
@@ -187,9 +228,10 @@ export async function notifyCorporativoLeadToSlack(
   const fijo = phone(data.telefonoFijoCodigo, data.telefonoFijoNumero);
   const cel = phone(data.telefonoCelCodigo, data.telefonoCelNumero);
 
-  await postToSlack({
-    text: `Nuevo contacto corporativo: ${data.contactoNombre} ${data.contactoApellido}`,
-    blocks: [
+  await postToSlack(
+    {
+      text: `Nuevo contacto corporativo: ${data.contactoNombre} ${data.contactoApellido}`,
+      blocks: [
       {
         type: "header",
         text: { type: "plain_text", text: "Nuevo lead — Contacto corporativo", emoji: true },
@@ -215,7 +257,9 @@ export async function notifyCorporativoLeadToSlack(
         fields: [field("Celular", cel), field("Teléfono fijo", fijo)],
       },
     ],
-  });
+    },
+    webhookUrlGeneral(),
+  );
 }
 
 /** No lanza al cliente; solo registra en servidor si Slack falla. */
@@ -230,5 +274,9 @@ export async function notifyLeadToSlackSafe(
 }
 
 export function isSlackConfigured(): boolean {
-  return !!webhookUrl();
+  return !!(webhookUrlGeneral() || webhookUrlCuotas());
+}
+
+export function isSlackConfiguredForServicio(servicioPrincipal: string): boolean {
+  return !!webhookUrlForServicio(servicioPrincipal);
 }

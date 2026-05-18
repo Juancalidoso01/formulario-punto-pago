@@ -3,6 +3,8 @@ import type { ServicioPrincipalId } from "@/lib/afiliacion-opciones";
 export type BrochureOfficialLink = {
   href: string;
   label: string;
+  /** Si se omite, la UI usa el subtítulo genérico de puntopago.net. */
+  linkSub?: string;
 };
 
 export type ServicioBrochure = {
@@ -20,7 +22,7 @@ export type ServicioBrochure = {
 
 /**
  * Contenidos comerciales por línea de negocio (captación).
- * Cuotas: https://puntopago.net/products/cuotas/
+ * Cuotas: https://comercios.puntopago.net/
  * Kioscos: https://puntopago.net/business/space/
  * Agente: imagen `public/brochures/agentes-corresponsal.png` (sin página pública aún).
  * Corporativo: https://puntopago.net/business/checkout/ y …/paymentshub/
@@ -80,8 +82,9 @@ export const SERVICIO_BROCHURES: Record<ServicioPrincipalId, ServicioBrochure> =
     ],
     officialLinks: [
       {
-        href: "https://puntopago.net/products/cuotas/",
-        label: "Ver página oficial: Cuotas",
+        href: "https://comercios.puntopago.net/",
+        label: "Ver portal Comercios: Cuotas",
+        linkSub: "Abre comercios.puntopago.net en una nueva pestaña",
       },
     ],
   },

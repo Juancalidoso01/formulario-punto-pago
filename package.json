@@ -13,7 +13,9 @@
     "sheets:verify": "node scripts/verify-google-sheets.mjs",
     "sheets:init-headers": "node scripts/verify-google-sheets.mjs --init-headers",
     "sheets:setup-vercel": "node scripts/setup-google-vercel-env.mjs",
-    "slack:verify": "node scripts/verify-slack-webhook.mjs"
+    "slack:verify": "node scripts/verify-slack-webhook.mjs",
+    "slack:verify:cuotas": "node scripts/verify-slack-webhook.mjs --cuotas",
+    "slack:setup-vercel:cuotas": "node scripts/setup-slack-cuotas-vercel.mjs"
   },
   "dependencies": {
     "googleapis": "^150.0.1",

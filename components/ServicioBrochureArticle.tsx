@@ -85,7 +85,7 @@ export function ServicioBrochureArticle({ id }: { id: ServicioPrincipalId }) {
                 <span className="flex flex-col items-center gap-0.5">
                   <span>{link.label}</span>
                   <span className="text-xs font-normal text-slate-500">
-                    {m.serviciosPage.officialLinkSub}
+                    {link.linkSub ?? m.serviciosPage.officialLinkSub}
                   </span>
                 </span>
               </a>

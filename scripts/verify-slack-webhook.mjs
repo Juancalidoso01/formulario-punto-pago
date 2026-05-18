@@ -1,8 +1,11 @@
 /**
  * Prueba el webhook de Slack (mensaje de ejemplo).
  *
- * 1. Añada SLACK_WEBHOOK_URL en .env.local
- * 2. node scripts/verify-slack-webhook.mjs
+ * 1. Añada en .env.local:
+ *    SLACK_WEBHOOK_URL=...           (canal general)
+ *    SLACK_WEBHOOK_URL_CUOTAS=...    (grupo Cuotas)
+ * 2. npm run slack:verify
+ * 3. npm run slack:verify:cuotas
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -11,6 +14,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
 const envPath = path.join(root, ".env.local");
+const forCuotas = process.argv.includes("--cuotas");
 
 if (fs.existsSync(envPath)) {
   for (const line of fs.readFileSync(envPath, "utf8").split("\n")) {
@@ -30,28 +34,57 @@ if (fs.existsSync(envPath)) {
   }
 }
 
-const url = process.env.SLACK_WEBHOOK_URL?.trim();
+const url = forCuotas
+  ? process.env.SLACK_WEBHOOK_URL_CUOTAS?.trim() ||
+    process.env.SLACK_WEBHOOK_URL?.trim()
+  : process.env.SLACK_WEBHOOK_URL?.trim();
+
 if (!url) {
-  console.error("Falta SLACK_WEBHOOK_URL en .env.local");
+  console.error(
+    forCuotas
+      ? "Falta SLACK_WEBHOOK_URL_CUOTAS (o SLACK_WEBHOOK_URL) en .env.local"
+      : "Falta SLACK_WEBHOOK_URL en .env.local",
+  );
   process.exit(1);
 }
 
-const payload = {
-  text: "Prueba — Formulario Punto Pago",
-  blocks: [
-    {
-      type: "header",
-      text: { type: "plain_text", text: "Prueba de integración Slack", emoji: true },
-    },
-    {
-      type: "section",
-      text: {
-        type: "mrkdwn",
-        text: "Si ves este mensaje, el webhook está bien configurado.",
-      },
-    },
-  ],
-};
+const payload = forCuotas
+  ? {
+      text: "Prueba — Cuotas Punto Pago",
+      blocks: [
+        {
+          type: "header",
+          text: {
+            type: "plain_text",
+            text: "Prueba — Canal Cuotas",
+            emoji: true,
+          },
+        },
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: "Webhook de *Cuotas* OK. Los leads de «Cuotas en su local» llegarán a este canal.",
+          },
+        },
+      ],
+    }
+  : {
+      text: "Prueba — Formulario Punto Pago",
+      blocks: [
+        {
+          type: "header",
+          text: { type: "plain_text", text: "Prueba — Canal general", emoji: true },
+        },
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: "Webhook general OK (kioscos, agente, corporativo).",
+          },
+        },
+      ],
+    };
 
 const res = await fetch(url, {
   method: "POST",
@@ -64,4 +97,8 @@ if (!res.ok) {
   process.exit(1);
 }
 
-console.log("✓ Mensaje de prueba enviado a Slack.");
+console.log(
+  forCuotas
+    ? "✓ Mensaje de prueba enviado al canal de Cuotas."
+    : "✓ Mensaje de prueba enviado al canal general.",
+);
