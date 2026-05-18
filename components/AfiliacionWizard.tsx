@@ -24,6 +24,7 @@ import {
   type AfiliacionAddressEntryMode,
 } from "@/components/AfiliacionAddressPaField";
 import { isPanamaManualComposedAddress } from "@/lib/panama-manual-address";
+import { SearchableSelect } from "@/components/SearchableSelect";
 import { ServicioPrincipalPicker } from "@/components/ServicioPrincipalPicker";
 import { SignaturePad, type SignaturePadHandle } from "@/components/SignaturePad";
 
@@ -240,10 +241,14 @@ export function AfiliacionWizard({
         }
         return null;
       case 8:
-        if (!ocupacionPrincipal) return "Seleccione su profesión u ocupación del listado.";
+        if (!ocupacionPrincipal) {
+          return "Busque y seleccione su profesión u ocupación del listado.";
+        }
         return null;
       case 9:
-        if (!actividadNegocio) return "Seleccione la actividad económica de su negocio.";
+        if (!actividadNegocio) {
+          return "Busque y seleccione la actividad económica de su negocio del listado.";
+        }
         return null;
       case 10:
         if (fotosLocal.length < 1 || fotosLocal.length > 5) {
@@ -590,25 +595,18 @@ export function AfiliacionWizard({
             <StepHeading
               displayStep={pasoLabel(step)}
               title="¿Cuál es su profesión u ocupación principal?"
-              description="Seleccione del catálogo la profesión u ocupación que mejor describe su rol actual."
+              description="Escriba para buscar en el catálogo o abra el listado y elija la opción que mejor describe su rol."
             />
             <label className={labelClass}>
               Profesión u ocupación
-              <select
-                className={inputClass}
+              <SearchableSelect
+                options={OCUPACION_OPCIONES}
                 value={ocupacionPrincipal}
-                onChange={(e) => setOcupacionPrincipal(e.target.value)}
-                required
-              >
-                <option value="" disabled>
-                  Elija una profesión u ocupación…
-                </option>
-                {OCUPACION_OPCIONES.map((o) => (
-                  <option key={o} value={o}>
-                    {o}
-                  </option>
-                ))}
-              </select>
+                onChange={setOcupacionPrincipal}
+                inputClass={inputClass}
+                placeholder="Ej: comerciante, abogado, administrador…"
+                id="afiliacion-ocupacion"
+              />
             </label>
           </>
         ) : null}
@@ -618,25 +616,18 @@ export function AfiliacionWizard({
             <StepHeading
               displayStep={pasoLabel(step)}
               title="¿Qué actividad económica describe mejor su negocio?"
-              description="Seleccione del catálogo la actividad principal de su empresa o local comercial."
+              description="Escriba para buscar en el catálogo o abra el listado y elija la actividad principal de su empresa."
             />
             <label className={labelClass}>
               Actividad económica
-              <select
-                className={inputClass}
+              <SearchableSelect
+                options={ACTIVIDAD_NEGOCIO_OPCIONES}
                 value={actividadNegocio}
-                onChange={(e) => setActividadNegocio(e.target.value)}
-                required
-              >
-                <option value="" disabled>
-                  Elija una actividad económica…
-                </option>
-                {ACTIVIDAD_NEGOCIO_OPCIONES.map((o) => (
-                  <option key={o} value={o}>
-                    {o}
-                  </option>
-                ))}
-              </select>
+                onChange={setActividadNegocio}
+                inputClass={inputClass}
+                placeholder="Ej: comercio al por menor, restaurante, servicios…"
+                id="afiliacion-actividad"
+              />
             </label>
           </>
         ) : null}
