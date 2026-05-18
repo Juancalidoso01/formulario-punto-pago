@@ -11,7 +11,8 @@
     "vercel:whoami": "npx --yes vercel@latest whoami",
     "vercel:env": "npx --yes vercel@latest env ls",
     "sheets:verify": "node scripts/verify-google-sheets.mjs",
-    "sheets:init-headers": "node scripts/verify-google-sheets.mjs --init-headers"
+    "sheets:init-headers": "node scripts/verify-google-sheets.mjs --init-headers",
+    "sheets:setup-vercel": "node scripts/setup-google-vercel-env.mjs"
   },
   "dependencies": {
     "googleapis": "^150.0.1",

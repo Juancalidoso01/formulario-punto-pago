@@ -31,6 +31,8 @@ yarn-error.log*
 # env files
 .env
 .env*.local
+google-service-account.json
+*-service-account*.json
 
 # typescript
 *.tsbuildinfo
