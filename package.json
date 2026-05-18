@@ -10,6 +10,7 @@
     "deploy:prod": "npx --yes vercel@latest deploy --prod --yes",
     "vercel:whoami": "npx --yes vercel@latest whoami",
     "vercel:env": "npx --yes vercel@latest env ls",
+    "drive:verify": "node scripts/verify-google-drive.mjs",
     "sheets:verify": "node scripts/verify-google-sheets.mjs",
     "sheets:init-headers": "node scripts/verify-google-sheets.mjs --init-headers",
     "sheets:setup-vercel": "node scripts/setup-google-vercel-env.mjs",

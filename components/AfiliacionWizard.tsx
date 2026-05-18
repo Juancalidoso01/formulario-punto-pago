@@ -30,6 +30,7 @@ import { isPanamaManualComposedAddress } from "@/lib/panama-manual-address";
 import { SearchableSelect } from "@/components/SearchableSelect";
 import { ServicioPrincipalPicker } from "@/components/ServicioPrincipalPicker";
 import { CuotasPlanPicker } from "@/components/CuotasPlanPicker";
+import { LocalPhotosPicker } from "@/components/LocalPhotosPicker";
 import { SignaturePad, type SignaturePadHandle } from "@/components/SignaturePad";
 import {
   CUOTAS_MIN_AMOUNT,
@@ -697,23 +698,21 @@ export function AfiliacionWizard({
               title={w.steps.photos.title}
               description={w.steps.photos.desc}
             />
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              className="text-sm text-slate-700 file:mr-3 file:rounded-md file:border-0 file:bg-[#4749B6] file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-[#3B3DA6]"
-              onChange={(e) => {
-                const list = e.target.files ? Array.from(e.target.files) : [];
-                setFotosLocal(list.slice(0, 5));
+            <LocalPhotosPicker
+              files={fotosLocal}
+              onChange={setFotosLocal}
+              labels={{
+                dropzone: w.steps.photos.dropzone,
+                dropzoneActive: w.steps.photos.dropzoneActive,
+                browse: w.steps.photos.browse,
+                count: t("wizard.steps.photos.count", {
+                  count: fotosLocal.length,
+                  max: 5,
+                }),
+                remove: w.steps.photos.remove,
+                maxReached: w.steps.photos.maxReached,
               }}
             />
-            {fotosLocal.length > 0 ? (
-              <ul className="mt-3 list-inside list-disc text-sm text-slate-600">
-                {fotosLocal.map((f) => (
-                  <li key={f.name + f.size}>{f.name}</li>
-                ))}
-              </ul>
-            ) : null}
           </>
         ) : null}
 

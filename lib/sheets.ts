@@ -1,4 +1,5 @@
 import { google } from "googleapis";
+import { createGoogleAuth, GOOGLE_SHEETS_SCOPE } from "@/lib/google-auth";
 import {
   formatGoogleSheetsApiError,
   getGoogleSheetsConfig,
@@ -39,14 +40,7 @@ export function assertGoogleSheetsConfigured(): {
 
 export async function appendLeadToSheet(row: string[]): Promise<void> {
   const cfg = assertGoogleSheetsConfigured();
-  const json = process.env.GOOGLE_SERVICE_ACCOUNT_JSON!;
-  const credentials = JSON.parse(json) as object;
-
-  const auth = new google.auth.GoogleAuth({
-    credentials,
-    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-  });
-
+  const auth = createGoogleAuth([GOOGLE_SHEETS_SCOPE]);
   const sheets = google.sheets({ version: "v4", auth });
 
   try {
@@ -67,14 +61,7 @@ export async function appendLeadToSheet(row: string[]): Promise<void> {
 
 export async function readLeadSheetHeaderRow(): Promise<string[]> {
   const cfg = assertGoogleSheetsConfigured();
-  const json = process.env.GOOGLE_SERVICE_ACCOUNT_JSON!;
-  const credentials = JSON.parse(json) as object;
-
-  const auth = new google.auth.GoogleAuth({
-    credentials,
-    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-  });
-
+  const auth = createGoogleAuth([GOOGLE_SHEETS_SCOPE]);
   const sheets = google.sheets({ version: "v4", auth });
   const headerRange = headerRowRange(cfg.range);
 
@@ -95,14 +82,7 @@ export async function readLeadSheetHeaderRow(): Promise<string[]> {
 
 export async function writeLeadSheetHeaders(headers: string[]): Promise<void> {
   const cfg = assertGoogleSheetsConfigured();
-  const json = process.env.GOOGLE_SERVICE_ACCOUNT_JSON!;
-  const credentials = JSON.parse(json) as object;
-
-  const auth = new google.auth.GoogleAuth({
-    credentials,
-    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-  });
-
+  const auth = createGoogleAuth([GOOGLE_SHEETS_SCOPE]);
   const sheets = google.sheets({ version: "v4", auth });
   const headerRange = headerRowRange(cfg.range);
 

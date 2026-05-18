@@ -153,8 +153,14 @@ export const esMessages = {
         desc: "Con Cuotas Punto Pago, sus clientes pueden pagar en cuotas mensuales. Utilice la calculadora para probar distintos plazos (2, 4 u 8 meses) y montos aproximados. Esta información nos ayudará a configurar la mejor opción para su comercio.",
       },
       photos: {
-        title: "Cargue 5 fotos de su local comercial",
-        desc: "Incluya fotos de distintos ángulos de su local comercial. Puedes adjuntar entre 1 y 5 archivos.",
+        title: "Cargue fotos de su local comercial",
+        desc: "Seleccione entre 1 y 5 fotos de distintos ángulos. Puede elegirlas todas de una vez desde su teléfono o galería.",
+        dropzone: "Toque aquí o arrastre hasta 5 fotos",
+        dropzoneActive: "Suelte las fotos aquí",
+        browse: "Elegir fotos",
+        count: "{count} de {max} fotos seleccionadas",
+        remove: "Quitar",
+        maxReached: "Ya tiene 5 fotos. Quite una para cambiar.",
       },
       payroll: {
         title: "¿Cuánto planea pagar mensualmente a través del programa de nómina?",

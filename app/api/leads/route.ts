@@ -5,6 +5,7 @@ import {
   esServicioCuotas,
   textoServicioPrincipalParaSheet,
 } from "@/lib/afiliacion-opciones";
+import { uploadLeadFilesToDrive } from "@/lib/google-drive";
 import { SheetsWriteError, appendLeadToSheet } from "@/lib/sheets";
 import {
   notifyAfiliacionLeadToSlack,
@@ -158,12 +159,40 @@ export async function POST(request: Request) {
   }
 
   const now = new Date().toISOString();
+  const servicioLabel = textoServicioPrincipalParaSheet(data.servicioPrincipal);
+
+  let driveFolderUrl: string | null = null;
+  if (needsPhotos || aviso.size > 0 || firma.size > 0) {
+    try {
+      const drive = await uploadLeadFilesToDrive({
+        submittedAtIso: now,
+        contactoNombre: data.contactoNombre,
+        contactoApellido: data.contactoApellido,
+        servicioLabel,
+        fotos: needsPhotos ? fotos : [],
+        aviso,
+        firma,
+      });
+      driveFolderUrl = drive?.folderUrl ?? null;
+    } catch (e) {
+      console.error("[leads] drive upload error", e);
+      const message =
+        e instanceof Error
+          ? e.message
+          : "No se pudieron subir los archivos a Google Drive.";
+      return NextResponse.json({ error: message }, { status: 502 });
+    }
+  }
+
+  const fotoNames = fotoNamesForSheet(
+    data.servicioPrincipal,
+    fotos.map((f) => f.name),
+    driveFolderUrl,
+  );
+
   const row = afiliacionRowForSheet(data, {
     fechaIso: now,
-    fotoNames: fotoNamesForSheet(
-      data.servicioPrincipal,
-      fotos.map((f) => f.name),
-    ),
+    fotoNames,
     avisoFileName: aviso.name,
     firmaFileName: firma.name,
   });
@@ -177,12 +206,10 @@ export async function POST(request: Request) {
   await notifyLeadToSlackSafe(() =>
     notifyAfiliacionLeadToSlack(data, {
       submittedAtIso: now,
-      fotoNames: fotoNamesForSheet(
-        data.servicioPrincipal,
-        fotos.map((f) => f.name),
-      ),
+      fotoNames,
       avisoFileName: aviso.name,
       firmaFileName: firma.name,
+      driveFolderUrl,
     }),
   );
 

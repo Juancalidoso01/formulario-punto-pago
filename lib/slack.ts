@@ -99,6 +99,7 @@ export async function notifyAfiliacionLeadToSlack(
     fotoNames: string;
     avisoFileName: string;
     firmaFileName: string;
+    driveFolderUrl?: string | null;
   },
 ): Promise<void> {
   const servicio = textoServicioPrincipalParaSheet(data.servicioPrincipal);
@@ -179,7 +180,12 @@ export async function notifyAfiliacionLeadToSlack(
       {
         type: "section",
         fields: [
-          field("Fotos", opts.fotoNames),
+          field(
+            "Fotos / Drive",
+            opts.driveFolderUrl
+              ? `${opts.driveFolderUrl}\n${opts.fotoNames}`
+              : opts.fotoNames,
+          ),
           field("Aviso", opts.avisoFileName),
           field("Firma", opts.firmaFileName),
         ],

@@ -152,8 +152,14 @@ export const enMessages: Messages = {
         desc: "With Punto Pago Installments, your customers can pay in monthly installments. Use the calculator to try different terms (2, 4 or 8 months) and approximate amounts. This helps us configure the best option for your business.",
       },
       photos: {
-        title: "Upload up to 5 photos of your premises",
-        desc: "Include photos from different angles of your commercial location. You can attach between 1 and 5 files.",
+        title: "Upload photos of your premises",
+        desc: "Select 1 to 5 photos from different angles. You can pick all of them at once from your phone or gallery.",
+        dropzone: "Tap here or drag up to 5 photos",
+        dropzoneActive: "Drop photos here",
+        browse: "Choose photos",
+        count: "{count} of {max} photos selected",
+        remove: "Remove",
+        maxReached: "You already have 5 photos. Remove one to change.",
       },
       payroll: {
         title: "How much do you plan to pay monthly through the payroll program?",

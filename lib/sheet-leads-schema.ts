@@ -120,9 +120,17 @@ export function corporativoRowForSheet(
   return row;
 }
 
-export function fotoNamesForSheet(servicioPrincipal: string, nombres: string[]): string {
-  if (!esServicioCuotas(servicioPrincipal)) {
-    return nombres.join("; ");
+export function fotoNamesForSheet(
+  servicioPrincipal: string,
+  nombres: string[],
+  driveFolderUrl?: string | null,
+): string {
+  if (esServicioCuotas(servicioPrincipal)) {
+    return "Sin fotos — Cuotas (detalle del plan en columna Integración)";
   }
-  return "Sin fotos — Cuotas (detalle del plan en columna Integración)";
+  const names = nombres.join("; ");
+  if (driveFolderUrl) {
+    return names ? `${driveFolderUrl} | ${names}` : driveFolderUrl;
+  }
+  return names;
 }

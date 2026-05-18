@@ -152,8 +152,14 @@ export const zhHKMessages: Messages = {
         desc: "透過 Punto Pago Cuotas，客戶可以按月分期還款。請用計算機試唔同期限（2、4 或 8 個月）同參考金額，方便我哋為你配置最啱嘅方案。",
       },
       photos: {
-        title: "上載最多 5 張營業場所相片",
-        desc: "請包含營業地點唔同角度嘅相片。可以上載 1 至 5 個檔案。",
+        title: "上載營業場所相片",
+        desc: "請揀 1 至 5 張唔同角度嘅相片。可以一次過喺電話或相簿揀多張。",
+        dropzone: "撳呢度或拖放，最多 5 張相片",
+        dropzoneActive: "鬆手以上傳",
+        browse: "揀相片",
+        count: "已揀 {count} / {max} 張",
+        remove: "移除",
+        maxReached: "已有 5 張，請先移除一張再換。",
       },
       payroll: {
         title: "你計劃透過薪金計劃每月支付幾多？",

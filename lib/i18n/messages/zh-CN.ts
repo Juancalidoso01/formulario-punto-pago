@@ -152,8 +152,14 @@ export const zhCNMessages: Messages = {
         desc: "通过 Punto Pago Cuotas，客户可按月分期付款。请使用计算器尝试不同期限（2、4 或 8 个月）及参考金额，以便我们为您配置最合适的方案。",
       },
       photos: {
-        title: "上传最多 5 张营业场所照片",
-        desc: "请包含营业地点不同角度的照片。可上传 1 至 5 个文件。",
+        title: "上传营业场所照片",
+        desc: "请选择 1 至 5 张不同角度的照片。可一次从手机或相册选择多张。",
+        dropzone: "点击或拖放，最多 5 张照片",
+        dropzoneActive: "松开以上传",
+        browse: "选择照片",
+        count: "已选 {count} / {max} 张",
+        remove: "移除",
+        maxReached: "已有 5 张，请先移除一张再更换。",
       },
       payroll: {
         title: "您计划通过工资计划每月支付多少？",
