@@ -80,7 +80,7 @@ export default async function ServicioBrochurePage({ params }: Props) {
               href={formHref}
               className="inline-flex items-center justify-center rounded-xl bg-[#4749B6] px-5 py-3 text-center text-sm font-semibold text-white shadow-md shadow-[#4749B6]/25 transition hover:bg-[#3B3DA6]"
             >
-              Solicitar afiliación con esta línea
+              Diligenciar formulario
             </Link>
             {b.officialLinks.map((link) => (
               <a
