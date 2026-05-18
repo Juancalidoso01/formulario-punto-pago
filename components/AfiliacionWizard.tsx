@@ -6,11 +6,18 @@ import { useCallback, useRef, useState } from "react";
 import type { AfiliacionJson } from "@/lib/afiliacion-payload";
 import {
   ACTIVIDAD_NEGOCIO_OPCIONES,
+  INTEGRACION_NO_APLICA_KIOSCOS,
   METODO_INTEGRACION_OPCIONES,
+  NOMINA_NO_APLICA_KIOSCOS,
   NUM_CLIENTES_OPCIONES,
   OCUPACION_OPCIONES,
   RANGO_NOMINA_OPCIONES,
   esServicioPrincipalValido,
+  numeroPasoVisible,
+  pasoAnteriorVisible,
+  pasoOmiteParaServicio,
+  pasosVisiblesParaServicio,
+  siguientePasoVisible,
 } from "@/lib/afiliacion-opciones";
 import {
   AfiliacionAddressPaField,
@@ -28,12 +35,12 @@ const inputClass =
 const labelClass = "flex flex-col gap-1.5 text-sm font-medium text-slate-800";
 
 function StepHeading({
-  step,
+  displayStep,
   title,
   description,
   showRequired = true,
 }: {
-  step: number;
+  displayStep: number;
   title: string;
   description?: string;
   showRequired?: boolean;
@@ -41,7 +48,7 @@ function StepHeading({
   return (
     <header className="mb-6">
       <p className="text-sm text-slate-500">
-        {step + 1}. {title}
+        {displayStep}. {title}
         {showRequired ? <span className="text-red-600"> *</span> : null}
       </p>
       {description ? (
@@ -153,9 +160,13 @@ export function AfiliacionWizard({
       servicioPrincipal,
       ocupacionPrincipal,
       actividadNegocio,
-      rangoNominaMensual,
+      rangoNominaMensual: pasoOmiteParaServicio(servicioPrincipal, 11)
+        ? NOMINA_NO_APLICA_KIOSCOS
+        : rangoNominaMensual,
       numClientes,
-      metodoIntegracion,
+      metodoIntegracion: pasoOmiteParaServicio(servicioPrincipal, 14)
+        ? INTEGRACION_NO_APLICA_KIOSCOS
+        : metodoIntegracion,
       terminosAceptados,
     };
   }, [
@@ -240,6 +251,7 @@ export function AfiliacionWizard({
         }
         return null;
       case 11:
+        if (pasoOmiteParaServicio(servicioPrincipal, 11)) return null;
         if (!rangoNominaMensual) return "Seleccione un rango aproximado.";
         return null;
       case 12:
@@ -249,6 +261,7 @@ export function AfiliacionWizard({
         if (!numClientes) return "Seleccione la cantidad de clientes.";
         return null;
       case 14:
+        if (pasoOmiteParaServicio(servicioPrincipal, 14)) return null;
         if (!metodoIntegracion) return "Seleccione el método de integración.";
         return null;
       case 15:
@@ -293,7 +306,8 @@ export function AfiliacionWizard({
       setError(v);
       return;
     }
-    if (step < TOTAL_STEPS - 1) setStep((s) => s + 1);
+    const next = siguientePasoVisible(step, servicioPrincipal, TOTAL_STEPS);
+    if (next !== null) setStep(next);
   };
 
   const goBack = () => {
@@ -302,7 +316,8 @@ export function AfiliacionWizard({
       router.push("/");
       return;
     }
-    if (step > 0) setStep((s) => s - 1);
+    const prev = pasoAnteriorVisible(step, servicioPrincipal);
+    if (prev !== null) setStep(prev);
   };
 
   const submit = async () => {
@@ -348,7 +363,10 @@ export function AfiliacionWizard({
     }
   };
 
-  const progress = ((step + 1) / TOTAL_STEPS) * 100;
+  const pasosVisibles = pasosVisiblesParaServicio(servicioPrincipal, TOTAL_STEPS);
+  const pasoActualVisible = numeroPasoVisible(step, servicioPrincipal, TOTAL_STEPS);
+  const progress = (pasoActualVisible / pasosVisibles.length) * 100;
+  const pasoLabel = (s: number) => numeroPasoVisible(s, servicioPrincipal, TOTAL_STEPS);
 
   if (status === "success") {
     return (
@@ -363,7 +381,7 @@ export function AfiliacionWizard({
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4 text-sm text-slate-600">
         <span>
-          {step + 1} / {TOTAL_STEPS}
+          {pasoActualVisible} / {pasosVisibles.length}
         </span>
         <div className="h-2 flex-1 max-w-xs overflow-hidden rounded-full bg-slate-100">
           <div
@@ -377,7 +395,7 @@ export function AfiliacionWizard({
         {step === 0 && !startAfterServiceStep ? (
           <>
             <StepHeading
-              step={step}
+              displayStep={pasoLabel(step)}
               title="¿Qué línea de negocio le interesa?"
               description="Elija una de las cuatro opciones. Si combina varias, marque la principal y detalle el resto más adelante en la descripción de su negocio."
             />
@@ -404,7 +422,7 @@ export function AfiliacionWizard({
         {step === 1 ? (
           <>
             <StepHeading
-              step={step}
+              displayStep={pasoLabel(step)}
               title="Nombre completo del contacto principal"
             />
             <div className="grid gap-4 sm:grid-cols-2">
@@ -435,7 +453,7 @@ export function AfiliacionWizard({
         {step === 2 ? (
           <>
             <StepHeading
-              step={step}
+              displayStep={pasoLabel(step)}
               title="Correo electrónico del contacto principal"
             />
             <label className={labelClass}>
@@ -456,7 +474,7 @@ export function AfiliacionWizard({
         {step === 3 ? (
           <>
             <StepHeading
-              step={step}
+              displayStep={pasoLabel(step)}
               title="Número de teléfono del contacto principal"
               description="Incluya el código de país seguido de su número de contacto."
             />
@@ -488,7 +506,7 @@ export function AfiliacionWizard({
         {step === 4 ? (
           <>
             <StepHeading
-              step={step}
+              displayStep={pasoLabel(step)}
               title="Nombre de la empresa (según registro)"
               description="Nombre legal registrado o en tu aviso de operaciones, o bien tu nombre legal."
             />
@@ -507,7 +525,7 @@ export function AfiliacionWizard({
         {step === 5 ? (
           <>
             <StepHeading
-              step={step}
+              displayStep={pasoLabel(step)}
               title="Número de RUC (registro único de contribuyente)"
               description="Número otorgado por la DGI para identificar personas o empresas con actividad económica en Panamá."
             />
@@ -521,7 +539,7 @@ export function AfiliacionWizard({
         {step === 6 ? (
           <>
             <StepHeading
-              step={step}
+              displayStep={pasoLabel(step)}
               title="Dónde está ubicado su negocio"
               description="Primero busque su local en el mapa. Si no aparece, podrá describir la dirección con calle, corregimiento y referencias. Complete la provincia abajo."
             />
@@ -551,7 +569,7 @@ export function AfiliacionWizard({
         {step === 7 ? (
           <>
             <StepHeading
-              step={step}
+              displayStep={pasoLabel(step)}
               title="Breve descripción del negocio (productos/servicios ofrecidos)"
               description="Favor describe con mayor detalle lo que hace tu negocio o empresa."
             />
@@ -570,7 +588,7 @@ export function AfiliacionWizard({
         {step === 8 ? (
           <>
             <StepHeading
-              step={step}
+              displayStep={pasoLabel(step)}
               title="Cuál es su ocupación principal"
               description="Describa la opción más acertada a su ocupación."
             />
@@ -598,7 +616,7 @@ export function AfiliacionWizard({
         {step === 9 ? (
           <>
             <StepHeading
-              step={step}
+              displayStep={pasoLabel(step)}
               title="Cuál es la actividad que más describe su negocio"
               description="Seleccione la opción que más se identifica."
             />
@@ -626,7 +644,7 @@ export function AfiliacionWizard({
         {step === 10 ? (
           <>
             <StepHeading
-              step={step}
+              displayStep={pasoLabel(step)}
               title="Cargue 5 fotos de su local comercial"
               description="Incluya fotos de distintos ángulos de su local comercial. Puedes adjuntar entre 1 y 5 archivos."
             />
@@ -650,10 +668,10 @@ export function AfiliacionWizard({
           </>
         ) : null}
 
-        {step === 11 ? (
+        {step === 11 && !pasoOmiteParaServicio(servicioPrincipal, 11) ? (
           <>
             <StepHeading
-              step={step}
+              displayStep={pasoLabel(step)}
               title="¿Cuánto planea pagar mensualmente a través del programa de nómina?"
               description="Seleccione un rango aproximado del monto total que desea depositar mensualmente a sus colaboradores."
             />
@@ -668,7 +686,7 @@ export function AfiliacionWizard({
 
         {step === 12 ? (
           <>
-            <StepHeading step={step} title="Copia del aviso de operación" />
+            <StepHeading displayStep={pasoLabel(step)} title="Copia del aviso de operación" />
             <input
               type="file"
               accept=".pdf,image/*"
@@ -687,7 +705,7 @@ export function AfiliacionWizard({
         {step === 13 ? (
           <>
             <StepHeading
-              step={step}
+              displayStep={pasoLabel(step)}
               title="¿Cuántos clientes tiene su empresa?"
               description="Seleccione la cantidad de clientes acorde a su empresa."
             />
@@ -700,10 +718,10 @@ export function AfiliacionWizard({
           </>
         ) : null}
 
-        {step === 14 ? (
+        {step === 14 && !pasoOmiteParaServicio(servicioPrincipal, 14) ? (
           <>
             <StepHeading
-              step={step}
+              displayStep={pasoLabel(step)}
               title="¿Cuál es el método de integración que mejor se ajusta a su negocio?"
               description="Seleccione la opción que describe cómo le gustaría conectarse con nuestros servicios."
             />
@@ -719,7 +737,7 @@ export function AfiliacionWizard({
         {step === 15 ? (
           <>
             <StepHeading
-              step={step}
+              displayStep={pasoLabel(step)}
               title="Términos y condiciones"
               showRequired={false}
             />
@@ -749,7 +767,7 @@ export function AfiliacionWizard({
         {step === 16 ? (
           <>
             <StepHeading
-              step={step}
+              displayStep={pasoLabel(step)}
               title="Firma"
               description="Favor firmar el formulario."
             />
@@ -786,7 +804,7 @@ export function AfiliacionWizard({
         >
           Anterior
         </button>
-        {step < TOTAL_STEPS - 1 ? (
+        {siguientePasoVisible(step, servicioPrincipal, TOTAL_STEPS) !== null ? (
           <button
             type="button"
             onClick={goNext}

@@ -92,3 +92,58 @@ export const METODO_INTEGRACION_OPCIONES = [
   "Integración con software (ej. SAP, QuickBooks, etc.)",
   "Aún no lo sé / necesito asesoría",
 ] as const;
+
+/** Índices de paso del wizard (`AfiliacionWizard`) omitidos por línea de negocio. */
+const PASOS_OMITIDOS_POR_SERVICIO: Partial<
+  Record<ServicioPrincipalId, readonly number[]>
+> = {
+  "kioscos-local-comercial": [11, 14],
+};
+
+export const NOMINA_NO_APLICA_KIOSCOS = "No aplica — kioscos en local comercial";
+export const INTEGRACION_NO_APLICA_KIOSCOS =
+  "No aplica — kioscos en local comercial";
+
+export function pasoOmiteParaServicio(servicio: string, stepIndex: number): boolean {
+  if (!esServicioPrincipalValido(servicio)) return false;
+  return PASOS_OMITIDOS_POR_SERVICIO[servicio]?.includes(stepIndex) ?? false;
+}
+
+export function pasosVisiblesParaServicio(servicio: string, totalSteps: number): number[] {
+  return Array.from({ length: totalSteps }, (_, i) => i).filter(
+    (i) => !pasoOmiteParaServicio(servicio, i),
+  );
+}
+
+export function siguientePasoVisible(
+  current: number,
+  servicio: string,
+  totalSteps: number,
+): number | null {
+  for (let i = current + 1; i < totalSteps; i++) {
+    if (!pasoOmiteParaServicio(servicio, i)) return i;
+  }
+  return null;
+}
+
+export function pasoAnteriorVisible(
+  current: number,
+  servicio: string,
+): number | null {
+  for (let i = current - 1; i >= 0; i--) {
+    if (!pasoOmiteParaServicio(servicio, i)) return i;
+  }
+  return null;
+}
+
+export function numeroPasoVisible(
+  stepIndex: number,
+  servicio: string,
+  totalSteps: number,
+): number {
+  let n = 0;
+  for (let i = 0; i <= stepIndex; i++) {
+    if (!pasoOmiteParaServicio(servicio, i)) n++;
+  }
+  return n;
+}
