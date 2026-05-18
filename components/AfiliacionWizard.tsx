@@ -679,8 +679,8 @@ export function AfiliacionWizard({
           <>
             <StepHeading
               displayStep={pasoLabel(step)}
-              title="¿Qué plan de Cuotas le interesa ofrecer en su local?"
-              description="Use la calculadora como en la página oficial de Cuotas Punto Pago. Elija el plazo (2, 4 u 8 meses) y un monto de referencia; guardaremos su preferencia para el equipo comercial."
+              title="¿Qué tipo de financiamiento le gustaría ofrecer a sus clientes?"
+              description="Con Cuotas Punto Pago, sus clientes pueden pagar en cuotas mensuales. Utilice la calculadora para probar distintos plazos (2, 4 u 8 meses) y montos aproximados. Esta información nos ayudará a configurar la mejor opción para su comercio."
             />
             <CuotasPlanPicker
               termMonths={planCuotasMeses}

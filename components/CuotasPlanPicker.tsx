@@ -155,8 +155,8 @@ export function CuotasPlanPicker({
         </dl>
 
         <p className="mt-5 text-[11px] leading-relaxed text-slate-500">
-          Monto y cuotas son una referencia según las reglas públicas de Cuotas Punto Pago.
-          El equipo comercial confirmará el plan que mejor se ajuste a su negocio.
+          Los montos y pagos mostrados son tarifas referenciales para orientar su elección.
+          El equipo comercial confirmará las condiciones finales de su afiliación a Cuotas.
         </p>
       </div>
     </div>
