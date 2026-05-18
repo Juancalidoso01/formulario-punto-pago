@@ -33,8 +33,7 @@ export const zhHKMessages: Messages = {
     otherLines: "← 其他業務線",
     disclaimer:
       "產品資料來自 Punto Pago 公開材料。最終條款、金額同期限以簽約時及加盟時生效嘅合約同規則為準。請透過連結了解更多（Punto Pago 網站或適用嘅外部資源）。",
-    officialSite: "Punto Pago 網站",
-    moreInfo: "更多資料",
+    officialLinkSub: "喺新分頁開啟 puntopago.net",
   },
   services: {
     kioscos: {
@@ -63,7 +62,7 @@ export const zhHKMessages: Messages = {
       h1: "只需幾平方米就可以充值同繳費：Punto Pago 表示大約一平方米就夠裝一部自助服務站，方便客戶同員工使用。",
       h2: "為生意帶來更多人潮：喺寫字樓或高流量地點放自助服務站更方便，除咗出租空間，仲可能帶來額外到訪，視乎協定模式而定。",
       h3: "適合零售、藥房、商場、寫字樓同有穩定客戶嘅商戶。",
-      linkBusinessSpace: "Business Space",
+      linkBusinessSpace: "官方頁面：自助終端",
     },
     agente: {
       headline: "代理同代辦點 — Punto Pago 服務你嘅社區",
@@ -83,7 +82,7 @@ export const zhHKMessages: Messages = {
       h2: "購買時商戶唔使收首付；客戶喺固定日子還款（例如每月 2 號同 17 號）。",
       h3: "引導式流程：商戶二維碼、分期計劃、批核同短訊簽名；身份證或應用程式內流程。",
       h4: "如果金額超過分期上限，餘額可以按產品條款用現金或銀行卡支付。",
-      linkOfficial: "Cuotas 官方頁面",
+      linkOfficial: "官方頁面：分期付款",
     },
     corporativo: {
       headline: "企業方案 — 大規模收款同支付處理",
@@ -93,8 +92,8 @@ export const zhHKMessages: Messages = {
       h1: "Business Checkout：透過 API 整合建模流程、自動化營運並連接業務部門，減少摩擦同營運成本（視乎你嘅架構同商業協議）。",
       h2: "Payments Hub：為網上銀行同 fintech 互聯商戶，聚焦支付集中化、流動資金管理、供應商自動化同廣泛交易組合。",
       h3: "適用於需要標準化、集中化並管理電子支付流程嘅金融機構同高交易量中小企。",
-      linkCheckout: "Business Checkout",
-      linkHub: "Payments Hub",
+      linkCheckout: "官方頁面：Checkout",
+      linkHub: "官方頁面：Payments Hub",
     },
   },
   wizard: {

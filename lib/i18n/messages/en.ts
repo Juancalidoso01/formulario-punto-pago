@@ -33,8 +33,7 @@ export const enMessages: Messages = {
     otherLines: "← Other lines",
     disclaimer:
       "Product information comes from Punto Pago public materials. Final conditions, amounts and terms depend on the contract and rules in force at the time of affiliation. Use the links for more information (Punto Pago site or external resources as applicable).",
-    officialSite: "Punto Pago site",
-    moreInfo: "more information",
+    officialLinkSub: "Opens puntopago.net in a new tab",
   },
   services: {
     kioscos: {
@@ -63,7 +62,7 @@ export const enMessages: Messages = {
       h1: "Top-ups and bill pay in just a few square meters: Punto Pago indicates that about one square meter is enough for a kiosk so customers and employees can operate easily.",
       h2: "More traffic to your business: placing a kiosk in offices or high-traffic locations adds convenience and can bring extra visits besides space rental, depending on the agreed model.",
       h3: "A natural fit for retail, pharmacies, malls, office towers and businesses with recurring visitors.",
-      linkBusinessSpace: "Business Space",
+      linkBusinessSpace: "Official page: Kiosks",
     },
     agente: {
       headline: "Agent and correspondent — Punto Pago in your community",
@@ -83,7 +82,7 @@ export const enMessages: Messages = {
       h2: "No down payment to the merchant at purchase; the customer pays on fixed dates (e.g. 2nd and 17th of each month).",
       h3: "Guided flow: seller QR, installment plan, approval and SMS signature; ID card or in-app flow.",
       h4: "If the amount exceeds the installment cap, the remainder can be paid in cash or card per product terms.",
-      linkOfficial: "Official Installments page",
+      linkOfficial: "Official page: Installments",
     },
     corporativo: {
       headline: "Corporate solutions — mass collection and payment processing",
@@ -93,8 +92,8 @@ export const enMessages: Messages = {
       h1: "Business Checkout: API integration to model processes, automate operations and connect business areas with less friction and operating cost (per your architecture and commercial agreement).",
       h2: "Payments Hub: merchant interconnection for online banking and fintech, focused on payment centralization, liquidity management, supplier automation and a broad transaction portfolio.",
       h3: "Aligned with financial institutions and high-volume SMEs that need to standardize, centralize and manage electronic payment flows.",
-      linkCheckout: "Business Checkout",
-      linkHub: "Payments Hub",
+      linkCheckout: "Official page: Checkout",
+      linkHub: "Official page: Payments Hub",
     },
   },
   wizard: {

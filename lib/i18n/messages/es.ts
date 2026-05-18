@@ -34,8 +34,7 @@ export const esMessages = {
     otherLines: "← Otras líneas",
     disclaimer:
       "La información de producto proviene de materiales públicos de Punto Pago. Condiciones, montos y plazos definitivos dependen de contrato y reglas vigentes al momento de la afiliación. Use los enlaces para ampliar información (sitio Punto Pago o recursos externos según corresponda).",
-    officialSite: "sitio Punto Pago",
-    moreInfo: "más información",
+    officialLinkSub: "Abre puntopago.net en una nueva pestaña",
   },
   services: {
     kioscos: {
@@ -64,7 +63,7 @@ export const esMessages = {
       h1: "Recarga y pagos de servicios en pocos metros: Punto Pago indica que con cerca de un metro cuadrado puede instalar un quiosco para que clientes y empleados operen de forma sencilla.",
       h2: "Más afluencia a su negocio: al ubicar un quiosco en oficinas o locales con tráfico, suma conveniencia y puede atraer visitas adicionales además del arriendo del espacio, según el modelo acordado.",
       h3: "Encaje natural en retail, farmacias, centros comerciales, torres de oficinas y negocios con público recurrente.",
-      linkBusinessSpace: "Business Space",
+      linkBusinessSpace: "Ver página oficial: Kioscos",
     },
     agente: {
       headline: "Agente y corresponsal — Punto Pago en su comunidad",
@@ -84,7 +83,7 @@ export const esMessages = {
       h2: "Sin pago inicial al comercio en el momento de la compra; el cliente paga en fechas fijas (p. ej. 2 y 17 de cada mes).",
       h3: "Proceso guiado: QR del vendedor, plan de cuotas, aprobación y firma vía SMS; identidad con cédula o flujo en app.",
       h4: "Si el monto supera el tope de cuotas, puede combinarse el resto en efectivo o tarjeta según condiciones del producto.",
-      linkOfficial: "Página oficial Cuotas",
+      linkOfficial: "Ver página oficial: Cuotas",
     },
     corporativo: {
       headline: "Soluciones corporativas — recaudo masivo y procesamiento de pagos",
@@ -94,8 +93,8 @@ export const esMessages = {
       h1: "Business Checkout: integración vía API para modelar procesos, automatizar operaciones y enlazar áreas de negocio con menos fricción y costo operativo (según su arquitectura y acuerdo comercial).",
       h2: "Payments Hub: interconexión de comercios para banca en línea y fintech, con foco en centralización de pagos, gestión de liquidez, automatización a proveedores y cartera amplia de transacciones.",
       h3: "Alineado a entidades financieras y pymes de alto volumen que requieren estandarizar, centralizar y administrar el flujo de pagos electrónicos.",
-      linkCheckout: "Business Checkout",
-      linkHub: "Payments Hub",
+      linkCheckout: "Ver página oficial: Checkout",
+      linkHub: "Ver página oficial: Payments Hub",
     },
   },
   wizard: {

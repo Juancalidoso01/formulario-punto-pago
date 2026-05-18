@@ -82,13 +82,11 @@ export function ServicioBrochureArticle({ id }: { id: ServicioPrincipalId }) {
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-center text-sm font-semibold text-slate-800 transition hover:border-[#4749B6]/40 hover:text-[#4749B6]"
               >
-                {link.label}{" "}
-                <span className="text-slate-500">
-                  (
-                  {link.href.includes("puntopago.net")
-                    ? m.serviciosPage.officialSite
-                    : m.serviciosPage.moreInfo}
-                  )
+                <span className="flex flex-col items-center gap-0.5">
+                  <span>{link.label}</span>
+                  <span className="text-xs font-normal text-slate-500">
+                    {m.serviciosPage.officialLinkSub}
+                  </span>
                 </span>
               </a>
             ))}

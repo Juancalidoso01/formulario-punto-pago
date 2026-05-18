@@ -33,8 +33,7 @@ export const zhCNMessages: Messages = {
     otherLines: "← 其他业务线",
     disclaimer:
       "产品信息来自 Punto Pago 公开资料。最终条件、金额与期限以签约时及加盟时生效的合同与规则为准。请通过链接获取更多信息（Punto Pago 网站或适用的外部资源）。",
-    officialSite: "Punto Pago 网站",
-    moreInfo: "更多信息",
+    officialLinkSub: "在新标签页打开 puntopago.net",
   },
   services: {
     kioscos: {
@@ -63,7 +62,7 @@ export const zhCNMessages: Messages = {
       h1: "仅需数平方米即可充值与缴费：Punto Pago 表示约一平方米即可安装自助终端，方便客户与员工操作。",
       h2: "为业务带来更多客流：在办公楼或高流量场所放置自助终端可增加便利，除空间租赁外还可能带来额外到访，具体取决于约定模式。",
       h3: "适合零售、药店、商场、写字楼及有稳定客流的商户。",
-      linkBusinessSpace: "Business Space",
+      linkBusinessSpace: "官方页面：自助终端",
     },
     agente: {
       headline: "代理与代办点 — Punto Pago 服务您的社区",
@@ -83,7 +82,7 @@ export const zhCNMessages: Messages = {
       h2: "购买时商户无需收取首付；客户于固定日期付款（例如每月 2 日与 17 日）。",
       h3: "引导式流程：商户二维码、分期计划、审批及短信签名；身份证或应用内流程。",
       h4: "若金额超过分期上限，余额可按产品条款以现金或银行卡支付。",
-      linkOfficial: "Cuotas 官方页面",
+      linkOfficial: "官方页面：分期付款",
     },
     corporativo: {
       headline: "企业解决方案 — 大规模收款与支付处理",
@@ -93,8 +92,8 @@ export const zhCNMessages: Messages = {
       h1: "Business Checkout：通过 API 集成建模流程、自动化运营并连接业务部门，降低摩擦与运营成本（视您的架构与商业协议而定）。",
       h2: "Payments Hub：为网上银行与 fintech 互联商户，聚焦支付集中化、流动性管理、供应商自动化及广泛交易组合。",
       h3: "适用于需要标准化、集中化并管理电子支付流程的金融机构与高交易量中小企业。",
-      linkCheckout: "Business Checkout",
-      linkHub: "Payments Hub",
+      linkCheckout: "官方页面：Checkout",
+      linkHub: "官方页面：Payments Hub",
     },
   },
   wizard: {

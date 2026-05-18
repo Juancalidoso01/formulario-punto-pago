@@ -43,7 +43,7 @@ export const SERVICIO_BROCHURES: Record<ServicioPrincipalId, ServicioBrochure> =
     officialLinks: [
       {
         href: "https://puntopago.net/business/space/",
-        label: "Business Space",
+        label: "Ver página oficial: Kioscos",
       },
     ],
   },
@@ -81,7 +81,7 @@ export const SERVICIO_BROCHURES: Record<ServicioPrincipalId, ServicioBrochure> =
     officialLinks: [
       {
         href: "https://puntopago.net/products/cuotas/",
-        label: "Página oficial Cuotas",
+        label: "Ver página oficial: Cuotas",
       },
     ],
   },
@@ -102,11 +102,11 @@ export const SERVICIO_BROCHURES: Record<ServicioPrincipalId, ServicioBrochure> =
     officialLinks: [
       {
         href: "https://puntopago.net/business/checkout/",
-        label: "Business Checkout",
+        label: "Ver página oficial: Checkout",
       },
       {
         href: "https://puntopago.net/business/paymentshub/",
-        label: "Payments Hub",
+        label: "Ver página oficial: Payments Hub",
       },
     ],
   },
