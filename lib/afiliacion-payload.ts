@@ -5,7 +5,7 @@ import {
   esServicioCuotas,
   textoIntegracionNoAplica,
   textoNominaNoAplica,
-  NUM_CLIENTES_OPCIONES,
+  NUM_CLIENTES_NO_APLICA,
   OCUPACION_OPCIONES,
   RANGO_NOMINA_OPCIONES,
   esServicioPrincipalValido,
@@ -149,9 +149,7 @@ export function validateAfiliacionJson(
   } else if (!inList(data.rangoNominaMensual, RANGO_NOMINA_OPCIONES)) {
     return { ok: false, error: "Rango de nómina no válido" };
   }
-  if (!inList(data.numClientes, NUM_CLIENTES_OPCIONES)) {
-    return { ok: false, error: "Cantidad de clientes no válida" };
-  }
+  data.numClientes = NUM_CLIENTES_NO_APLICA;
   if (esServicioCuotas(servicioPrincipal)) {
     if (!planCuotasMeses) {
       return { ok: false, error: "Seleccione el plan de cuotas que le interesa ofrecer." };

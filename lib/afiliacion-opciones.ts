@@ -111,6 +111,9 @@ export const INTEGRACION_NO_APLICA_AGENTE =
 
 export const NOMINA_NO_APLICA_CUOTAS = "No aplica — cuotas en local comercial";
 
+/** Paso «Nº clientes» retirado del formulario; se conserva la columna en Sheets. */
+export const NUM_CLIENTES_NO_APLICA = "No aplica — no solicitado en formulario";
+
 export function textoNominaNoAplica(servicio: string): string {
   if (servicio === "agente-corresponsal-comunidad") return NOMINA_NO_APLICA_AGENTE;
   if (servicio === "kioscos-local-comercial") return NOMINA_NO_APLICA_KIOSCOS;
@@ -125,6 +128,7 @@ export function textoIntegracionNoAplica(servicio: string): string {
 }
 
 export function pasoOmiteParaServicio(servicio: string, stepIndex: number): boolean {
+  if (stepIndex === 13) return true;
   if (!esServicioPrincipalValido(servicio)) return false;
   return PASOS_OMITIDOS_POR_SERVICIO[servicio]?.includes(stepIndex) ?? false;
 }

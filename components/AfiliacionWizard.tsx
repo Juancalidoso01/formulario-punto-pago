@@ -9,7 +9,7 @@ import {
   ACTIVIDAD_NEGOCIO_OPCIONES,
   METODO_INTEGRACION_OPCIONES,
   MCC_OPCIONES,
-  NUM_CLIENTES_OPCIONES,
+  NUM_CLIENTES_NO_APLICA,
   textoIntegracionNoAplica,
   textoNominaNoAplica,
   OCUPACION_OPCIONES,
@@ -167,7 +167,6 @@ export function AfiliacionWizard({
   const [planCuotasMonto, setPlanCuotasMonto] = useState(100);
   const [rangoNominaMensual, setRangoNominaMensual] = useState("");
   const [avisoOperacion, setAvisoOperacion] = useState<File | null>(null);
-  const [numClientes, setNumClientes] = useState("");
   const [metodoIntegracion, setMetodoIntegracion] = useState("");
   const [terminosAceptados, setTerminosAceptados] = useState(false);
 
@@ -190,7 +189,7 @@ export function AfiliacionWizard({
       rangoNominaMensual: pasoOmiteParaServicio(servicioPrincipal, 11)
         ? textoNominaNoAplica(servicioPrincipal)
         : rangoNominaMensual,
-      numClientes,
+      numClientes: NUM_CLIENTES_NO_APLICA,
       metodoIntegracion: esServicioCuotas(servicioPrincipal)
         ? textoPlanCuotasParaSheet(planCuotasMeses, planCuotasMonto)
         : pasoOmiteParaServicio(servicioPrincipal, 14)
@@ -220,7 +219,6 @@ export function AfiliacionWizard({
     planCuotasMeses,
     planCuotasMonto,
     nombreEmpresa,
-    numClientes,
     ocupacionPrincipal,
     provincia,
     rangoNominaMensual,
@@ -321,7 +319,6 @@ export function AfiliacionWizard({
         if (!isAvisoDocument(avisoOperacion)) return w.errors.avisoFormat;
         return null;
       case 13:
-        if (!numClientes) return w.errors.clients;
         return null;
       case 14:
         if (pasoOmiteParaServicio(servicioPrincipal, 14)) return null;
@@ -353,7 +350,6 @@ export function AfiliacionWizard({
     planCuotasMonto,
     metodoIntegracion,
     nombreEmpresa,
-    numClientes,
     ocupacionPrincipal,
     provincia,
     rangoNominaMensual,
@@ -781,22 +777,6 @@ export function AfiliacionWizard({
                 formatHint: w.steps.aviso.formatHint,
                 invalidType: w.errors.avisoFormat,
               }}
-            />
-          </>
-        ) : null}
-
-        {step === 13 ? (
-          <>
-            <StepHeading
-              displayStep={pasoLabel(step)}
-              title={w.steps.clients.title}
-              description={w.steps.clients.desc}
-            />
-            <RadioGroup
-              name="clientes"
-              value={numClientes}
-              onChange={setNumClientes}
-              options={NUM_CLIENTES_OPCIONES}
             />
           </>
         ) : null}
