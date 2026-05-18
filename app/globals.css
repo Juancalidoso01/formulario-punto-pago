@@ -220,19 +220,27 @@ body {
   }
 }
 
-/* Firma: cursor de lapicero en escritorio (ratón / trackpad) */
+/* Firma: ocultar aro decorativo del sitio solo sobre el recuadro de firma */
+@media (hover: hover) and (pointer: fine) {
+  html[data-signature-pad-hover] .pp-cursor-ring {
+    opacity: 0 !important;
+    visibility: hidden;
+  }
+}
+
+/* Firma: cursor de lapicero (punta abajo-derecha, hotspot en la punta) */
 @media (hover: hover) and (pointer: fine) {
   .signature-pad-canvas {
     cursor:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg transform='translate(16 16) rotate(-48) translate(-16 -16)'%3E%3Crect x='14' y='5' width='4' height='15' rx='1.5' fill='%234749B6'/%3E%3Cpath d='M11.5 19.5 L16 27 L20.5 19.5 Z' fill='%230B0B13'/%3E%3Crect x='13' y='3' width='6' height='3.5' rx='1' fill='%236366f1'/%3E%3C/g%3E%3C/svg%3E")
-        6 28,
-      crosshair;
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg transform='translate(16 16) rotate(42) translate(-16 -16)'%3E%3Crect x='14' y='5' width='4' height='16' rx='1.5' fill='%234749B6'/%3E%3Cpath d='M11.5 20 L16 29 L20.5 20 Z' fill='%230B0B13'/%3E%3Crect x='13' y='2.5' width='6' height='3.5' rx='1' fill='%236366f1'/%3E%3C/g%3E%3C/svg%3E")
+        26 28,
+      pointer;
   }
 
   .signature-pad-canvas.signature-pad-canvas--drawing {
     cursor:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg transform='translate(16 16) rotate(-48) translate(-16 -16)'%3E%3Crect x='14' y='5' width='4' height='15' rx='1.5' fill='%233B3DA6'/%3E%3Cpath d='M11.5 19.5 L16 27 L20.5 19.5 Z' fill='%230B0B13'/%3E%3Crect x='13' y='3' width='6' height='3.5' rx='1' fill='%234749B6'/%3E%3C/g%3E%3C/svg%3E")
-        6 28,
-      crosshair;
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg transform='translate(16 16) rotate(42) translate(-16 -16)'%3E%3Crect x='14' y='5' width='4' height='16' rx='1.5' fill='%233B3DA6'/%3E%3Cpath d='M11.5 20 L16 29 L20.5 20 Z' fill='%230B0B13'/%3E%3Crect x='13' y='2.5' width='6' height='3.5' rx='1' fill='%234749B6'/%3E%3C/g%3E%3C/svg%3E")
+        26 28,
+      pointer;
   }
 }

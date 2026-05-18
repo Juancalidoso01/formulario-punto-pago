@@ -19,6 +19,15 @@ export type SignaturePadHandle = {
 const WIDTH = 480;
 const HEIGHT = 160;
 
+function setSignaturePadHover(active: boolean) {
+  if (typeof document === "undefined") return;
+  if (active) {
+    document.documentElement.setAttribute("data-signature-pad-hover", "");
+  } else {
+    document.documentElement.removeAttribute("data-signature-pad-hover");
+  }
+}
+
 export const SignaturePad = forwardRef<SignaturePadHandle, object>(
   function SignaturePad(_props, ref) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -51,6 +60,8 @@ export const SignaturePad = forwardRef<SignaturePadHandle, object>(
       resizeCanvas();
     }, [resizeCanvas]);
 
+    useEffect(() => () => setSignaturePadHover(false), []);
+
     const pos = (e: PointerEvent<HTMLCanvasElement>) => {
       const canvas = canvasRef.current;
       if (!canvas) return { x: 0, y: 0 };
@@ -82,7 +93,14 @@ export const SignaturePad = forwardRef<SignaturePadHandle, object>(
         className={`signature-pad-canvas w-full max-w-[480px] touch-none rounded-lg border border-slate-200/90 bg-white shadow-sm${
           isDrawing ? " signature-pad-canvas--drawing" : ""
         }`}
+        onPointerEnter={() => setSignaturePadHover(true)}
+        onPointerLeave={() => {
+          if (drawingRef.current) return;
+          setIsDrawing(false);
+          setSignaturePadHover(false);
+        }}
         onPointerDown={(e) => {
+          setSignaturePadHover(true);
           e.currentTarget.setPointerCapture(e.pointerId);
           drawingRef.current = true;
           setIsDrawing(true);
@@ -112,13 +130,10 @@ export const SignaturePad = forwardRef<SignaturePadHandle, object>(
             /* ignore */
           }
         }}
-        onPointerLeave={() => {
-          if (drawingRef.current) return;
-          setIsDrawing(false);
-        }}
         onPointerCancel={() => {
           drawingRef.current = false;
           setIsDrawing(false);
+          setSignaturePadHover(false);
         }}
       />
     );
