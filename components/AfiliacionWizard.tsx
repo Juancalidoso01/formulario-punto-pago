@@ -505,7 +505,7 @@ export function AfiliacionWizard({
             <StepHeading
               step={step}
               title="Dónde está ubicado su negocio"
-              description="Escriba y elija una dirección sugerida (verificación con lista local y Geoapify). Al elegir, completamos provincia o región cuando el servicio la reconoce; si no, indíquela en el segundo campo."
+              description="Indique la dirección exacta de su local o punto de atención. Si aparece en las sugerencias, elíjala; si no, escríbala completa. Complete la provincia o región en el campo siguiente."
             />
             <AfiliacionAddressPaField
               label="Dirección comercial"
@@ -521,7 +521,7 @@ export function AfiliacionWizard({
               Provincia o región
               <input
                 className={inputClass}
-                placeholder="Provincia (se puede autocompletar al elegir sugerencia)"
+                placeholder="Ej: Panamá, Chiriquí…"
                 value={provincia}
                 onChange={(e) => setProvincia(e.target.value)}
               />

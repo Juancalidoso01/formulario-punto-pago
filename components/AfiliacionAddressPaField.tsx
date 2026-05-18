@@ -269,18 +269,17 @@ export function AfiliacionAddressPaField({
       <p className="mb-2 text-xs text-slate-600">
         {worldwide ? (
           <>
-            Escriba calle, ciudad y país (o código postal) y elija una sugerencia. Si no
-            aparece su dirección exacta, use{" "}
-            <span className="font-medium">Otra dirección (especificar)</span> y complétela
-            a mano.
+            Escriba la dirección exacta de su local (calle, ciudad y país). Elija una
+            sugerencia si coincide; si no aparece, use{" "}
+            <span className="font-medium">Otra dirección (especificar)</span> y complétela.
           </>
         ) : (
           <>
-            Escriba calle, barrio, torre o abreviatura (ej.{" "}
-            <span className="font-medium">PH</span> o{" "}
-            <span className="font-medium">P.H.</span>) y elija una sugerencia. La lista
-            combina coincidencias locales con direcciones verificadas en Panamá vía
-            Geoapify.
+            Escriba la dirección exacta de su local: calle, número, edificio, barrio o
+            referencias (ej. <span className="font-medium">PH</span> o{" "}
+            <span className="font-medium">P.H.</span>). Elija una sugerencia si la reconoce;
+            si no está en la lista, use{" "}
+            <span className="font-medium">Otra dirección (especificar)</span>.
           </>
         )}
       </p>
