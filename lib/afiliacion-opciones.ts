@@ -44,6 +44,7 @@ export function textoServicioPrincipalParaSheet(id: string): string {
 
 export { PROFESIONES_KYB_OPCIONES as OCUPACION_OPCIONES } from "@/lib/kyb-profesiones";
 export { ACTIVIDADES_KYB_OPCIONES as ACTIVIDAD_NEGOCIO_OPCIONES } from "@/lib/kyb-actividades";
+export { MCC_OPCIONES } from "@/lib/mcc-opciones";
 
 export const RANGO_NOMINA_OPCIONES = [
   "Menos de USD 5,000",
@@ -73,16 +74,23 @@ export const METODO_INTEGRACION_OPCIONES = [
 ] as const;
 
 /** Índices de paso del wizard (`AfiliacionWizard`) omitidos por línea de negocio. */
-/** Pasos omitidos: nómina (11) e integración (14) — mismo criterio kioscos / agente. */
+/** Pasos omitidos: nómina (11) e integración (14). */
 const PASOS_OMITIDOS_NOMINA_INTEGRACION = [11, 14] as const;
+
+/** Kioscos y agente: actividad KYB (9) se sustituye por rubro MCC en descripción del local. */
+const PASOS_OMITIDOS_LOCAL_COMERCIAL = [9, 11, 14] as const;
 
 const PASOS_OMITIDOS_POR_SERVICIO: Partial<
   Record<ServicioPrincipalId, readonly number[]>
 > = {
-  "kioscos-local-comercial": PASOS_OMITIDOS_NOMINA_INTEGRACION,
-  "agente-corresponsal-comunidad": PASOS_OMITIDOS_NOMINA_INTEGRACION,
+  "kioscos-local-comercial": PASOS_OMITIDOS_LOCAL_COMERCIAL,
+  "agente-corresponsal-comunidad": PASOS_OMITIDOS_LOCAL_COMERCIAL,
   "cuotas-financiamiento-local": PASOS_OMITIDOS_NOMINA_INTEGRACION,
 };
+
+export function pasoOmiteActividadKyb(servicio: string): boolean {
+  return pasoOmiteParaServicio(servicio, 9);
+}
 
 export function esServicioCuotas(id: string): boolean {
   return id === "cuotas-financiamiento-local";

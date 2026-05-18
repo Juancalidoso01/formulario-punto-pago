@@ -8,6 +8,7 @@ import type { AfiliacionJson } from "@/lib/afiliacion-payload";
 import {
   ACTIVIDAD_NEGOCIO_OPCIONES,
   METODO_INTEGRACION_OPCIONES,
+  MCC_OPCIONES,
   NUM_CLIENTES_OPCIONES,
   textoIntegracionNoAplica,
   textoNominaNoAplica,
@@ -18,6 +19,7 @@ import {
   servicioRequiereFotosLocal,
   numeroPasoVisible,
   pasoAnteriorVisible,
+  pasoOmiteActividadKyb,
   pasoOmiteParaServicio,
   pasosVisiblesParaServicio,
   siguientePasoVisible,
@@ -150,6 +152,7 @@ export function AfiliacionWizard({
   const [direccionEntryMode, setDireccionEntryMode] =
     useState<AfiliacionAddressEntryMode>("geo");
   const [provincia, setProvincia] = useState("");
+  const [rubroMcc, setRubroMcc] = useState("");
   const [descripcionNegocio, setDescripcionNegocio] = useState("");
   const [ocupacionPrincipal, setOcupacionPrincipal] = useState("");
   const [actividadNegocio, setActividadNegocio] = useState("");
@@ -174,6 +177,7 @@ export function AfiliacionWizard({
       direccion,
       provincia,
       descripcionNegocio,
+      rubroMcc,
       servicioPrincipal,
       ocupacionPrincipal,
       actividadNegocio,
@@ -203,6 +207,7 @@ export function AfiliacionWizard({
     contactoApellido,
     contactoNombre,
     descripcionNegocio,
+    rubroMcc,
     direccion,
     email,
     metodoIntegracion,
@@ -266,6 +271,9 @@ export function AfiliacionWizard({
         }
         return null;
       case 7:
+        if (!rubroMcc) {
+          return w.errors.mcc;
+        }
         if (!descripcionNegocio.trim()) {
           return w.errors.business;
         }
@@ -276,7 +284,7 @@ export function AfiliacionWizard({
         }
         return null;
       case 9:
-        if (!actividadNegocio) {
+        if (!pasoOmiteActividadKyb(servicioPrincipal) && !actividadNegocio) {
           return w.errors.activity;
         }
         return null;
@@ -329,6 +337,7 @@ export function AfiliacionWizard({
     contactoApellido,
     contactoNombre,
     descripcionNegocio,
+    rubroMcc,
     direccion,
     direccionEntryMode,
     email,
@@ -621,15 +630,29 @@ export function AfiliacionWizard({
               title={w.steps.business.title}
               description={w.steps.business.desc}
             />
-            <label className={labelClass}>
-              {w.fields.description}
-              <textarea
-                className={`${inputClass} min-h-[140px] resize-y`}
-                rows={5}
-                value={descripcionNegocio}
-                onChange={(e) => setDescripcionNegocio(e.target.value)}
-              />
-            </label>
+            <div className="grid gap-4">
+              <label className={labelClass}>
+                {w.fields.mcc}
+                <SearchableSelect
+                  options={MCC_OPCIONES}
+                  value={rubroMcc}
+                  onChange={setRubroMcc}
+                  inputClass={inputClass}
+                  placeholder={w.fields.mccPh}
+                  id="afiliacion-rubro-mcc"
+                />
+              </label>
+              <label className={labelClass}>
+                {w.fields.description}
+                <textarea
+                  className={`${inputClass} min-h-[140px] resize-y`}
+                  rows={5}
+                  placeholder={w.fields.descriptionPh}
+                  value={descripcionNegocio}
+                  onChange={(e) => setDescripcionNegocio(e.target.value)}
+                />
+              </label>
+            </div>
           </>
         ) : null}
 
@@ -654,7 +677,7 @@ export function AfiliacionWizard({
           </>
         ) : null}
 
-        {step === 9 ? (
+        {step === 9 && !pasoOmiteActividadKyb(servicioPrincipal) ? (
           <>
             <StepHeading
               displayStep={pasoLabel(step)}

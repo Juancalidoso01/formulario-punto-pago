@@ -1,6 +1,7 @@
 import {
   ACTIVIDAD_NEGOCIO_OPCIONES,
   METODO_INTEGRACION_OPCIONES,
+  MCC_OPCIONES,
   esServicioCuotas,
   textoIntegracionNoAplica,
   textoNominaNoAplica,
@@ -8,6 +9,7 @@ import {
   OCUPACION_OPCIONES,
   RANGO_NOMINA_OPCIONES,
   esServicioPrincipalValido,
+  pasoOmiteActividadKyb,
   pasoOmiteParaServicio,
 } from "@/lib/afiliacion-opciones";
 import {
@@ -31,6 +33,8 @@ export type AfiliacionJson = {
   direccion: string;
   provincia: string;
   descripcionNegocio: string;
+  /** Rubro MCC de referencia del local comercial. */
+  rubroMcc: string;
   /** Id de `SERVICIO_PRINCIPAL_PUNTO_PAGO`. */
   servicioPrincipal: string;
   ocupacionPrincipal: string;
@@ -93,6 +97,7 @@ export function validateAfiliacionJson(
     direccion: str("direccion"),
     provincia: str("provincia"),
     descripcionNegocio: str("descripcionNegocio"),
+    rubroMcc: str("rubroMcc"),
     servicioPrincipal,
     ocupacionPrincipal: str("ocupacionPrincipal"),
     actividadNegocio: str("actividadNegocio"),
@@ -122,13 +127,19 @@ export function validateAfiliacionJson(
   if (!data.direccion || !data.provincia) {
     return { ok: false, error: "Dirección y provincia obligatorias" };
   }
+  if (!inList(data.rubroMcc, MCC_OPCIONES)) {
+    return { ok: false, error: "Seleccione el rubro MCC de su local comercial." };
+  }
   if (!data.descripcionNegocio) {
     return { ok: false, error: "Descripción del negocio obligatoria" };
   }
   if (!inList(data.ocupacionPrincipal, OCUPACION_OPCIONES)) {
-    return { ok: false, error: "Profesión u ocupación no válida" };
+    return { ok: false, error: "Profesión u ocupación del dueño no válida" };
   }
-  if (!inList(data.actividadNegocio, ACTIVIDAD_NEGOCIO_OPCIONES)) {
+  const omiteActividadKyb = pasoOmiteActividadKyb(servicioPrincipal);
+  if (omiteActividadKyb) {
+    data.actividadNegocio = data.rubroMcc;
+  } else if (!inList(data.actividadNegocio, ACTIVIDAD_NEGOCIO_OPCIONES)) {
     return { ok: false, error: "Actividad económica no válida" };
   }
   const omiteNomina = pasoOmiteParaServicio(servicioPrincipal, 11);

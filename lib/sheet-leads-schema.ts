@@ -58,7 +58,7 @@ export function afiliacionRowForSheet(
     data.ruc,
     data.direccion,
     data.provincia,
-    data.descripcionNegocio,
+    textoDescripcionNegocioParaSheet(data.descripcionNegocio, data.rubroMcc),
     textoServicioPrincipalParaSheet(data.servicioPrincipal),
     data.ocupacionPrincipal,
     data.actividadNegocio,
@@ -121,6 +121,16 @@ export function corporativoRowForSheet(
 }
 
 /** Lista de nombres de archivo (sin URL). */
+export function textoDescripcionNegocioParaSheet(
+  descripcion: string,
+  rubroMcc: string,
+): string {
+  const detalle = descripcion.trim();
+  const rubro = rubroMcc.trim();
+  if (rubro && detalle) return `${rubro}\n${detalle}`;
+  return rubro || detalle || "—";
+}
+
 export function listaNombresFotos(nombres: string[]): string {
   return nombres.join("; ");
 }
