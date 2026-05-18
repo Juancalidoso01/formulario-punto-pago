@@ -12,7 +12,11 @@ import {
   RANGO_NOMINA_OPCIONES,
   esServicioPrincipalValido,
 } from "@/lib/afiliacion-opciones";
-import { AfiliacionAddressPaField } from "@/components/AfiliacionAddressPaField";
+import {
+  AfiliacionAddressPaField,
+  type AfiliacionAddressEntryMode,
+} from "@/components/AfiliacionAddressPaField";
+import { isPanamaManualComposedAddress } from "@/lib/panama-manual-address";
 import { ServicioPrincipalPicker } from "@/components/ServicioPrincipalPicker";
 import { SignaturePad, type SignaturePadHandle } from "@/components/SignaturePad";
 
@@ -121,6 +125,8 @@ export function AfiliacionWizard({
   const [nombreEmpresa, setNombreEmpresa] = useState("");
   const [ruc, setRuc] = useState("");
   const [direccion, setDireccion] = useState("");
+  const [direccionEntryMode, setDireccionEntryMode] =
+    useState<AfiliacionAddressEntryMode>("geo");
   const [provincia, setProvincia] = useState("");
   const [descripcionNegocio, setDescripcionNegocio] = useState("");
   const [ocupacionPrincipal, setOcupacionPrincipal] = useState("");
@@ -202,8 +208,19 @@ export function AfiliacionWizard({
         if (!ruc.trim()) return "Indique el número de RUC.";
         return null;
       case 6:
-        if (!direccion.trim() || !provincia.trim()) {
-          return "Indique dirección y provincia.";
+        if (!direccion.trim()) {
+          return direccionEntryMode === "manual"
+            ? "Complete la dirección con calle, corregimiento y una referencia visible."
+            : "Busque su dirección en el mapa y elija una sugerencia, o descríbala con detalle.";
+        }
+        if (!provincia.trim()) {
+          return "Indique la provincia o región.";
+        }
+        if (
+          direccionEntryMode === "manual" &&
+          !isPanamaManualComposedAddress(direccion)
+        ) {
+          return "Complete todos los campos de la dirección detallada.";
         }
         return null;
       case 7:
@@ -252,6 +269,7 @@ export function AfiliacionWizard({
     contactoNombre,
     descripcionNegocio,
     direccion,
+    direccionEntryMode,
     email,
     fotosLocal.length,
     metodoIntegracion,
@@ -505,7 +523,7 @@ export function AfiliacionWizard({
             <StepHeading
               step={step}
               title="Dónde está ubicado su negocio"
-              description="Indique la dirección exacta de su local o punto de atención. Si aparece en las sugerencias, elíjala; si no, escríbala completa. Complete la provincia o región en el campo siguiente."
+              description="Primero busque su local en el mapa. Si no aparece, podrá describir la dirección con calle, corregimiento y referencias. Complete la provincia abajo."
             />
             <AfiliacionAddressPaField
               label="Dirección comercial"
@@ -513,6 +531,7 @@ export function AfiliacionWizard({
               onChange={setDireccion}
               inputClass={inputClass}
               variant="panama"
+              onEntryModeChange={setDireccionEntryMode}
               onStructuredFromApi={(meta) => {
                 if (meta.provincia) setProvincia(meta.provincia);
               }}
