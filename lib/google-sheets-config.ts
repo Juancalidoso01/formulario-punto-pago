@@ -47,7 +47,7 @@ export function getGoogleSheetsConfig(): GoogleSheetsConfig {
     };
   }
 
-  const range = process.env.GOOGLE_SHEETS_RANGE?.trim() || "Leads!A:U";
+  const range = process.env.GOOGLE_SHEETS_RANGE?.trim() || "'Hoja 1'!A:U";
 
   return { ok: true, spreadsheetId, range, clientEmail };
 }

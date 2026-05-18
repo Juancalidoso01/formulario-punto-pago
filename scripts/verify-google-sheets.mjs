@@ -67,7 +67,7 @@ loadEnvLocal();
 
 const json = process.env.GOOGLE_SERVICE_ACCOUNT_JSON?.trim();
 const spreadsheetId = process.env.GOOGLE_SHEETS_SPREADSHEET_ID?.trim();
-const range = process.env.GOOGLE_SHEETS_RANGE?.trim() || "Leads!A:U";
+const range = process.env.GOOGLE_SHEETS_RANGE?.trim() || "'Hoja 1'!A:U";
 
 if (!json || !spreadsheetId) {
   console.error("Faltan GOOGLE_SERVICE_ACCOUNT_JSON o GOOGLE_SHEETS_SPREADSHEET_ID en .env.local");
@@ -93,7 +93,16 @@ const auth = new google.auth.GoogleAuth({
 });
 const sheets = google.sheets({ version: "v4", auth });
 
-const headerRange = range.replace(/:.*$/, ":1");
+function headerRowRange(r) {
+  const bang = r.lastIndexOf("!");
+  if (bang === -1) return "1:1";
+  const sheet = r.slice(0, bang);
+  const cols = r.slice(bang + 1);
+  const endCol = cols.includes(":") ? cols.split(":")[1] : cols;
+  const startCol = cols.includes(":") ? cols.split(":")[0] : "A";
+  return `${sheet}!${startCol}1:${endCol}1`;
+}
+const headerRange = headerRowRange(range);
 
 try {
   const meta = await sheets.spreadsheets.get({ spreadsheetId });
