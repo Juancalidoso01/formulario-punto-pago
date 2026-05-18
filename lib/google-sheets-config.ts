@@ -1,3 +1,7 @@
+/** Hoja de leads Punto Pago (puede sobreescribirse con env). */
+export const DEFAULT_LEADS_SPREADSHEET_ID =
+  "1x8GPwkWhrtZhqPqjpQxwgg1WqDUw6ratID_rjUoSMZE";
+
 export type GoogleSheetsConfig =
   | { ok: true; spreadsheetId: string; range: string; clientEmail: string }
   | { ok: false; error: string };
@@ -31,12 +35,15 @@ export function getGoogleSheetsConfig(): GoogleSheetsConfig {
     };
   }
 
-  const spreadsheetId = process.env.GOOGLE_SHEETS_SPREADSHEET_ID?.trim();
+  const spreadsheetId =
+    process.env.GOOGLE_SHEETS_SPREADSHEET_ID?.trim() ||
+    process.env.SHEET_ID?.trim() ||
+    DEFAULT_LEADS_SPREADSHEET_ID;
   if (!spreadsheetId) {
     return {
       ok: false,
       error:
-        "Falta GOOGLE_SHEETS_SPREADSHEET_ID (ID de la hoja en la URL de Google Sheets).",
+        "Falta el ID de la hoja (variable SHEET_ID o GOOGLE_SHEETS_SPREADSHEET_ID en Vercel).",
     };
   }
 
