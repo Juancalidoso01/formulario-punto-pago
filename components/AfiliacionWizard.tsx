@@ -12,7 +12,9 @@ import {
   textoNominaNoAplica,
   OCUPACION_OPCIONES,
   RANGO_NOMINA_OPCIONES,
+  esServicioCuotas,
   esServicioPrincipalValido,
+  servicioRequiereFotosLocal,
   numeroPasoVisible,
   pasoAnteriorVisible,
   pasoOmiteParaServicio,
@@ -26,7 +28,15 @@ import {
 import { isPanamaManualComposedAddress } from "@/lib/panama-manual-address";
 import { SearchableSelect } from "@/components/SearchableSelect";
 import { ServicioPrincipalPicker } from "@/components/ServicioPrincipalPicker";
+import { CuotasPlanPicker } from "@/components/CuotasPlanPicker";
 import { SignaturePad, type SignaturePadHandle } from "@/components/SignaturePad";
+import {
+  CUOTAS_MIN_AMOUNT,
+  CUOTAS_TERM_CONFIG,
+  calcularPagoRegularCuotas,
+  textoPlanCuotasParaSheet,
+  type CuotasTermMonths,
+} from "@/lib/cuotas-calculator";
 
 const TOTAL_STEPS = 17;
 
@@ -140,6 +150,8 @@ export function AfiliacionWizard({
   const [ocupacionPrincipal, setOcupacionPrincipal] = useState("");
   const [actividadNegocio, setActividadNegocio] = useState("");
   const [fotosLocal, setFotosLocal] = useState<File[]>([]);
+  const [planCuotasMeses, setPlanCuotasMeses] = useState<CuotasTermMonths>(2);
+  const [planCuotasMonto, setPlanCuotasMonto] = useState(100);
   const [rangoNominaMensual, setRangoNominaMensual] = useState("");
   const [avisoOperacion, setAvisoOperacion] = useState<File | null>(null);
   const [numClientes, setNumClientes] = useState("");
@@ -165,9 +177,21 @@ export function AfiliacionWizard({
         ? textoNominaNoAplica(servicioPrincipal)
         : rangoNominaMensual,
       numClientes,
-      metodoIntegracion: pasoOmiteParaServicio(servicioPrincipal, 14)
-        ? textoIntegracionNoAplica(servicioPrincipal)
-        : metodoIntegracion,
+      metodoIntegracion: esServicioCuotas(servicioPrincipal)
+        ? textoPlanCuotasParaSheet(planCuotasMeses, planCuotasMonto)
+        : pasoOmiteParaServicio(servicioPrincipal, 14)
+          ? textoIntegracionNoAplica(servicioPrincipal)
+          : metodoIntegracion,
+      planCuotasMeses: esServicioCuotas(servicioPrincipal) ? planCuotasMeses : undefined,
+      planCuotasMontoReferencia: esServicioCuotas(servicioPrincipal)
+        ? planCuotasMonto
+        : undefined,
+      planCuotasPagoRegular: esServicioCuotas(servicioPrincipal)
+        ? calcularPagoRegularCuotas(planCuotasMonto, planCuotasMeses)
+        : undefined,
+      planCuotasCantidadPagos: esServicioCuotas(servicioPrincipal)
+        ? CUOTAS_TERM_CONFIG[planCuotasMeses].payments
+        : undefined,
       terminosAceptados,
     };
   }, [
@@ -178,6 +202,8 @@ export function AfiliacionWizard({
     direccion,
     email,
     metodoIntegracion,
+    planCuotasMeses,
+    planCuotasMonto,
     nombreEmpresa,
     numClientes,
     ocupacionPrincipal,
@@ -251,8 +277,21 @@ export function AfiliacionWizard({
         }
         return null;
       case 10:
-        if (fotosLocal.length < 1 || fotosLocal.length > 5) {
-          return "Adjunte entre 1 y 5 fotos de su local comercial.";
+        if (esServicioCuotas(servicioPrincipal)) {
+          const cfg = CUOTAS_TERM_CONFIG[planCuotasMeses];
+          const monto = Math.min(
+            Math.max(Math.round(planCuotasMonto), CUOTAS_MIN_AMOUNT),
+            cfg.maxAmount,
+          );
+          if (monto < CUOTAS_MIN_AMOUNT) {
+            return "Indique un monto de referencia de al menos $10.";
+          }
+          return null;
+        }
+        if (servicioRequiereFotosLocal(servicioPrincipal)) {
+          if (fotosLocal.length < 1 || fotosLocal.length > 5) {
+            return "Adjunte entre 1 y 5 fotos de su local comercial.";
+          }
         }
         return null;
       case 11:
@@ -290,6 +329,8 @@ export function AfiliacionWizard({
     direccionEntryMode,
     email,
     fotosLocal.length,
+    planCuotasMeses,
+    planCuotasMonto,
     metodoIntegracion,
     nombreEmpresa,
     numClientes,
@@ -339,8 +380,10 @@ export function AfiliacionWizard({
     const json = buildJson();
     const fd = new FormData();
     fd.append("data", JSON.stringify(json));
-    for (const f of fotosLocal) {
-      fd.append("fotos", f);
+    if (servicioRequiereFotosLocal(servicioPrincipal)) {
+      for (const f of fotosLocal) {
+        fd.append("fotos", f);
+      }
     }
     if (avisoOperacion) {
       fd.append("aviso", avisoOperacion);
@@ -632,7 +675,23 @@ export function AfiliacionWizard({
           </>
         ) : null}
 
-        {step === 10 ? (
+        {step === 10 && esServicioCuotas(servicioPrincipal) ? (
+          <>
+            <StepHeading
+              displayStep={pasoLabel(step)}
+              title="¿Qué plan de Cuotas le interesa ofrecer en su local?"
+              description="Use la calculadora como en la página oficial de Cuotas Punto Pago. Elija el plazo (2, 4 u 8 meses) y un monto de referencia; guardaremos su preferencia para el equipo comercial."
+            />
+            <CuotasPlanPicker
+              termMonths={planCuotasMeses}
+              onTermMonthsChange={setPlanCuotasMeses}
+              montoReferencia={planCuotasMonto}
+              onMontoReferenciaChange={setPlanCuotasMonto}
+            />
+          </>
+        ) : null}
+
+        {step === 10 && servicioRequiereFotosLocal(servicioPrincipal) ? (
           <>
             <StepHeading
               displayStep={pasoLabel(step)}

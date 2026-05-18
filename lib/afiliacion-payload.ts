@@ -1,6 +1,7 @@
 import {
   ACTIVIDAD_NEGOCIO_OPCIONES,
   METODO_INTEGRACION_OPCIONES,
+  esServicioCuotas,
   textoIntegracionNoAplica,
   textoNominaNoAplica,
   NUM_CLIENTES_OPCIONES,
@@ -9,6 +10,15 @@ import {
   esServicioPrincipalValido,
   pasoOmiteParaServicio,
 } from "@/lib/afiliacion-opciones";
+import {
+  CUOTAS_MIN_AMOUNT,
+  CUOTAS_TERM_CONFIG,
+  calcularPagoRegularCuotas,
+  esCuotasTermValido,
+  normalizeCuotasAmount,
+  textoPlanCuotasParaSheet,
+  type CuotasTermMonths,
+} from "@/lib/cuotas-calculator";
 
 export type AfiliacionJson = {
   contactoNombre: string;
@@ -28,6 +38,11 @@ export type AfiliacionJson = {
   rangoNominaMensual: string;
   numClientes: string;
   metodoIntegracion: string;
+  /** Solo cuotas: plan elegido (2, 4 u 8 meses). */
+  planCuotasMeses?: CuotasTermMonths;
+  planCuotasMontoReferencia?: number;
+  planCuotasPagoRegular?: number;
+  planCuotasCantidadPagos?: number;
   terminosAceptados: boolean;
 };
 
@@ -56,6 +71,17 @@ export function validateAfiliacionJson(
     return { ok: false, error: "La opción de servicio no es válida." };
   }
 
+  const planMesesRaw = o.planCuotasMeses;
+  const planCuotasMeses =
+    typeof planMesesRaw === "number" && esCuotasTermValido(planMesesRaw)
+      ? planMesesRaw
+      : undefined;
+  const planMontoRaw = o.planCuotasMontoReferencia;
+  const planCuotasMontoReferencia =
+    typeof planMontoRaw === "number" && Number.isFinite(planMontoRaw)
+      ? planMontoRaw
+      : undefined;
+
   const data: AfiliacionJson = {
     contactoNombre: str("contactoNombre"),
     contactoApellido: str("contactoApellido"),
@@ -73,6 +99,8 @@ export function validateAfiliacionJson(
     rangoNominaMensual: str("rangoNominaMensual"),
     numClientes: str("numClientes"),
     metodoIntegracion: str("metodoIntegracion"),
+    planCuotasMeses,
+    planCuotasMontoReferencia,
     terminosAceptados: o.terminosAceptados === true,
   };
 
@@ -113,7 +141,23 @@ export function validateAfiliacionJson(
   if (!inList(data.numClientes, NUM_CLIENTES_OPCIONES)) {
     return { ok: false, error: "Cantidad de clientes no válida" };
   }
-  if (omiteIntegracion) {
+  if (esServicioCuotas(servicioPrincipal)) {
+    if (!planCuotasMeses) {
+      return { ok: false, error: "Seleccione el plan de cuotas que le interesa ofrecer." };
+    }
+    const cfg = CUOTAS_TERM_CONFIG[planCuotasMeses];
+    const monto = normalizeCuotasAmount(
+      planCuotasMontoReferencia ?? CUOTAS_MIN_AMOUNT,
+      cfg.maxAmount,
+    );
+    if (monto < CUOTAS_MIN_AMOUNT) {
+      return { ok: false, error: "El monto de referencia debe ser al menos $10." };
+    }
+    data.planCuotasMontoReferencia = monto;
+    data.planCuotasPagoRegular = calcularPagoRegularCuotas(monto, planCuotasMeses);
+    data.planCuotasCantidadPagos = cfg.payments;
+    data.metodoIntegracion = textoPlanCuotasParaSheet(planCuotasMeses, monto);
+  } else if (omiteIntegracion) {
     data.metodoIntegracion = textoIntegracionNoAplica(servicioPrincipal);
   } else if (!inList(data.metodoIntegracion, METODO_INTEGRACION_OPCIONES)) {
     return { ok: false, error: "Método de integración no válido" };

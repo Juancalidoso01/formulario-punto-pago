@@ -81,7 +81,16 @@ const PASOS_OMITIDOS_POR_SERVICIO: Partial<
 > = {
   "kioscos-local-comercial": PASOS_OMITIDOS_NOMINA_INTEGRACION,
   "agente-corresponsal-comunidad": PASOS_OMITIDOS_NOMINA_INTEGRACION,
+  "cuotas-financiamiento-local": PASOS_OMITIDOS_NOMINA_INTEGRACION,
 };
+
+export function esServicioCuotas(id: string): boolean {
+  return id === "cuotas-financiamiento-local";
+}
+
+export function servicioRequiereFotosLocal(id: string): boolean {
+  return esServicioPrincipalValido(id) && !esServicioCuotas(id);
+}
 
 export const NOMINA_NO_APLICA_KIOSCOS = "No aplica — kioscos en local comercial";
 export const INTEGRACION_NO_APLICA_KIOSCOS =
@@ -92,9 +101,12 @@ export const NOMINA_NO_APLICA_AGENTE =
 export const INTEGRACION_NO_APLICA_AGENTE =
   "No aplica — agente corresponsal en comunidad";
 
+export const NOMINA_NO_APLICA_CUOTAS = "No aplica — cuotas en local comercial";
+
 export function textoNominaNoAplica(servicio: string): string {
   if (servicio === "agente-corresponsal-comunidad") return NOMINA_NO_APLICA_AGENTE;
   if (servicio === "kioscos-local-comercial") return NOMINA_NO_APLICA_KIOSCOS;
+  if (servicio === "cuotas-financiamiento-local") return NOMINA_NO_APLICA_CUOTAS;
   return "";
 }
 

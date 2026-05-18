@@ -5,7 +5,7 @@ import {
   validateAfiliacionCorporativoJson,
 } from "@/lib/afiliacion-corporativo-payload";
 import { validateAfiliacionJson } from "@/lib/afiliacion-payload";
-import { textoServicioPrincipalParaSheet } from "@/lib/afiliacion-opciones";
+import { esServicioCuotas, textoServicioPrincipalParaSheet } from "@/lib/afiliacion-opciones";
 
 export const runtime = "nodejs";
 
@@ -95,29 +95,32 @@ export async function POST(request: Request) {
   }
   const data = validated.data;
 
+  const requiereFotos = !esServicioCuotas(data.servicioPrincipal);
   const fotos = formData
     .getAll("fotos")
     .filter((e): e is File => e instanceof File && e.size > 0);
 
-  if (fotos.length < 1 || fotos.length > 5) {
-    return NextResponse.json(
-      { error: "Debe adjuntar entre 1 y 5 fotos del local." },
-      { status: 400 },
-    );
-  }
-
-  for (const f of fotos) {
-    if (f.size > MAX_FILE_BYTES) {
+  if (requiereFotos) {
+    if (fotos.length < 1 || fotos.length > 5) {
       return NextResponse.json(
-        { error: `La foto «${f.name}» supera el tamaño máximo permitido.` },
+        { error: "Debe adjuntar entre 1 y 5 fotos del local." },
         { status: 400 },
       );
     }
-    if (!isProbablyImage(f)) {
-      return NextResponse.json(
-        { error: "Las fotos del local deben ser imágenes." },
-        { status: 400 },
-      );
+
+    for (const f of fotos) {
+      if (f.size > MAX_FILE_BYTES) {
+        return NextResponse.json(
+          { error: `La foto «${f.name}» supera el tamaño máximo permitido.` },
+          { status: 400 },
+        );
+      }
+      if (!isProbablyImage(f)) {
+        return NextResponse.json(
+          { error: "Las fotos del local deben ser imágenes." },
+          { status: 400 },
+        );
+      }
     }
   }
 
@@ -144,7 +147,9 @@ export async function POST(request: Request) {
   }
 
   const now = new Date().toISOString();
-  const fotoNames = fotos.map((f) => f.name).join("; ");
+  const fotoNames = requiereFotos
+    ? fotos.map((f) => f.name).join("; ")
+    : "Sin fotos — Cuotas (plan en columna Integración)";
 
   const row = [
     now,
