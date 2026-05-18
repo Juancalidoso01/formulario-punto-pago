@@ -18,21 +18,13 @@ import {
   fotosColumnaForSheet,
   listaNombresFotos,
 } from "@/lib/sheet-leads-schema";
+import {
+  MAX_UPLOAD_BYTES,
+  isAvisoDocument,
+  isProbablyImage,
+} from "@/lib/upload-files";
 
 export const runtime = "nodejs";
-
-const MAX_FILE_BYTES = 15 * 1024 * 1024;
-
-function isProbablyImage(file: File) {
-  return (
-    file.type.startsWith("image/") ||
-    /\.(jpe?g|png|gif|webp|heic|heif)$/i.test(file.name)
-  );
-}
-
-function isAvisoOk(file: File) {
-  return file.type === "application/pdf" || isProbablyImage(file);
-}
 
 function sheetsErrorResponse(e: unknown) {
   const message =
@@ -122,7 +114,7 @@ export async function POST(request: Request) {
     }
 
     for (const f of fotos) {
-      if (f.size > MAX_FILE_BYTES) {
+      if (f.size > MAX_UPLOAD_BYTES) {
         return NextResponse.json(
           { error: `La foto «${f.name}» supera el tamaño máximo permitido.` },
           { status: 400 },
@@ -141,10 +133,10 @@ export async function POST(request: Request) {
   if (!(aviso instanceof File) || aviso.size === 0) {
     return NextResponse.json({ error: "Falta el archivo de aviso de operación." }, { status: 400 });
   }
-  if (aviso.size > MAX_FILE_BYTES) {
+  if (aviso.size > MAX_UPLOAD_BYTES) {
     return NextResponse.json({ error: "El aviso de operación es demasiado grande." }, { status: 400 });
   }
-  if (!isAvisoOk(aviso)) {
+  if (!isAvisoDocument(aviso)) {
     return NextResponse.json(
       { error: "El aviso de operación debe ser PDF o imagen." },
       { status: 400 },
@@ -155,7 +147,7 @@ export async function POST(request: Request) {
   if (!(firma instanceof File) || firma.size === 0) {
     return NextResponse.json({ error: "Falta la firma digital." }, { status: 400 });
   }
-  if (firma.size > MAX_FILE_BYTES) {
+  if (firma.size > MAX_UPLOAD_BYTES) {
     return NextResponse.json({ error: "La firma adjunta es demasiado grande." }, { status: 400 });
   }
 

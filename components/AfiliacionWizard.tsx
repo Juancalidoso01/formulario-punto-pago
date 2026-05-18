@@ -32,7 +32,9 @@ import { isPanamaManualComposedAddress } from "@/lib/panama-manual-address";
 import { SearchableSelect } from "@/components/SearchableSelect";
 import { ServicioPrincipalPicker } from "@/components/ServicioPrincipalPicker";
 import { CuotasPlanPicker } from "@/components/CuotasPlanPicker";
+import { DocumentFilePicker } from "@/components/DocumentFilePicker";
 import { LocalPhotosPicker } from "@/components/LocalPhotosPicker";
+import { isAvisoDocument } from "@/lib/upload-files";
 import { SignaturePad, type SignaturePadHandle } from "@/components/SignaturePad";
 import {
   CUOTAS_MIN_AMOUNT,
@@ -312,6 +314,7 @@ export function AfiliacionWizard({
         return null;
       case 12:
         if (!avisoOperacion) return w.errors.aviso;
+        if (!isAvisoDocument(avisoOperacion)) return w.errors.avisoFormat;
         return null;
       case 13:
         if (!numClientes) return w.errors.clients;
@@ -757,21 +760,23 @@ export function AfiliacionWizard({
 
         {step === 12 ? (
           <>
-            <StepHeading displayStep={pasoLabel(step)} title={w.steps.aviso.title} />
-            <input
-              type="file"
-              accept=".pdf,image/*"
-              className="text-sm text-slate-700 file:mr-3 file:rounded-md file:border-0 file:bg-[#4749B6] file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-[#3B3DA6]"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                setAvisoOperacion(f ?? null);
+            <StepHeading
+              displayStep={pasoLabel(step)}
+              title={w.steps.aviso.title}
+              description={w.steps.aviso.desc}
+            />
+            <DocumentFilePicker
+              file={avisoOperacion}
+              onChange={setAvisoOperacion}
+              labels={{
+                dropzone: w.steps.aviso.dropzone,
+                dropzoneActive: w.steps.aviso.dropzoneActive,
+                browse: w.steps.aviso.browse,
+                remove: w.steps.aviso.remove,
+                formatHint: w.steps.aviso.formatHint,
+                invalidType: w.errors.avisoFormat,
               }}
             />
-            {avisoOperacion ? (
-              <p className="mt-2 text-sm text-slate-600">
-                {m.common.selectedLabel} {avisoOperacion.name}
-              </p>
-            ) : null}
           </>
         ) : null}
 
