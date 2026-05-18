@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server";
-import { appendLeadToSheet } from "@/lib/sheets";
-import {
-  corporativoRowForSheet,
-  validateAfiliacionCorporativoJson,
-} from "@/lib/afiliacion-corporativo-payload";
+import { validateAfiliacionCorporativoJson } from "@/lib/afiliacion-corporativo-payload";
 import { validateAfiliacionJson } from "@/lib/afiliacion-payload";
-import { esServicioCuotas, textoServicioPrincipalParaSheet } from "@/lib/afiliacion-opciones";
+import {
+  esServicioCuotas,
+  textoServicioPrincipalParaSheet,
+} from "@/lib/afiliacion-opciones";
+import { SheetsWriteError, appendLeadToSheet } from "@/lib/sheets";
+import {
+  afiliacionRowForSheet,
+  corporativoRowForSheet,
+  fotoNamesForSheet,
+} from "@/lib/sheet-leads-schema";
 
 export const runtime = "nodejs";
 
@@ -22,14 +27,15 @@ function isAvisoOk(file: File) {
   return file.type === "application/pdf" || isProbablyImage(file);
 }
 
-/**
- * Fila en Google Sheet (ajusta la fila 1 de la pestaña con estas cabeceras):
- * Fecha | Nombre | Apellido | Email | Tel código | Tel número | Empresa | RUC |
- * Dirección | Provincia | Descripción negocio | Servicio principal | Ocupación | Actividad |
- * Rango nómina | Nº clientes | Integración | Términos | Fotos (nombres) | Aviso archivo | Firma archivo
- *
- * Corporativo: celular en Tel código/número; fijo en Empresa («Fijo: …»); cargo en RUC.
- */
+function sheetsErrorResponse(e: unknown) {
+  const message =
+    e instanceof SheetsWriteError
+      ? e.message
+      : "No se pudo guardar en Google Sheets. Revisa la configuración del servidor.";
+  console.error("[leads] sheets error", e);
+  return NextResponse.json({ error: message }, { status: 502 });
+}
+
 export async function POST(request: Request) {
   const ct = request.headers.get("content-type") ?? "";
   if (!ct.includes("multipart/form-data")) {
@@ -80,11 +86,7 @@ export async function POST(request: Request) {
     try {
       await appendLeadToSheet(row);
     } catch (e) {
-      console.error("[leads] sheets error (corporativo)", e);
-      return NextResponse.json(
-        { error: "No se pudo guardar. Revisa la configuración del servidor (Sheets)." },
-        { status: 502 },
-      );
+      return sheetsErrorResponse(e);
     }
     return NextResponse.json({ ok: true });
   }
@@ -95,12 +97,13 @@ export async function POST(request: Request) {
   }
   const data = validated.data;
 
-  const requiereFotos = !esServicioCuotas(data.servicioPrincipal);
   const fotos = formData
     .getAll("fotos")
     .filter((e): e is File => e instanceof File && e.size > 0);
 
-  if (requiereFotos) {
+  const needsPhotos = !esServicioCuotas(data.servicioPrincipal);
+
+  if (needsPhotos) {
     if (fotos.length < 1 || fotos.length > 5) {
       return NextResponse.json(
         { error: "Debe adjuntar entre 1 y 5 fotos del local." },
@@ -147,42 +150,20 @@ export async function POST(request: Request) {
   }
 
   const now = new Date().toISOString();
-  const fotoNames = requiereFotos
-    ? fotos.map((f) => f.name).join("; ")
-    : "Sin fotos — Cuotas (plan en columna Integración)";
-
-  const row = [
-    now,
-    data.contactoNombre,
-    data.contactoApellido,
-    data.email,
-    data.telefonoCodigo,
-    data.telefonoNumero,
-    data.nombreEmpresa,
-    data.ruc,
-    data.direccion,
-    data.provincia,
-    data.descripcionNegocio,
-    textoServicioPrincipalParaSheet(data.servicioPrincipal),
-    data.ocupacionPrincipal,
-    data.actividadNegocio,
-    data.rangoNominaMensual,
-    data.numClientes,
-    data.metodoIntegracion,
-    data.terminosAceptados ? "Sí" : "No",
-    fotoNames,
-    aviso.name,
-    firma.name,
-  ];
+  const row = afiliacionRowForSheet(data, {
+    fechaIso: now,
+    fotoNames: fotoNamesForSheet(
+      data.servicioPrincipal,
+      fotos.map((f) => f.name),
+    ),
+    avisoFileName: aviso.name,
+    firmaFileName: firma.name,
+  });
 
   try {
     await appendLeadToSheet(row);
   } catch (e) {
-    console.error("[leads] sheets error", e);
-    return NextResponse.json(
-      { error: "No se pudo guardar. Revisa la configuración del servidor (Sheets)." },
-      { status: 502 },
-    );
+    return sheetsErrorResponse(e);
   }
 
   return NextResponse.json({ ok: true });
