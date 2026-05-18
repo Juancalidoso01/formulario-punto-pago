@@ -6,6 +6,7 @@ import {
   useEffect,
   useImperativeHandle,
   useRef,
+  useState,
 } from "react";
 import type { PointerEvent } from "react";
 
@@ -23,6 +24,7 @@ export const SignaturePad = forwardRef<SignaturePadHandle, object>(
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const drawingRef = useRef(false);
     const hasInkRef = useRef(false);
+    const [isDrawing, setIsDrawing] = useState(false);
 
     const resizeCanvas = useCallback(() => {
       const canvas = canvasRef.current;
@@ -75,10 +77,15 @@ export const SignaturePad = forwardRef<SignaturePadHandle, object>(
     return (
       <canvas
         ref={canvasRef}
-        className="w-full max-w-[480px] touch-none rounded-lg border border-slate-200/90 bg-white shadow-sm"
+        role="img"
+        aria-label="Área de firma. Dibuje su firma con el mouse o el dedo."
+        className={`signature-pad-canvas w-full max-w-[480px] touch-none rounded-lg border border-slate-200/90 bg-white shadow-sm${
+          isDrawing ? " signature-pad-canvas--drawing" : ""
+        }`}
         onPointerDown={(e) => {
           e.currentTarget.setPointerCapture(e.pointerId);
           drawingRef.current = true;
+          setIsDrawing(true);
           const ctx = e.currentTarget.getContext("2d");
           if (!ctx) return;
           const { x, y } = pos(e);
@@ -98,14 +105,20 @@ export const SignaturePad = forwardRef<SignaturePadHandle, object>(
         }}
         onPointerUp={(e) => {
           drawingRef.current = false;
+          setIsDrawing(false);
           try {
             e.currentTarget.releasePointerCapture(e.pointerId);
           } catch {
             /* ignore */
           }
         }}
+        onPointerLeave={() => {
+          if (drawingRef.current) return;
+          setIsDrawing(false);
+        }}
         onPointerCancel={() => {
           drawingRef.current = false;
+          setIsDrawing(false);
         }}
       />
     );
