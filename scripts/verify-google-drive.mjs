@@ -53,7 +53,15 @@ function isQuotaError(msg) {
 
 loadEnvLocal();
 
-const parentId = process.env.GOOGLE_DRIVE_FOLDER_ID?.trim();
+function normalizeDriveFolderId(raw) {
+  const t = raw?.trim();
+  if (!t) return null;
+  const fromUrl = t.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+  if (fromUrl) return fromUrl[1];
+  return t.split("?")[0].trim() || null;
+}
+
+const parentId = normalizeDriveFolderId(process.env.GOOGLE_DRIVE_FOLDER_ID);
 const json = process.env.GOOGLE_SERVICE_ACCOUNT_JSON?.trim();
 
 if (!json) {
@@ -69,7 +77,7 @@ const credentials = JSON.parse(json);
 const clientEmail = credentials.client_email ?? "(client_email del JSON)";
 const auth = new google.auth.GoogleAuth({
   credentials,
-  scopes: ["https://www.googleapis.com/auth/drive.file"],
+  scopes: ["https://www.googleapis.com/auth/drive"],
 });
 const drive = google.drive({ version: "v3", auth });
 
@@ -84,7 +92,10 @@ try {
 } catch (err) {
   const msg = err?.message ?? String(err);
   console.error("No se pudo leer la carpeta raíz:", msg);
-  console.error("\n" + mensajeUnidadCompartida(clientEmail));
+  console.error(
+    "\nSi el ID es correcto, suele faltar agregar la cuenta de servicio a la unidad compartida:",
+  );
+  console.error(mensajeUnidadCompartida(clientEmail));
   process.exit(1);
 }
 

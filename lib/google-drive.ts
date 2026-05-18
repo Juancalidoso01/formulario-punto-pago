@@ -23,6 +23,27 @@ function isServiceAccountStorageQuotaError(message: string): boolean {
   return /service accounts do not have storage quota|storage quota/i.test(message);
 }
 
+/** Acepta solo el ID o una URL completa de carpeta de Drive. */
+export function normalizeDriveFolderId(raw: string | undefined): string | null {
+  const t = raw?.trim();
+  if (!t) return null;
+  const fromUrl = t.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+  if (fromUrl) return fromUrl[1];
+  return t.split("?")[0]!.trim() || null;
+}
+
+function mensajeCarpetaNoEncontrada(parentId: string, clientEmail: string): string {
+  return [
+    `No se puede acceder a la carpeta (${parentId}).`,
+    "En Google Drive esto suele pasar aunque el ID sea correcto, si la cuenta de servicio no es miembro de la unidad compartida.",
+    "",
+    `1. Abra la unidad compartida en drive.google.com.`,
+    `2. Miembros → agregue ${clientEmail} como «Colaborador de contenido» (o Administrador de contenido).`,
+    "3. Confirme que GOOGLE_DRIVE_FOLDER_ID es el ID de una carpeta dentro de esa unidad (URL …/folders/ID).",
+    "4. Guarde en Vercel y vuelva a desplegar.",
+  ].join("\n");
+}
+
 /** La carpeta raíz debe vivir en una unidad compartida (`driveId` presente). */
 export async function assertDriveParentIsSharedDrive(
   drive: drive_v3.Drive,
@@ -40,9 +61,7 @@ export async function assertDriveParentIsSharedDrive(
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     if (/not found|404/i.test(msg)) {
-      throw new Error(
-        `No se encontró la carpeta GOOGLE_DRIVE_FOLDER_ID (${parentId}). Revise el ID en Vercel.`,
-      );
+      throw new Error(mensajeCarpetaNoEncontrada(parentId, clientEmail));
     }
     if (/permission|403|forbidden/i.test(msg)) {
       throw new Error(
@@ -109,7 +128,7 @@ async function fileToBuffer(file: File): Promise<Buffer> {
 }
 
 export function isGoogleDriveConfigured(): boolean {
-  return !!process.env.GOOGLE_DRIVE_FOLDER_ID?.trim();
+  return !!normalizeDriveFolderId(process.env.GOOGLE_DRIVE_FOLDER_ID);
 }
 
 export async function uploadLeadFilesToDrive(opts: {
@@ -121,7 +140,7 @@ export async function uploadLeadFilesToDrive(opts: {
   aviso?: File;
   firma?: File;
 }): Promise<LeadDriveUploadResult | null> {
-  const parentId = process.env.GOOGLE_DRIVE_FOLDER_ID?.trim();
+  const parentId = normalizeDriveFolderId(process.env.GOOGLE_DRIVE_FOLDER_ID);
   if (!parentId) return null;
 
   const cfg = getGoogleSheetsConfig();
