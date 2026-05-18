@@ -128,7 +128,7 @@ export function validateAfiliacionJson(
     return { ok: false, error: "Dirección y provincia obligatorias" };
   }
   if (!inList(data.rubroMcc, MCC_OPCIONES)) {
-    return { ok: false, error: "Seleccione el rubro MCC de su local comercial." };
+    return { ok: false, error: "Seleccione el tipo de negocio de su local." };
   }
   if (!data.descripcionNegocio) {
     return { ok: false, error: "Descripción del negocio obligatoria" };

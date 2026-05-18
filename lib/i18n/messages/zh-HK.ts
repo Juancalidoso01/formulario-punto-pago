@@ -136,16 +136,16 @@ export const zhHKMessages: Messages = {
         desc: "請先喺地圖搜尋你嘅位置。如果搵唔到，請用文字描述街道、區同參照物。請喺下面填寫省份。",
       },
       business: {
-        title: "門店類別與業務說明",
-        desc: "先揀 MCC 參考類別（國際商戶代碼），再描述門店提供嘅產品或服務。",
+        title: "你間舖係咩類型？賣咩或做咩服務？",
+        desc: "先喺列表揀最接近嘅類型（士多、餐廳、藥房等），再用自己嘅話講賣咩或提供咩服務。",
       },
       occupation: {
         title: "店主職業或工種",
-        desc: "登記業務嘅自然人（業主或代表）。請揀其個人職業，唔係門店業態。",
+        desc: "登記或代表業務嘅人。請揀佢個人嘅工作，唔係舖頭類型。",
       },
       activity: {
-        title: "企業經濟活動（KYB 目錄）",
-        desc: "分期等業務線：從官方合規目錄揀。自助終端同代理線以上一步 MCC 為準。",
+        title: "企業經營活動",
+        desc: "只係部分業務線需要。請喺列表揀。自助終端同代理線以上一步門店類型為準。",
       },
       cuotasPlan: {
         title: "你想為客戶提供邊類融資？",
@@ -190,12 +190,12 @@ export const zhHKMessages: Messages = {
       provincePh: "例如：Panamá、Chiriquí…",
       description: "業務詳情",
       descriptionPh: "例如：雜貨、烘焙、充值、營業時間…",
-      mcc: "MCC 門店類別",
-      mccPh: "例如：5411 超市、5812 餐飲…",
+      mcc: "門店類型",
+      mccPh: "撳一下開列表或輸入搜尋",
       occupation: "店主職業（自然人）",
       occupationPh: "例如：商戶、經理、創業者…",
-      activity: "經濟活動（KYB）",
-      activityPh: "例如：零售、餐飲…",
+      activity: "企業經營活動",
+      activityPh: "撳一下開列表或輸入搜尋",
     },
     errors: {
       service: "請揀最能描述你而家需要嘅選項。",
@@ -210,9 +210,9 @@ export const zhHKMessages: Messages = {
       province: "請填寫省份或地區。",
       addressIncomplete: "請填寫所有詳細地址欄位。",
       business: "請描述門店提供嘅業務。",
-      mcc: "請從列表揀門店 MCC 類別。",
+      mcc: "請從列表揀門店類型。",
       occupation: "請揀店主嘅職業或工種。",
-      activity: "請從 KYB 目錄揀經濟活動。",
+      activity: "請從列表揀企業經營活動。",
       cuotasAmount: "請輸入至少 $10 嘅參考金額。",
       photos: "請上載 1 至 5 張營業場所相片。",
       payroll: "請揀大致區間。",
@@ -279,6 +279,6 @@ export const zhHKMessages: Messages = {
     choose: "揀選",
     selectedLabel: "已揀：",
     kybCatalogNote:
-      "職業同活動目錄以西班牙文顯示（KYB 官方來源）。",
+      "本表單嘅列表以西班牙文顯示。",
   },
 };
