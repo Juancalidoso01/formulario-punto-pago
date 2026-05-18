@@ -228,18 +228,15 @@ export const enMessages: Messages = {
           title: "Email and role",
           desc: "We will use these details so a sales advisor can contact you.",
         },
-        phones: {
-          title: "Contact phones (optional)",
-          desc: "You may provide landline, mobile or both. You do not need to complete both.",
+        phone: {
+          title: "Contact phone number",
+          desc: "Enter the country code and the number where we can reach you.",
         },
       },
       fields: {
         cargo: "Role at the company",
         cargoPh: "E.g. Sales manager, Finance director",
-        landline: "Landline (optional)",
-        mobile: "Mobile phone (optional)",
-        landlinePh: "E.g. 263-4567",
-        mobilePh: "E.g. 6000-0000",
+        phonePh: "E.g. 6000-0000",
       },
       errors: {
         name: "Enter the contact person's first and last name.",

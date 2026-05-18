@@ -226,18 +226,15 @@ export const zhCNMessages: Messages = {
           title: "邮箱与职位",
           desc: "我们将用此信息安排销售顾问与您联系。",
         },
-        phones: {
-          title: "联系电话（选填）",
-          desc: "可填写固话、手机或两者；不必两项都填。",
+        phone: {
+          title: "联系电话",
+          desc: "请填写国家/地区代码及可联系您的号码。",
         },
       },
       fields: {
         cargo: "公司职位",
         cargoPh: "例：销售经理、财务总监",
-        landline: "固话（选填）",
-        mobile: "手机（选填）",
-        landlinePh: "例：263-4567",
-        mobilePh: "例：6000-0000",
+        phonePh: "例：6000-0000",
       },
       errors: {
         name: "请填写联系人的姓名。",

@@ -21,6 +21,28 @@ export function esFormularioCorporativo(servicio: string): boolean {
   return servicio === SERVICIO_CORPORATIVO_ID;
 }
 
+/** Celular tiene prioridad; si no, teléfono fijo (formulario anterior). */
+export function telefonoPrincipalCorporativo(data: AfiliacionCorporativoJson): {
+  codigo: string;
+  numero: string;
+} {
+  const cel = data.telefonoCelNumero.trim();
+  if (cel) {
+    return {
+      codigo: data.telefonoCelCodigo.trim() || "+507",
+      numero: cel,
+    };
+  }
+  const fijo = data.telefonoFijoNumero.trim();
+  if (fijo) {
+    return {
+      codigo: data.telefonoFijoCodigo.trim() || "+507",
+      numero: fijo,
+    };
+  }
+  return { codigo: "", numero: "" };
+}
+
 export function validateAfiliacionCorporativoJson(
   body: unknown,
 ): { ok: true; data: AfiliacionCorporativoJson } | { ok: false; error: string } {
@@ -60,6 +82,10 @@ export function validateAfiliacionCorporativoJson(
   }
   if (!data.cargo) {
     return { ok: false, error: "Indique el cargo de la persona de contacto." };
+  }
+  const tel = telefonoPrincipalCorporativo(data);
+  if (tel.numero === "") {
+    return { ok: false, error: "Indique el código de país y el número de contacto." };
   }
   if (!data.terminosAceptados) {
     return { ok: false, error: "Debe aceptar términos y condiciones" };

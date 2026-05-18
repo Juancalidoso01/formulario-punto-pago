@@ -38,45 +38,6 @@ function StepHeading({
   );
 }
 
-function PhoneRow({
-  label,
-  codigo,
-  numero,
-  onCodigo,
-  onNumero,
-  numeroPlaceholder,
-}: {
-  label: string;
-  codigo: string;
-  numero: string;
-  onCodigo: (v: string) => void;
-  onNumero: (v: string) => void;
-  numeroPlaceholder: string;
-}) {
-  return (
-    <div className={labelClass}>
-      <span>{label}</span>
-      <div className="flex gap-2">
-        <input
-          className={`${inputClass} w-24 shrink-0`}
-          value={codigo}
-          onChange={(e) => onCodigo(e.target.value)}
-          aria-label={`Código país ${label}`}
-          autoComplete="tel-country-code"
-        />
-        <input
-          className={`${inputClass} min-w-0 flex-1`}
-          type="tel"
-          value={numero}
-          onChange={(e) => onNumero(e.target.value)}
-          placeholder={numeroPlaceholder}
-          autoComplete="tel-national"
-        />
-      </div>
-    </div>
-  );
-}
-
 export function AfiliacionCorporativoWizard() {
   const router = useRouter();
   const { messages: m, t } = useI18n();
@@ -91,8 +52,6 @@ export function AfiliacionCorporativoWizard() {
   const [contactoApellido, setContactoApellido] = useState("");
   const [email, setEmail] = useState("");
   const [cargo, setCargo] = useState("");
-  const [telefonoFijoCodigo, setTelefonoFijoCodigo] = useState("+507");
-  const [telefonoFijoNumero, setTelefonoFijoNumero] = useState("");
   const [telefonoCelCodigo, setTelefonoCelCodigo] = useState("+507");
   const [telefonoCelNumero, setTelefonoCelNumero] = useState("");
   const [terminosAceptados, setTerminosAceptados] = useState(false);
@@ -104,8 +63,8 @@ export function AfiliacionCorporativoWizard() {
       contactoApellido,
       email,
       cargo,
-      telefonoFijoCodigo,
-      telefonoFijoNumero,
+      telefonoFijoCodigo: "",
+      telefonoFijoNumero: "",
       telefonoCelCodigo,
       telefonoCelNumero,
       terminosAceptados,
@@ -117,8 +76,6 @@ export function AfiliacionCorporativoWizard() {
     email,
     telefonoCelCodigo,
     telefonoCelNumero,
-    telefonoFijoCodigo,
-    telefonoFijoNumero,
     terminosAceptados,
   ]);
 
@@ -137,6 +94,9 @@ export function AfiliacionCorporativoWizard() {
         if (!cargo.trim()) return corp.errors.cargo;
         return null;
       case 2:
+        if (!telefonoCelCodigo.trim() || !telefonoCelNumero.trim()) {
+          return w.errors.phone;
+        }
         if (!terminosAceptados) return w.errors.terms;
         return null;
       default:
@@ -153,7 +113,10 @@ export function AfiliacionCorporativoWizard() {
     terminosAceptados,
     w.errors.emailInvalid,
     w.errors.emailRequired,
+    w.errors.phone,
     w.errors.terms,
+    telefonoCelCodigo,
+    telefonoCelNumero,
   ]);
 
   const submit = async () => {
@@ -299,27 +262,31 @@ export function AfiliacionCorporativoWizard() {
           <>
             <StepHeading
               displayStep={3}
-              title={corp.steps.phones.title}
-              description={corp.steps.phones.desc}
-              showRequired={false}
+              title={corp.steps.phone.title}
+              description={corp.steps.phone.desc}
             />
-            <div className="grid gap-4">
-              <PhoneRow
-                label={corp.fields.landline}
-                codigo={telefonoFijoCodigo}
-                numero={telefonoFijoNumero}
-                onCodigo={setTelefonoFijoCodigo}
-                onNumero={setTelefonoFijoNumero}
-                numeroPlaceholder={corp.fields.landlinePh}
-              />
-              <PhoneRow
-                label={corp.fields.mobile}
-                codigo={telefonoCelCodigo}
-                numero={telefonoCelNumero}
-                onCodigo={setTelefonoCelCodigo}
-                onNumero={setTelefonoCelNumero}
-                numeroPlaceholder={corp.fields.mobilePh}
-              />
+            <div className="grid gap-4 sm:grid-cols-[120px_1fr]">
+              <label className={labelClass}>
+                {w.fields.phoneCode}
+                <input
+                  className={inputClass}
+                  placeholder="+507"
+                  value={telefonoCelCodigo}
+                  onChange={(e) => setTelefonoCelCodigo(e.target.value)}
+                  autoComplete="tel-country-code"
+                />
+              </label>
+              <label className={labelClass}>
+                {w.fields.phoneNumber}
+                <input
+                  className={inputClass}
+                  type="tel"
+                  placeholder={corp.fields.phonePh}
+                  value={telefonoCelNumero}
+                  onChange={(e) => setTelefonoCelNumero(e.target.value)}
+                  autoComplete="tel-national"
+                />
+              </label>
             </div>
             <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-800">
               <input

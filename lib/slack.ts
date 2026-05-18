@@ -1,4 +1,5 @@
 import type { AfiliacionCorporativoJson } from "@/lib/afiliacion-corporativo-payload";
+import { telefonoPrincipalCorporativo } from "@/lib/afiliacion-corporativo-payload";
 import type { AfiliacionJson } from "@/lib/afiliacion-payload";
 import { esServicioCuotas, textoServicioPrincipalParaSheet } from "@/lib/afiliacion-opciones";
 import { CUOTAS_TERM_CONFIG, formatCuotasMoney } from "@/lib/cuotas-calculator";
@@ -225,8 +226,8 @@ export async function notifyCorporativoLeadToSlack(
   submittedAtIso: string,
 ): Promise<void> {
   const servicio = textoServicioPrincipalParaSheet(data.servicioPrincipal);
-  const fijo = phone(data.telefonoFijoCodigo, data.telefonoFijoNumero);
-  const cel = phone(data.telefonoCelCodigo, data.telefonoCelNumero);
+  const tel = telefonoPrincipalCorporativo(data);
+  const telLine = phone(tel.codigo, tel.numero);
 
   await postToSlack(
     {
@@ -250,11 +251,8 @@ export async function notifyCorporativoLeadToSlack(
           field("Nombre", `${data.contactoNombre} ${data.contactoApellido}`.trim()),
           field("Correo", data.email),
           field("Cargo", data.cargo),
+          field("Teléfono", telLine),
         ],
-      },
-      {
-        type: "section",
-        fields: [field("Celular", cel), field("Teléfono fijo", fijo)],
       },
     ],
     },

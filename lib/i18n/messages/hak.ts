@@ -226,18 +226,15 @@ export const hakMessages: Messages = {
           title: "電郵同職位",
           desc: "我哋會用這些資料安排銷售顧問聯絡你。",
         },
-        phones: {
-          title: "聯絡電話（可選）",
-          desc: "可以填寫固話、手機或者兩者；唔使兩項都填。",
+        phone: {
+          title: "聯絡電話",
+          desc: "請填寫國家/地區代碼同可聯絡你个號碼。",
         },
       },
       fields: {
         cargo: "公司職位",
         cargoPh: "例：銷售經理、財務總監",
-        landline: "固話（可選）",
-        mobile: "手機（可選）",
-        landlinePh: "例：263-4567",
-        mobilePh: "例：6000-0000",
+        phonePh: "例：6000-0000",
       },
       errors: {
         name: "請填寫聯絡人姓名。",

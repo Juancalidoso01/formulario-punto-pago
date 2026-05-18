@@ -229,18 +229,15 @@ export const esMessages = {
           title: "Correo y cargo",
           desc: "Usaremos estos datos para que un asesor comercial le contacte.",
         },
-        phones: {
-          title: "Teléfonos de contacto (opcional)",
-          desc: "Puede indicar fijo, celular o ambos. No es obligatorio completar los dos.",
+        phone: {
+          title: "Teléfono de contacto",
+          desc: "Indique el código de país y el número donde podemos llamarle.",
         },
       },
       fields: {
         cargo: "Cargo en la empresa",
         cargoPh: "Ej: Gerente comercial, Director de finanzas",
-        landline: "Teléfono fijo (opcional)",
-        mobile: "Teléfono celular (opcional)",
-        landlinePh: "Ej: 263-4567",
-        mobilePh: "Ej: 6000-0000",
+        phonePh: "Ej: 6000-0000",
       },
       errors: {
         name: "Indique nombre y apellido de la persona de contacto.",

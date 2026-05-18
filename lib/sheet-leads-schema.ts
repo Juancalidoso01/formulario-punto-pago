@@ -1,4 +1,5 @@
 import type { AfiliacionCorporativoJson } from "@/lib/afiliacion-corporativo-payload";
+import { telefonoPrincipalCorporativo } from "@/lib/afiliacion-corporativo-payload";
 import type { AfiliacionJson } from "@/lib/afiliacion-payload";
 import {
   esServicioCuotas,
@@ -84,27 +85,22 @@ export function corporativoRowForSheet(
   servicioTexto: string,
   fechaIso: string,
 ): string[] {
-  const fijoNum = data.telefonoFijoNumero.trim();
-  const fijo =
-    fijoNum.length > 0
-      ? `Fijo: ${`${data.telefonoFijoCodigo} ${fijoNum}`.trim()}`
-      : "—";
-  const celNum = data.telefonoCelNumero.trim();
+  const tel = telefonoPrincipalCorporativo(data);
 
   const row: string[] = [
     fechaIso,
     data.contactoNombre,
     data.contactoApellido,
     data.email,
-    celNum.length > 0 ? data.telefonoCelCodigo : "—",
-    celNum.length > 0 ? celNum : "—",
-    fijo,
-    data.cargo,
+    tel.codigo || "—",
+    tel.numero || "—",
+    "—",
+    "—",
     "—",
     "—",
     "Contacto corporativo",
     servicioTexto,
-    "—",
+    data.cargo,
     "—",
     "No aplica — corporativo",
     "—",
