@@ -9,7 +9,6 @@ import {
   ACTIVIDAD_NEGOCIO_OPCIONES,
   METODO_INTEGRACION_OPCIONES,
   MCC_OPCIONES,
-  NUM_CLIENTES_NO_APLICA,
   textoIntegracionNoAplica,
   textoNominaNoAplica,
   OCUPACION_OPCIONES,
@@ -189,7 +188,6 @@ export function AfiliacionWizard({
       rangoNominaMensual: pasoOmiteParaServicio(servicioPrincipal, 11)
         ? textoNominaNoAplica(servicioPrincipal)
         : rangoNominaMensual,
-      numClientes: NUM_CLIENTES_NO_APLICA,
       metodoIntegracion: esServicioCuotas(servicioPrincipal)
         ? textoPlanCuotasParaSheet(planCuotasMeses, planCuotasMonto)
         : pasoOmiteParaServicio(servicioPrincipal, 14)

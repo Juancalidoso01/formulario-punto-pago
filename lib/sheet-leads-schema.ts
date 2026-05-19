@@ -26,7 +26,6 @@ export const LEAD_SHEET_HEADERS = [
   "Ocupación",
   "Actividad",
   "Rango nómina",
-  "Nº clientes",
   "Integración / plan Cuotas",
   "Términos",
   "Fotos (Drive)",
@@ -36,7 +35,7 @@ export const LEAD_SHEET_HEADERS = [
 
 export const LEAD_SHEET_COLUMN_COUNT = LEAD_SHEET_HEADERS.length;
 
-export const DEFAULT_LEAD_SHEET_RANGE = "Leads!A:U";
+export const DEFAULT_LEAD_SHEET_RANGE = "Leads!A:T";
 
 export function afiliacionRowForSheet(
   data: AfiliacionJson,
@@ -63,7 +62,6 @@ export function afiliacionRowForSheet(
     data.ocupacionPrincipal,
     data.actividadNegocio,
     data.rangoNominaMensual,
-    data.numClientes,
     data.metodoIntegracion,
     data.terminosAceptados ? "Sí" : "No",
     opts.fotoNames,
@@ -103,7 +101,6 @@ export function corporativoRowForSheet(
     data.cargo,
     "—",
     "No aplica — corporativo",
-    "—",
     "No aplica — corporativo",
     data.terminosAceptados ? "Sí" : "No",
     "—",

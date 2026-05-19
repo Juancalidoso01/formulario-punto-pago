@@ -56,15 +56,6 @@ export const RANGO_NOMINA_OPCIONES = [
   "Prefiero no indicar / aún no definido",
 ] as const;
 
-export const NUM_CLIENTES_OPCIONES = [
-  "0 a 100",
-  "101 a 500",
-  "501 a 1,000",
-  "1,001 a 5,000",
-  "5,001 a 10,000",
-  "Más de 10,000",
-] as const;
-
 export const METODO_INTEGRACION_OPCIONES = [
   "Carga manual desde archivo Excel o CSV",
   "Integración por API (automatizada desde su sistema)",
@@ -110,9 +101,6 @@ export const INTEGRACION_NO_APLICA_AGENTE =
   "No aplica — agente corresponsal en comunidad";
 
 export const NOMINA_NO_APLICA_CUOTAS = "No aplica — cuotas en local comercial";
-
-/** Paso «Nº clientes» retirado del formulario; se conserva la columna en Sheets. */
-export const NUM_CLIENTES_NO_APLICA = "No aplica — no solicitado en formulario";
 
 export function textoNominaNoAplica(servicio: string): string {
   if (servicio === "agente-corresponsal-comunidad") return NOMINA_NO_APLICA_AGENTE;

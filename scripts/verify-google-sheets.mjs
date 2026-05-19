@@ -30,7 +30,6 @@ const HEADERS = [
   "Ocupación",
   "Actividad",
   "Rango nómina",
-  "Nº clientes",
   "Integración / plan Cuotas",
   "Términos",
   "Fotos (Drive)",
@@ -67,7 +66,7 @@ loadEnvLocal();
 
 const json = process.env.GOOGLE_SERVICE_ACCOUNT_JSON?.trim();
 const spreadsheetId = process.env.GOOGLE_SHEETS_SPREADSHEET_ID?.trim();
-const range = process.env.GOOGLE_SHEETS_RANGE?.trim() || "'Hoja 1'!A:U";
+const range = process.env.GOOGLE_SHEETS_RANGE?.trim() || "'Hoja 1'!A:T";
 
 if (!json || !spreadsheetId) {
   console.error("Faltan GOOGLE_SERVICE_ACCOUNT_JSON o GOOGLE_SHEETS_SPREADSHEET_ID en .env.local");

@@ -5,7 +5,7 @@ import {
   getGoogleSheetsConfig,
 } from "@/lib/google-sheets-config";
 
-/** Ej. `Leads!A:U` → `Leads!A1:U1` */
+/** Ej. `Leads!A:T` → `Leads!A1:T1` */
 function headerRowRange(range: string): string {
   const bang = range.lastIndexOf("!");
   if (bang === -1) return "1:1";

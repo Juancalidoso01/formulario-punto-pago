@@ -162,7 +162,6 @@ export async function notifyAfiliacionLeadToSlack(
       fields: [
         field("Ocupación", data.ocupacionPrincipal),
         field("Actividad", data.actividadNegocio),
-        field("Nº clientes", data.numClientes),
       ],
     },
   ];

@@ -5,7 +5,6 @@ import {
   esServicioCuotas,
   textoIntegracionNoAplica,
   textoNominaNoAplica,
-  NUM_CLIENTES_NO_APLICA,
   OCUPACION_OPCIONES,
   RANGO_NOMINA_OPCIONES,
   esServicioPrincipalValido,
@@ -40,7 +39,6 @@ export type AfiliacionJson = {
   ocupacionPrincipal: string;
   actividadNegocio: string;
   rangoNominaMensual: string;
-  numClientes: string;
   metodoIntegracion: string;
   /** Solo cuotas: plan elegido (2, 4 u 8 meses). */
   planCuotasMeses?: CuotasTermMonths;
@@ -102,7 +100,6 @@ export function validateAfiliacionJson(
     ocupacionPrincipal: str("ocupacionPrincipal"),
     actividadNegocio: str("actividadNegocio"),
     rangoNominaMensual: str("rangoNominaMensual"),
-    numClientes: str("numClientes"),
     metodoIntegracion: str("metodoIntegracion"),
     planCuotasMeses,
     planCuotasMontoReferencia,
@@ -149,7 +146,6 @@ export function validateAfiliacionJson(
   } else if (!inList(data.rangoNominaMensual, RANGO_NOMINA_OPCIONES)) {
     return { ok: false, error: "Rango de nómina no válido" };
   }
-  data.numClientes = NUM_CLIENTES_NO_APLICA;
   if (esServicioCuotas(servicioPrincipal)) {
     if (!planCuotasMeses) {
       return { ok: false, error: "Seleccione el plan de cuotas que le interesa ofrecer." };
