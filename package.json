@@ -13,6 +13,7 @@
     "drive:verify": "node scripts/verify-google-drive.mjs",
     "sheets:verify": "node scripts/verify-google-sheets.mjs",
     "sheets:init-headers": "node scripts/verify-google-sheets.mjs --init-headers",
+    "sheets:init-leads": "node scripts/init-leads-sheet.mjs",
     "sheets:setup-vercel": "node scripts/setup-google-vercel-env.mjs",
     "slack:verify": "node scripts/verify-slack-webhook.mjs",
     "slack:verify:cuotas": "node scripts/verify-slack-webhook.mjs --cuotas",
